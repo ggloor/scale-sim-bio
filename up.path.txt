@@ -1,0 +1,73 @@
+sce01100	Metabolic pathways	48
+sce01110	Biosynthesis of secondary metabolites	26
+sce01200	Carbon metabolism	8
+sce01210	2-Oxocarboxylic acid metabolism	3
+sce01212	Fatty acid metabolism	3
+sce01230	Biosynthesis of amino acids	11
+sce01232	Nucleotide metabolism	7
+sce01250	Biosynthesis of nucleotide sugars	2
+sce01240	Biosynthesis of cofactors	8
+sce00010	Glycolysis / Gluconeogenesis	4
+sce00030	Pentose phosphate pathway	1
+sce00051	Fructose and mannose metabolism	2
+sce00052	Galactose metabolism	1
+sce00500	Starch and sucrose metabolism	2
+sce00520	Amino sugar and nucleotide sugar metabolism	3
+sce00620	Pyruvate metabolism	1
+sce00640	Propanoate metabolism	1
+sce00650	Butanoate metabolism	1
+sce00562	Inositol phosphate metabolism	2
+sce00190	Oxidative phosphorylation	3
+sce00680	Methane metabolism	2
+sce00920	Sulfur metabolism	1
+sce00061	Fatty acid biosynthesis	2
+sce00062	Fatty acid elongation	1
+sce00071	Fatty acid degradation	2
+sce00100	Steroid biosynthesis	1
+sce00564	Glycerophospholipid metabolism	2
+sce00600	Sphingolipid metabolism	2
+sce01040	Biosynthesis of unsaturated fatty acids	1
+sce00230	Purine metabolism	9
+sce00240	Pyrimidine metabolism	5
+sce00250	Alanine, aspartate and glutamate metabolism	3
+sce00260	Glycine, serine and threonine metabolism	5
+sce00270	Cysteine and methionine metabolism	6
+sce00280	Valine, leucine and isoleucine degradation	3
+sce00290	Valine, leucine and isoleucine biosynthesis	3
+sce00300	Lysine biosynthesis	2
+sce00220	Arginine biosynthesis	1
+sce00330	Arginine and proline metabolism	1
+sce00350	Tyrosine metabolism	1
+sce00400	Phenylalanine, tyrosine and tryptophan biosynthesis	1
+sce00410	beta-Alanine metabolism	1
+sce00440	Phosphonate and phosphinate metabolism	1
+sce00480	Glutathione metabolism	4
+sce00750	Vitamin B6 metabolism	1
+sce00760	Nicotinate and nicotinamide metabolism	1
+sce00770	Pantothenate and CoA biosynthesis	1
+sce00860	Porphyrin metabolism	1
+sce00900	Terpenoid backbone biosynthesis	3
+sce00999	Biosynthesis of various plant secondary metabolites; Including: Crocin biosynthesis, Ginsenoside biosynthesis, Saponin adjuvant biosynthesis, Cannabidiol biosynthesis, Mugineic acid biosynthesis, Pentagalloylglucose biosynthesis, Benzoxazinoid biosynthesis, Gramine biosynthesis, Coumarin biosynthesis, Furanocoumarin biosynthesis, Hordatine biosynthesis, Podophyllotoxin biosynthesis	1
+sce03020	RNA polymerase	1
+sce03010	Ribosome	41
+sce00970	Aminoacyl-tRNA biosynthesis	11
+sce03013	Nucleocytoplasmic transport	2
+sce03015	mRNA surveillance pathway	2
+sce04141	Protein processing in endoplasmic reticulum	3
+sce04120	Ubiquitin mediated proteolysis	1
+sce03050	Proteasome	1
+sce03018	RNA degradation	6
+sce03420	Nucleotide excision repair	1
+sce03082	ATP-dependent chromatin remodeling	3
+sce02010	ABC transporters	4
+sce04011	MAPK signaling pathway - yeast	7
+sce04392	Hippo signaling pathway - multiple species	1
+sce04070	Phosphatidylinositol signaling system	2
+sce04144	Endocytosis	3
+sce04145	Phagosome	1
+sce04146	Peroxisome	3
+sce04138	Autophagy - yeast	2
+sce04139	Mitophagy - yeast	1
+sce04111	Cell cycle - yeast	2
+sce04113	Meiosis - yeast	2
+sce04213	Longevity regulating pathway - multiple species	3
