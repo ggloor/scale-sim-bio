@@ -1,0 +1,61 @@
+---
+title: "Supplement: Beyond compositionally in high throughput sequencing; estimating the importance of scale in data analysis with ALDEx2
+"
+shorttitle: "Scale ALDEx2 Supp"
+author:
+- name: Greg Gloor, Michelle Pistner Nixon, Justin Silverman
+  affiliation: Dep't of Biochemistry, University of Western Ontario, Penn State
+  email: ggloor@uwo.ca
+bibliography: /Users/ggloor/Library/texmf/bibtex/bib/bibdesk_refs.bib
+output:
+  BiocStyle::pdf_document: default
+package: ALDEx2 1.33.1
+abstract: |
+    Introduction to scale simulation and FDR correction with ALDEx2.
+date: 21 August 2023
+link-citations: true
+---
+
+# GM is correlated with Shannon's entropy and includes
+
+
+```{r info, echo=F,warning=F, message=F,comment=F, fig.cap="Plot of Shannon's entropy (I) vs geometric mean (G) for each sample in three different datasets. The groups that each sample belong to are highlighted as filled or open circles. Each group in each dataset has different entropy with the groups in the selex and metatranscriptome datasets being highly distinct."}
+# Gm ~ Im
+# plotting geometric mean vs Shannon's entropy
+# shows differential information by group
+devtools::load_all('~/Documents/0_git/ALDEx_bioc')
+data(selex)
+
+load(url('https://raw.githubusercontent.com/ggloor/datasets/main/ko.both.all.Rda'))
+url <- "https://raw.githubusercontent.com/ggloor/datasets/main/transcriptome.tsv"
+yst <- read.table(url, header=T, row.names=1)
+
+# remove the one gene with 0 reads
+yst <- yst[rownames(yst) != "YOR072W-B",]
+# Gierlinski:2015aa
+yst[,c('SNF2.6', 'SNF2.13','SNF2.25','SNF2.35')] <- NULL 
+yst[,c('WT.21','WT.22','WT.25','WT.28','WT.34','WT.36')] <- NULL  
+
+
+par(mfrow=c(1,1))
+plot(apply(selex+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) }),
+  apply(selex+0.5, 2, function(x) mean(log2(x))), xlim=c(2.5,11), ylim=c(-0.5,10), 
+  xlab="Shannon's entropy", ylab='Geometric mean', pch=c(rep(19,7),rep(1,7)),
+  col=rgb(0,0,0,0.5))
+points(apply(yst+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) }),apply(yst+0.5, 2, function(x) mean(log2(x))), col=rgb(1,0.6,0,0.5), pch=c(rep(19,44), rep(1, 42)))
+points(apply(ko.both.all+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) }),apply(ko.both.all+0.5, 2, function(x) mean(log2(x))), col=rgb(1,0,0,0.5),
+ pch=c(rep(1,8), rep(19,28), rep(1,8)))
+ 
+legend(3,10, legend=c('selex', 'transcriptome','metatranscriptome', 'low entropy group', 'high entropy group'),
+  col=c('darkgrey', 'orange', 'red', 'grey','grey'), pch=c(19,19,19,1,19))
+```
+
+```{r move}
+load('analysis/x.s.mu.all.Rda')
+load('analysis/x.all.Rda')
+
+par(mfrow=c(1,2))
+aldex.plot(x.s.mu.all)
+aldex.plot(x.all)
+
+```

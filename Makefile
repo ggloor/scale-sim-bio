@@ -1,0 +1,44 @@
+# Makefile
+
+all : go3.pdf supplement_figs.pdf
+
+supplement_figs.pdf : supplement_figs.Rmd analysis/x.s.mu.all.Rda
+	Rscript -e "rmarkdown::render('supplement_figs.Rmd')"
+
+analysis/x.s.mu.all.Rda : code/yst.aldex.mu.r
+	Rscript code/yst.aldex.mu.r
+
+# Rule to generate the metatranscriptome output files
+go3.pdf : go3.Rmd analysis/xt.all.Rda analysis/xg.all.Rda\
+    analysis/xt.m.all.Rda analysis/res.Rda \
+    analysis/x.all.Rda analysis/x.s.all.Rda
+	Rscript -e "rmarkdown::render('go3.Rmd')"
+	
+analysis/xt.all.Rda : code/meta-aldex.R
+	Rscript code/meta-aldex.R
+
+analysis/xg.all.Rda : code/meta-aldex.R
+	Rscript code/meta-aldex.R
+
+analysis/xt.m.all.Rda : code/meta-aldex.R
+	Rscript code/meta-aldex.R
+
+# Rules to generate the yeast output files
+
+analysis/res.Rda : code/yst-DESeq.R
+	Rscript code/yst-DESeq.R
+
+analysis/x.all.Rda : code/yst-aldex.R
+	Rscript code/yst-aldex.R
+	
+analysis/x.s.all.Rda : code/yst-aldex.R
+	Rscript code/yst-aldex.R
+
+# Clean rule to remove the output file
+clean:
+	rm -f analysis/xt.all.Rda 
+	rm -f analysis/xg.all.Rda 
+	rm -f analysis/xt.m.all.Rda 
+	rm -f analysis/res.Rda
+	rm -f analysis/x.all.Rda
+	rm -f analysis/x.s.all.Rda
