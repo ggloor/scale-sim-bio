@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  23 AUG 2023 16:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  31 AUG 2023 10:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -969,33 +969,33 @@ Style option: `fancyvrb' v2.7a, with DG/SPQR fixes, and firstline=lastline fix
 ) (./go3.aux)
 \openout1 = `go3.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 164.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 164.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 168.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 168.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Try loading font information for T1+lmss on input line 164.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 168.
+LaTeX Font Info:    ... okay on input line 168.
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 168.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Info: Redefining \microtypecontext on input line 164.
+LaTeX Info: Redefining \microtypecontext on input line 168.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
@@ -1036,7 +1036,7 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 \AtBeginShipoutBox=\box38
-Package hyperref Info: Link coloring ON on input line 164.
+Package hyperref Info: Link coloring ON on input line 168.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
@@ -1044,9 +1044,9 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count150
 )
-LaTeX Info: Redefining \ref on input line 164.
-LaTeX Info: Redefining \pageref on input line 164.
-LaTeX Info: Redefining \nameref on input line 164.
+LaTeX Info: Redefining \ref on input line 168.
+LaTeX Info: Redefining \pageref on input line 168.
+LaTeX Info: Redefining \nameref on input line 168.
 (./go3.out) (./go3.out)
 \@outlinefile=\write5
 \openout5 = `go3.out'.
@@ -1087,20 +1087,20 @@ LaTeX Info: Redefining \nameref on input line 164.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 ABD: EverySelectfont initializing macros
-LaTeX Info: Redefining \selectfont on input line 164.
+LaTeX Info: Redefining \selectfont on input line 168.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-Package caption Info: We need package `ragged2e' on input line 164.
-LaTeX Font Info:    Try loading font information for T1+phv on input line 165.
+Package caption Info: We need package `ragged2e' on input line 168.
+LaTeX Font Info:    Try loading font information for T1+phv on input line 169.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <20.74> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 165.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 169.
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <14.4> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 165.
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 169.
 
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 165.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 169.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1108,59 +1108,59 @@ File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 165.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 169.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 165
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 169
 .
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 165
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 169
 .
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <14.4> on input line 165.
+(Font)              <14.4> on input line 169.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 165.
+(Font)              <10> on input line 169.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 165.
-LaTeX Font Info:    Try loading font information for U+msa on input line 165.
+(Font)              <7> on input line 169.
+LaTeX Font Info:    Try loading font information for U+msa on input line 169.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/local/texlive/2015/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 165.
+LaTeX Font Info:    Try loading font information for U+msb on input line 169.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/local/texlive/2015/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <10> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 165.
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 169.
 
-LaTeX Font Info:    Try loading font information for TS1+lmss on input line 165
+LaTeX Font Info:    Try loading font information for TS1+lmss on input line 169
 .
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/ts1lmss.fd
 File: ts1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 165.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 169.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 165.
-LaTeX Font Info:    Try loading font information for T1+fvm on input line 165.
+(Font)              <5> on input line 169.
+LaTeX Font Info:    Try loading font information for T1+fvm on input line 169.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/bera/t1fvm.fd
 File: t1fvm.fd 2004/09/07 scalable font definitions for T1/fvm.
 )
 LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
-(Font)              scaled to size 7.98004pt on input line 165.
+(Font)              scaled to size 7.98004pt on input line 169.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 166.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 170.
 (./go3.toc)
 \tf@toc=\write6
 \openout6 = `go3.toc'.
@@ -1168,60 +1168,60 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
 [1
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
-<go3_files/figure-latex/dispersion-1.pdf, id=109, 557.08125pt x 328.22626pt>
+<go3_files/figure-latex/dispersion-1.pdf, id=111, 557.08125pt x 328.22626pt>
 File: go3_files/figure-latex/dispersion-1.pdf Graphic file (type pdf)
 <use go3_files/figure-latex/dispersion-1.pdf>
 Package pdftex.def Info: go3_files/figure-latex/dispersion-1.pdf used on input 
-line 204.
+line 206.
 (pdftex.def)             Requested size: 341.44264pt x 201.1743pt.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <8> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 204.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 206.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 204--204
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 206--206
 [] [] 
  []
 
 [4 <./go3_files/figure-latex/dispersion-1.pdf>] <go3_files/figure-latex/plot1-1
-.pdf, id=143, 557.08125pt x 328.22626pt>
+.pdf, id=141, 557.08125pt x 328.22626pt>
 File: go3_files/figure-latex/plot1-1.pdf Graphic file (type pdf)
 <use go3_files/figure-latex/plot1-1.pdf>
 Package pdftex.def Info: go3_files/figure-latex/plot1-1.pdf used on input line 
-212.
+214.
 (pdftex.def)             Requested size: 341.44264pt x 201.1743pt.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 212--212
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 214--214
 [] [] 
  []
 
-[5 <./go3_files/figure-latex/plot1-1.pdf>] [6] <go3_files/figure-latex/meta-1.p
-df, id=192, 559.08875pt x 326.21875pt>
+[5 <./go3_files/figure-latex/plot1-1.pdf>] <go3_files/figure-latex/meta-1.pdf, 
+id=177, 559.08875pt x 326.21875pt>
 File: go3_files/figure-latex/meta-1.pdf Graphic file (type pdf)
 <use go3_files/figure-latex/meta-1.pdf>
 Package pdftex.def Info: go3_files/figure-latex/meta-1.pdf used on input line 2
-30.
+32.
 (pdftex.def)             Requested size: 341.44458pt x 199.22708pt.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 230--230
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 232--232
 [] [] 
  []
 
-[7 <./go3_files/figure-latex/meta-1.pdf>] [8] [9] [10] [11]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 374.
+[6] [7 <./go3_files/figure-latex/meta-1.pdf>] [8] [9] [10] [11]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 367.
 [12]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 374.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 367.
 (./go3.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 374.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 374.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 367.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 367.
 Package rerunfilecheck Info: File `go3.out' has not changed.
 (rerunfilecheck)             Checksum: AD2CFA7E12B9695AACDE325A90195112;137.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 374.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 367.
  ) 
 Here is how much of TeX's memory you used:
- 13884 strings out of 493089
- 213218 string characters out of 6134842
- 367802 words of memory out of 5000000
- 16853 multiletter control sequences out of 15000+600000
- 87515 words of font info for 135 fonts, out of 8000000 for 9000
+ 13888 strings out of 493089
+ 213268 string characters out of 6134842
+ 372866 words of memory out of 5000000
+ 16859 multiletter control sequences out of 15000+600000
+ 96131 words of font info for 137 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  43i,14n,45p,1684b,470s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{ref-Gustafson2015} has been referenced but does n
@@ -1233,22 +1233,23 @@ mf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2015/texmf-dist/fo
 nts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/dv
 ips/base/8r.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-ts1.e
 nc}</usr/local/texlive/2015/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb></usr
-/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/tex
-live/2015/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2015/t
-exmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2015/texmf-dist/f
-onts/type1/public/lm/lmr7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/p
-ublic/lm/lmss10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/l
-mss8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmssbo10.pfb
-></usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></usr/l
-ocal/texlive/2015/texmf-dist/fonts/type1/public/lm/lmsso10.pfb></usr/local/texl
-ive/2015/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2015/t
-exmf-dist/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2015/texmf-dist/f
-onts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/ty
-pe1/urw/helvetic/uhvr8a.pfb>
-Output written on go3.pdf (12 pages, 5355523 bytes).
+/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/tex
+live/2015/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2015/
+texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2015/texmf-dist/
+fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
+/public/lm/lmr7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/l
+mss10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmss8.pfb><
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmssbo10.pfb></usr/loc
+al/texlive/2015/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></usr/local/texli
+ve/2015/texmf-dist/fonts/type1/public/lm/lmsso10.pfb></usr/local/texlive/2015/t
+exmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2015/texmf-dist/
+fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
+/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/he
+lvetic/uhvr8a.pfb>
+Output written on go3.pdf (12 pages, 5371329 bytes).
 PDF statistics:
- 374 PDF objects out of 1000 (max. 8388607)
- 330 compressed objects within 4 object streams
- 63 named destinations out of 1000 (max. 500000)
+ 369 PDF objects out of 1000 (max. 8388607)
+ 324 compressed objects within 4 object streams
+ 60 named destinations out of 1000 (max. 500000)
  10280 words of extra memory for PDF output out of 12000 (max. 10000000)
 

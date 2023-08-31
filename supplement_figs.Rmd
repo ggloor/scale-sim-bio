@@ -16,10 +16,39 @@ date: 21 August 2023
 link-citations: true
 ---
 
-# GM is correlated with Shannon's entropy and includes
+# GM can correlate with Shannon's entropy
+
+We can also think about this relationship from an information theoretic point of view. Empirically in most datasets the geometric mean of \(Y^{\parallel}_{n}\) is strongly correlated with Shannon's Information \(H\) (supplemental figure XX) suggesting that  some knowledge of \(W\) is contained in the post-sequencing data that is not strictly compositional. Indeed, the logarithm of the geometric mean \( G \) and \( H \) can be understood from an information theoretic point of view to be an unweighted \( G \) or a weighted measure \( H \) of 'surprisal' in the dataset (supplement). Intuitively,  underlying systems with different scales will contain different amounts of information and so we would expect \(W^{\perp}_n \sim H_n\).
 
 
-```{r info, echo=F,warning=F, message=F,comment=F, fig.cap="Plot of Shannon's entropy (I) vs geometric mean (G) for each sample in three different datasets. The groups that each sample belong to are highlighted as filled or open circles. Each group in each dataset has different entropy with the groups in the selex and metatranscriptome datasets being highly distinct."}
+Entropy \( H \) and the geometric mean \( G \) (or its logarithm \( \log_2 G \)) are not simple to relate algebraically, but they can be understood in terms of what they are measuring if their description is rephrased in a common language. Recall have a \(D \times N\) matrix of counts \(W\) decomposed into the proportions for the \(n^{th}\) sample \(W^{\parallel}_n\) (or the equivalent probability distribution \( p(w_n) \) ), and its scale \(W^{\perp}_n\).
+
+For notational simplicity assume a single discrete random variable \( X \) with a probability distribution \( p(x) \) over \(1 \dots d \) features. The entropy \( H(X) \) in bits is:
+
+\[
+H(X) = -\sum_{i=1}^{d} p_i \log_2 p_i
+\]
+
+and for the same distribution log2 of the geometric mean \( G \) is: 
+
+\[
+\log_2 G = \frac{1}{d} \sum_{i=1}^{d} \log_2 p_i
+\]
+
+As defined here \( H(X) \) is a weighted total of the uncertainty or 'surprisal' contained in \( p(x) \), and relates to the amount of information we would need to have in order to reproduce  \( p(x) \). Conversely, \( G \) is an unweighted average of the same distribution.  However, \( G \) is used as the denominator to calculate the centred log-ratio normalization (clr):
+
+\[
+clr = \log_2(p_i) - \log_2 G 
+\]
+
+over \(i=1 \dots d \).  This compares each \( p_i \) with the geometric mean \( G \). Thus \( G \) can be interpreted as a measure of difference for how far each \( p_i \) is from \( G \), or in information theoretic terms as an unweighted measure of the  mean surprisal for the distribution.
+
+Thus, we can thus understand \( H(X) \) as a measure of the total weighed surprisal and  \( G \)  as a measure of the average unweighted surprisal for \( p(x) \). The total and the mean surprisal are related by the number of terms in \( p(x) \) and by the weighting factor for each term.
+
+These two measures are expected to have different behaviours in different distributions of \( p_i \). In the case of a uniform distribution both \( H(X) \) and \( G \) are maximal since \( p(x) \) is equally and identically distributed. Thus, we expect that they are positively correlated here. In a Normal or a skewed distribution, we also anticipate a positive correlation because both are affected in the same direction by outlier values. In very sparse  datasets, the two measures could become uncoupled because \( H(X) \) could ascribe some uncertainty to the large number of low probability events, while \( G \) would tend to be very small. Here these two measures could be either uncorrelated or exhibit negative correlation. We can see this distributional behaviour in different datasets.
+
+
+```{r info, echo=F,warning=F, message=F,comment=F, fig.cap="Plot of Shannon's entropy (H) vs geometric mean (G) for each sample in different datasets. The groups that each sample belong to are highlighted as filled or open circles. Each group in each dataset has different entropy with the groups in the selex and metatranscriptome datasets being highly distinct."}
 # Gm ~ Im
 # plotting geometric mean vs Shannon's entropy
 # shows differential information by group
@@ -29,27 +58,78 @@ data(selex)
 load(url('https://raw.githubusercontent.com/ggloor/datasets/main/ko.both.all.Rda'))
 url <- "https://raw.githubusercontent.com/ggloor/datasets/main/transcriptome.tsv"
 yst <- read.table(url, header=T, row.names=1)
-
+url <- "https://raw.githubusercontent.com/ggloor/datasets/main/meta16S.tsv"
+rRNA <- read.table(url, header=T, row.names=1, sep='\t')
+url <- "https://raw.githubusercontent.com/ggloor/datasets/main/singleCell.tsv"
+ss <- read.table(url, header=T, row.names=1, sep='\t')
+ss <- ss[,c(1:100,1501:1601)]
 # remove the one gene with 0 reads
 yst <- yst[rownames(yst) != "YOR072W-B",]
 # Gierlinski:2015aa
 yst[,c('SNF2.6', 'SNF2.13','SNF2.25','SNF2.35')] <- NULL 
 yst[,c('WT.21','WT.22','WT.25','WT.28','WT.34','WT.36')] <- NULL  
 
+HS <- apply(selex+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
+GS <- apply(selex+0.5, 2, function(x) mean(log2(x/sum(x))))
 
-par(mfrow=c(1,1))
-plot(apply(selex+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) }),
-  apply(selex+0.5, 2, function(x) mean(log2(x))), xlim=c(2.5,11), ylim=c(-0.5,10), 
-  xlab="Shannon's entropy", ylab='Geometric mean', pch=c(rep(19,7),rep(1,7)),
-  col=rgb(0,0,0,0.5))
-points(apply(yst+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) }),apply(yst+0.5, 2, function(x) mean(log2(x))), col=rgb(1,0.6,0,0.5), pch=c(rep(19,44), rep(1, 42)))
-points(apply(ko.both.all+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) }),apply(ko.both.all+0.5, 2, function(x) mean(log2(x))), col=rgb(1,0,0,0.5),
- pch=c(rep(1,8), rep(19,28), rep(1,8)))
- 
-legend(3,10, legend=c('selex', 'transcriptome','metatranscriptome', 'low entropy group', 'high entropy group'),
-  col=c('darkgrey', 'orange', 'red', 'grey','grey'), pch=c(19,19,19,1,19))
+HY <- apply(yst+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
+GY <- apply(yst+0.5, 2, function(x) mean(log2(x/sum(x))))
+
+HM <- apply(ko.both.all+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
+GM <- apply(ko.both.all+0.5, 2, function(x) mean(log2(x/sum(x))))
+
+H16 <- apply(rRNA+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
+G16 <- apply(rRNA+0.5, 2, function(x) mean(log2(x/sum(x))))
+
+Hss <- apply(ss+0.1, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
+Gss <- apply(ss+0.1, 2, function(x) mean(log2(x/sum(x))))
+
+par(mfrow=c(2,3))
+plot(HS, GS, ylab="Geometric mean", xlab="Shannon's entropy",
+  pch=c(rep(19,7),rep(1,7)), col=rgb(0,0,0,0.5))
+title(main='selex')
+
+plot(HY,GY, 
+  ylab="Geometric mean", xlab="Shannon's entropy", pch=c(rep(19,7),rep(1,7)),
+  col=rgb(1,0.6,0,0.5))
+title(main='transcriptome')
+
+plot(HM, GM, col=rgb(1,0,0,0.5), pch=c(rep(1,8), rep(19,28), rep(1,8)), 
+  ylab="Geometric mean", xlab="Shannon's entropy")
+title(main='meta-transcriptome')
+
+plot(H16,G16, col=rgb(0,1,1,0.5),
+  pch=c(rep(1,198), rep(19,161)), 
+  ylab="Geometric mean", xlab="Shannon's entropy")
+title(main='16S rRNA')
+
+plot(Hss,Gss, col=rgb(0.5,1,0,0.5),
+ pch=c(rep(1,100), rep(19,100)), 
+  ylab="Geometric mean", xlab="Shannon's entropy")
+title(main="single cell")
+
+# empty plot for legend
+plot(selex[,1], selex[,2], xlab=NA, ylab=NA, axes=F,xlim=c(-10,-1), ylim=c(-10,-1))
+legend(-10,-1, legend=c('selex', 'transcriptome','metatranscriptome', '16S', 'SS', 'low entropy group', 'high entropy group'),
+  col=c('darkgrey', 'orange', 'red', 'cyan', 'greenyellow','grey','grey'), pch=c(19,19,19,19,19,1,19))
+  
 ```
 
+```{r dist}
+rep.Inf <- function(x){ x[x == -Inf] <- min(x[x > -Inf]) -1 }
+
+# check correlation of H and G for different distributions
+sel.prop <- apply(selex, 2, function(x) x/sum(x))
+yst.prop <- apply(yst, 2, function(x) x/sum(x))
+
+L.yst.prop <- log2(yst.prop)
+L.sel.prop <- log2(sel.prop)
+
+L.yst <- apply(L.yst.prop, 2, rep.Inf)
+
+L.sel <- apply(L.sel.prop, 2, rep.Inf)
+
+```
 ```{r move}
 load('analysis/x.s.mu.all.Rda')
 load('analysis/x.all.Rda')

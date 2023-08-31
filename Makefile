@@ -2,11 +2,6 @@
 
 all : go3.pdf supplement_figs.pdf
 
-supplement_figs.pdf : supplement_figs.Rmd analysis/x.s.mu.all.Rda
-	Rscript -e "rmarkdown::render('supplement_figs.Rmd')"
-
-analysis/x.s.mu.all.Rda : code/yst.aldex.mu.r
-	Rscript code/yst.aldex.mu.r
 
 # Rule to generate the metatranscriptome output files
 go3.pdf : go3.Rmd analysis/xt.all.Rda analysis/xg.all.Rda\
@@ -34,7 +29,14 @@ analysis/x.all.Rda : code/yst-aldex.R
 analysis/x.s.all.Rda : code/yst-aldex.R
 	Rscript code/yst-aldex.R
 
-# Clean rule to remove the output file
+# Rule for supplement
+supplement_figs.pdf : supplement_figs.Rmd analysis/x.s.mu.all.Rda
+	Rscript -e "rmarkdown::render('supplement_figs.Rmd')"
+
+analysis/x.s.mu.all.Rda : code/yst.aldex.mu.r
+	Rscript code/yst.aldex.mu.r
+
+# Clean rule to remove the output files
 clean:
 	rm -f analysis/xt.all.Rda 
 	rm -f analysis/xg.all.Rda 
