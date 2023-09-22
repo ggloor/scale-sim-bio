@@ -16,12 +16,11 @@ date: 21 August 2023
 link-citations: true
 ---
 
-# GM can correlate with Shannon's entropy
+# GM correlates with Shannon's entropy in HTS datasets
 
-We can also think about this relationship from an information theoretic point of view. Empirically in most datasets the geometric mean of \(Y^{\parallel}_{n}\) is strongly correlated with Shannon's Information \(H\) (supplemental figure XX) suggesting that  some knowledge of \(W\) is contained in the post-sequencing data that is not strictly compositional. Indeed, the logarithm of the geometric mean \( G \) and \( H \) can be understood from an information theoretic point of view to be an unweighted \( G \) or a weighted measure \( H \) of 'surprisal' in the dataset (supplement). Intuitively,  underlying systems with different scales will contain different amounts of information and so we would expect \(W^{\perp}_n \sim H_n\).
+We can think about the scale relationship from an information theoretic point of view. Empirically in most datasets the geometric mean of \(Y^{\parallel}_{n}\) is strongly correlated with Shannon's Entropy \(H\) (supplemental table and supplemental Figure 1) suggesting that  some knowledge of \(W\) is contained in the post-sequencing data that is not strictly compositional.  Intuitively,  underlying systems with different scales will contain different amounts of information and so we would expect \(W^{\perp}_n \sim H_n\).
 
-
-Entropy \( H \) and the geometric mean \( G \) (or its logarithm \( \log_2 G \)) are not simple to relate algebraically, but they can be understood in terms of what they are measuring if their description is rephrased in a common language. Recall have a \(D \times N\) matrix of counts \(W\) decomposed into the proportions for the \(n^{th}\) sample \(W^{\parallel}_n\) (or the equivalent probability distribution \( p(w_n) \) ), and its scale \(W^{\perp}_n\).
+The logarithm of the geometric mean \( \log(G) \) and \( H \) can be understood from an information theoretic point of view to be an unweighted \( G \) or a weighted measure \( H \) of 'surprisal' in the dataset. Entropy \( H \) and the geometric mean \( G \) (or its logarithm \( \log_2 G \)) are not simple to relate algebraically, but they can be understood in terms of what they are measuring if their description is rephrased in a common language. Recall have a \(D \times N\) matrix of counts \(W\) decomposed into the proportions for the \(n^{th}\) sample \(W^{\parallel}_n\) (or the equivalent probability distribution \( p(w_n) \) ), and its scale \(W^{\perp}_n\).
 
 For notational simplicity assume a single discrete random variable \( X \) with a probability distribution \( p(x) \) over \(1 \dots d \) features. The entropy \( H(X) \) in bits is:
 
@@ -35,13 +34,13 @@ and for the same distribution log2 of the geometric mean \( G \) is:
 \log_2 G = \frac{1}{d} \sum_{i=1}^{d} \log_2 p_i
 \]
 
-As defined here \( H(X) \) is a weighted total of the uncertainty or 'surprisal' contained in \( p(x) \), and relates to the amount of information we would need to have in order to reproduce  \( p(x) \). Conversely, \( G \) is an unweighted average of the same distribution.  However, \( G \) is used as the denominator to calculate the centred log-ratio normalization (clr):
+As defined here \( H(X) \) is a weighted total of the uncertainty or 'surprisal' contained in \( p(x) \), and relates to the amount of information we would need to have in order to reproduce  \( p(x) \). Conversely, \( G \) is an unweighted mean of the same distribution.  \( G \) is used as the denominator to calculate the centred log-ratio normalization (clr):
 
 \[
 clr = \log_2(p_i) - \log_2 G 
 \]
 
-over \(i=1 \dots d \).  This compares each \( p_i \) with the geometric mean \( G \). Thus \( G \) can be interpreted as a measure of difference for how far each \( p_i \) is from \( G \), or in information theoretic terms as an unweighted measure of the  mean surprisal for the distribution.
+over \(i=1 \dots d \).  This form shows explicitly that  each \( p_i \) is compared with the geometric mean \( G \). Thus \( G \) can be interpreted as a measure of difference for how far each \( p_i \) is from \( G \), or in information theoretic terms as an unweighted measure of the  mean surprisal for the distribution.
 
 Thus, we can thus understand \( H(X) \) as a measure of the total weighed surprisal and  \( G \)  as a measure of the average unweighted surprisal for \( p(x) \). The total and the mean surprisal are related by the number of terms in \( p(x) \) and by the weighting factor for each term.
 
@@ -55,14 +54,14 @@ These two measures are expected to have different behaviours in different distri
 devtools::load_all('~/Documents/0_git/ALDEx_bioc')
 data(selex)
 
-load(url('https://raw.githubusercontent.com/ggloor/datasets/main/ko.both.all.Rda'))
+load(url('https://raw.githubusercontent.com/ggloor/datasets/main/ko.both.Rda'))
 url <- "https://raw.githubusercontent.com/ggloor/datasets/main/transcriptome.tsv"
 yst <- read.table(url, header=T, row.names=1)
 url <- "https://raw.githubusercontent.com/ggloor/datasets/main/meta16S.tsv"
 rRNA <- read.table(url, header=T, row.names=1, sep='\t')
 url <- "https://raw.githubusercontent.com/ggloor/datasets/main/singleCell.tsv"
 ss <- read.table(url, header=T, row.names=1, sep='\t')
-ss <- ss[,c(1:100,1501:1601)]
+ss <- ss[,c(1:100,1502:1601)]
 # remove the one gene with 0 reads
 yst <- yst[rownames(yst) != "YOR072W-B",]
 # Gierlinski:2015aa
@@ -75,8 +74,8 @@ GS <- apply(selex+0.5, 2, function(x) mean(log2(x/sum(x))))
 HY <- apply(yst+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
 GY <- apply(yst+0.5, 2, function(x) mean(log2(x/sum(x))))
 
-HM <- apply(ko.both.all+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
-GM <- apply(ko.both.all+0.5, 2, function(x) mean(log2(x/sum(x))))
+HM <- apply(ko.both+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
+GM <- apply(ko.both+0.5, 2, function(x) mean(log2(x/sum(x))))
 
 H16 <- apply(rRNA+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
 G16 <- apply(rRNA+0.5, 2, function(x) mean(log2(x/sum(x))))
@@ -90,7 +89,7 @@ plot(HS, GS, ylab="Geometric mean", xlab="Shannon's entropy",
 title(main='selex')
 
 plot(HY,GY, 
-  ylab="Geometric mean", xlab="Shannon's entropy", pch=c(rep(19,7),rep(1,7)),
+  ylab="Geometric mean", xlab="Shannon's entropy", pch=c(rep(19,44),rep(1,42)),
   col=rgb(1,0.6,0,0.5))
 title(main='transcriptome')
 
@@ -115,27 +114,119 @@ legend(-10,-1, legend=c('selex', 'transcriptome','metatranscriptome', '16S', 'SS
   
 ```
 
-```{r dist}
-rep.Inf <- function(x){ x[x == -Inf] <- min(x[x > -Inf]) -1 }
+The table below summarizes the mean values for, and the correlation between, \( G \) and \( H \)  (cor)  and the sparsity defined as the proportion of features with less than 1 count per sample (spar) for each association in each group of samples:
 
-# check correlation of H and G for different distributions
-sel.prop <- apply(selex, 2, function(x) x/sum(x))
-yst.prop <- apply(yst, 2, function(x) x/sum(x))
+| Dataset | group | \(\overline{G}\) | \( \overline{H} \) | cor | spar |
+|---------|-------|---|---|-----|-------|
+| Selex   | control | -11.2 | 10.2 | 0.99 | 0 |
+| $~~~$"  | selected | -17.8 | 2.8 | -0.88 | 0.802 |
+| yeast   | snf2 ko  | -14.0 | 10.7 | 0.99 | 0.004 |
+| $~~~$"  | WT    | -14.2 | 10.4 | 0.99 | 0.007 |
+| Meta    | H     | -18.8 | 8.6 | 0.78 | 0.451 |
+| $~~~$"  | BV   | -18.2 | 8.9 | 0.79 | 0.238 |
+| 16S     | Pup   | -14.7 | 5.4 | 0.68 | 0.079 |
+| $~~~$"  | Cent | -15.2 | 5.4 | 0.53 | 0.251 |
+| SS      | A     | -13.0 | 8.2 | 0.83 | 0.978 |
+| $~~~$"  | B    | -12.9 | 8.3 | 0.80 | 0.977 |
 
-L.yst.prop <- log2(yst.prop)
-L.sel.prop <- log2(sel.prop)
+We can see that for most datasets the difference between the \(\overline{G}\) in each group is relatively small. Most significantly, the selex dataset has a very large difference of about 64 fold, and both the 16S and the metatranscriptome dataset have about a 1.5 fold difference. These datasets are candidates for a full scale model correction.
 
-L.yst <- apply(L.yst.prop, 2, rep.Inf)
+```{r full.scale, echo=F}
 
-L.sel <- apply(L.sel.prop, 2, rep.Inf)
+load('analysis/data.out.Rda' )
+
+plot(data.out[,6],data.out[,1], pch=c(rep(1,19),19), ylim=c(-11, 3),
+  xlab='full scale offset', ylab='mean difference between groups')
+points(data.out[,6],data.out[,2], pch=c(rep(1,19),19), col='red')
+points(data.out[,6],data.out[,3], pch=c(rep(1,19),19), col='orange')
+points(data.out[,6],data.out[,4], pch=c(rep(1,19),19), col='cyan')
+points(data.out[,6],data.out[,5], pch=c(rep(1,19),19), col='blue')
+abline(h=0, col='grey', lty=2)
+abline(v=0, col='grey', lty=2)
+legend(0.7, 0, legend=c('16S','selex','tscome','metatscome','ss'),
+  pch=19, col=c('black','red','orange','cyan','blue'))
 
 ```
-```{r move}
-load('analysis/x.s.mu.all.Rda')
-load('analysis/x.all.Rda')
 
-par(mfrow=c(1,2))
-aldex.plot(x.s.mu.all)
-aldex.plot(x.all)
+The full scale model option allows the investigator to set both the offset between the geometric means of the features and their dispersion. In the offset plot above we can see the cause and the effect of the full model with a fixed gamma of 0.5. We see that the mean location of well centred datasets (yeast transcriptome, single-cell transcriptome and 16S rRNA dataset) are relatively well centred, but could be centred better with small changes in scale ranging from 0 (single cell) to ~0.1 for the 16S and yeast datasets. In contrast, centring the metatranscriptome dataset would require about a 50\% change in relative scale between groups, but as shown in the main text, centring the housekeeping genes is more apt. 
+
+The in vitro selection dataset is clearly an outlier in both the difference between the average group geometric mean, and in the offset plot.  However, this dataset can also be used to illustrate the power of the full scale model. In Figure 3 we can see that the default output of ALDEx2 has a centered output. This occurs largely by chance, as the high sparsity of the selected (S) group is balanced almost exactly by the arbitrarily chosen sequencing depth. In this dataset the relative abundances of the majority of features are invariant, but this is masked by the large absolute changes in a small number of features [@mcmurrough:2014]. Neither DESeq nor edgeR are able to provide a reasonable analysis of this dataset [@gloorAJS:2016]. 
+
+A full scale model, where the strong assumption that the mean \(G\) is assumed to be the same between the two groups, dramatically skews the output and the large number of relatively invariant features are now identified as significantly different. While not wrong as long as the assumption that the scales are identical is stated, this is not a useful analysis outcome. Modifying the mean scale difference between groups to be 50-fold different moves the centre of the large number of relatively invariant features to the centreline of no difference, and recapitulates the default result obtained without the full scale model. Note that we get exactly the same answer (within random sampling error) with a scale of 0.02 for group 1 and a scale of 1 for group 2, or using a scale of 1 for group 1 and a scale of 50 for group 2. This shows that it is the relative difference between scales that is important, not the absolute values. From this result we can conclude that, on average, the difference in underlying scale in the system is about 50-fold, and this is congruent with the circa 64-fold difference in mean \(G\) between groups. Thus, an advantage of a full scale model is that we have gained information and understanding about the underlying system.
+
+
+```{r selex, echo=F, warning=F, message=F,comment=F, fig.cap="Effect plots of the selex dataset with various gamma and scale parameters. "}
+
+conds <- c(rep('NS',7), rep('S',7))
+
+x.all <- aldex(selex, conditions=conds, gamma=0.5)
+
+sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(1,1), conds)
+x.1.all <- aldex(selex, conditions=conds, gamma=sel.mu)
+
+sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(1,120), conds)
+x.5.all <- aldex(selex, conditions=conds, gamma=sel.mu)
+
+sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(.00833,1), conds)
+x.2.all <- aldex(selex,conditions=conds, gamma=sel.mu)
+
+par(mfrow=c(1,4))
+aldex.plot(x.all, main=('gamma=0.5\nmu=G'))
+aldex.plot(x.1.all, main=('gamma=0.5\nmu=1,1'))
+aldex.plot(x.5.all, main=('gamma=0.5\nmu=1,100'))
+aldex.plot(x.2.all, main=('gamma=0.5\nmu=0.01, 1'))
 
 ```
+
+# Issues with DESeq2 and edgeR
+
+DESeq2 and edgeR are two of the most commonly used tools for differential abundance analysis of bule RNA sequencing datasets. They both operate by finding a scaling factor that makes all the samples commesurate. DESeq2 does this by finding a midpoint feature that can be used as a reference in each sample; this can be different for different samples. The edgeR reference finds the midpoint of the 'typical' sample instead. In both cases the data are then scaled by dividing by a small factor that makes the read counts commesurate. Differential abundance analysis is then performed on the scaled values after taking their logarithm to base 2. In some ways this is similar to the log-ratio approach used by ALDEx2, but is more prone to dataset and sample effects than is the log-ratio method [@GloorAJS2023] 
+
+```{r DESedg, echo=F, fig.cap="Shown here are the mean log2 fold change as a density plot, and a Volcano plot showing the location and adjusted p-value for each feature in the metatranscriptomic dataset. The DESeq2 approach does a good job of centring this data, while edgeR is less suitable. The volcano plots show dramatically different outcomes. The DESeq2 algorithm assigns very large fold changes to features that have only moderate change, and further identifies a very large proportion of features as significantly different. In contrast, edgeR exhibits a much smaller number of differentially abundant features. In both volcano plots, the housekeeping genes in the main Figure 3 are shown in orange. We can see that these are asymmetrically distributed in both plots. Additionally the location of the features taht DESeq2 identified as having a very large difference are shown in the edgeR volcano plot as blue circles."}
+
+# find housekeeping from ALDEx2
+
+load('analysis/xt.m.Rda')
+load('analysis/xt.Rda')
+hk.off <- xt.all$diff.win < 2.5 & xt.all$diff.btw > 0 & xt.all$diff.btw < 3
+
+load('analysis/meta.DES.res.Rda')
+load('analysis/meta.edge.qlf.Rda')
+
+# these are all very rare K0s
+zero.var <-  which(meta.DES.res@listData$lfcSE*sqrt(44) == 0)
+
+weird.des <- which(meta.DES.res@listData$log2FoldChange < -20 )
+
+# housekeeping genes centred with DESeq2 - nice
+
+sig.des <- which(meta.DES.res@listData$padj < 0.01)
+sig.edge <- which(p.adjust(meta.edg.qlf$PValue) < 0.01)
+par(mfrow=c(2,2))
+
+plot(density(meta.DES.res@listData$log2FoldChange[hk.off]), main='DESeq2 FC')
+abline(v=0, col='red', lty=2)
+
+plot(meta.DES.res@listData$log2FoldChange, -1*log10(meta.DES.res@listData$padj), 
+  col=rgb(0,0,0,0.1), xlab='log2 Difference', ylab='-1 log10(p.adjust)', main='DESeq2 volcano')
+points(meta.DES.res@listData$log2FoldChange[sig.des],-1*log10(meta.DES.res@listData$padj[sig.des] + 1e-70), col='red')
+points(meta.DES.res@listData$log2FoldChange[hk.off],-1*log10(meta.DES.res@listData$padj[hk.off] + 1e-70), col='orange', cex=0.6)
+
+plot(density(meta.edg.qlf$logFC[hk.off]), main='edgeR FC')
+abline(v=0, col='red', lty=2)
+
+plot(meta.edg.qlf$logFC, -1*log10(p.adjust(meta.edg.qlf$PValue)), 
+  col=rgb(0,0,0,0.1), xlab='LFC', ylab='-1log10(p)', main='edgeR volcano')
+points(meta.edg.qlf$logFC[sig.edge], -1*log10(p.adjust(meta.edg.qlf$PValue)[sig.edge]), 
+  col='red')
+points(meta.edg.qlf$logFC[hk.off], -1*log10(p.adjust(meta.edg.qlf$PValue)[hk.off]), 
+  col='orange', cex=0.6)
+  points(meta.edg.qlf$logFC[weird.des], -1*log10(p.adjust(meta.edg.qlf$PValue)[weird.des]), 
+  col='blue', cex=0.6)
+
+```
+
+
+Examining the plots, edge R clearly not centred with the median housekeeping functions offset by `r median(meta.edg.qlf$logFC[hk.off==T])` and minimum FDR value  is `r min(p.adjust(meta.edg.qlf$PValue)[hk.off==T])`. Additionally, there is little range in the p-values relative to those seen for DESeq2, and the values are more in line with the range seen with ALDEx2.
+
+DESeq2 is better centred with median housekeeping functions offset by `r median(meta.DES.res@listData$log2FoldChange[hk.off==T])` but the minimum FDR value  is `r min(meta.DES.res@listData$padj[hk.off==T])`. In addition there are a large number of functions with 0 variance, these are very low count functions with very high sparsity in the dataset. These are not differential in the DESeq2 analysis. However, there are a number of functions in the DESeq2 analysis that are very differentially abundant, with a log2 fold change of < -20. Examination of the raw counts shows that these are uniformly 0 or 1 in the H dataset, and present at high counts in some, but not all of the BV dataset. That these stand out is odd, since inspection of the count table shows that there are many other functions that are missing from the H dataset, and have higher and more uniform counts in the BV dataset. Thus, the importance of the outlier functions seen in the DESeq2 volcano plot should be viewed with suspicion and may be an artefact of the normalization used. When overplotted on the edgeR volcano plot (blue), it is clear that these functions have non-signficant p-values.

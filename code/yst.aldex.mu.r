@@ -14,7 +14,7 @@ yst[,c('WT.21','WT.22','WT.25','WT.28','WT.34','WT.36')] <- NULL
 conds <- c(rep('S', 44), rep('W', 42))
 coldata <- data.frame(conds)
 
-mu.dat <- aldex.makeScaleMatrix(1,0.25,conds,mc.samples=128)
+mu.dat <- aldex.makeScaleMatrix(1,c(1,1),conds,mc.samples=128)
 
 set.seed(2023)
 x.s.mu.all <- aldex(yst, conds, gamma=mu.dat, verbose=F)
