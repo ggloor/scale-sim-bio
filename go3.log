@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  20 SEP 2023 20:37
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  30 SEP 2023 10:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1168,88 +1168,85 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
 [1
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
-<go3_files/figure-latex/dispersion-1.pdf, id=113, 557.08125pt x 328.22626pt>
+<go3_files/figure-latex/dispersion-1.pdf, id=118, 557.08125pt x 328.22626pt>
 File: go3_files/figure-latex/dispersion-1.pdf Graphic file (type pdf)
 <use go3_files/figure-latex/dispersion-1.pdf>
 Package pdftex.def Info: go3_files/figure-latex/dispersion-1.pdf used on input 
-line 206.
+line 208.
 (pdftex.def)             Requested size: 341.44264pt x 201.1743pt.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <8> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 206.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 208.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 206--206
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 208--208
 [] [] 
  []
 
 [4 <./go3_files/figure-latex/dispersion-1.pdf>] <go3_files/figure-latex/plot1-1
-.pdf, id=145, 557.08125pt x 328.22626pt>
+.pdf, id=154, 557.08125pt x 328.22626pt>
 File: go3_files/figure-latex/plot1-1.pdf Graphic file (type pdf)
 <use go3_files/figure-latex/plot1-1.pdf>
 Package pdftex.def Info: go3_files/figure-latex/plot1-1.pdf used on input line 
-214.
+216.
 (pdftex.def)             Requested size: 341.44264pt x 201.1743pt.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 214--214
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 216--216
 [] [] 
  []
 
 [5 <./go3_files/figure-latex/plot1-1.pdf>] [6] <go3_files/figure-latex/meta-1.p
-df, id=195, 559.08875pt x 326.21875pt>
+df, id=208, 559.08875pt x 326.21875pt>
 File: go3_files/figure-latex/meta-1.pdf Graphic file (type pdf)
 <use go3_files/figure-latex/meta-1.pdf>
 Package pdftex.def Info: go3_files/figure-latex/meta-1.pdf used on input line 2
-34.
+36.
 (pdftex.def)             Requested size: 341.44458pt x 199.22708pt.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 234--234
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 236--236
 [] [] 
  []
 
 [7 <./go3_files/figure-latex/meta-1.pdf>] [8] [9] [10] [11]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 371.
-[12]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 371.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 388.
+[12] [13]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 388.
 (./go3.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 371.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 371.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 388.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 388.
 Package rerunfilecheck Info: File `go3.out' has not changed.
 (rerunfilecheck)             Checksum: AD2CFA7E12B9695AACDE325A90195112;137.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 371.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 388.
  ) 
 Here is how much of TeX's memory you used:
- 13886 strings out of 493089
- 213244 string characters out of 6134842
- 368274 words of memory out of 5000000
- 16859 multiletter control sequences out of 15000+600000
- 96012 words of font info for 136 fonts, out of 8000000 for 9000
+ 13895 strings out of 493089
+ 213351 string characters out of 6134842
+ 372899 words of memory out of 5000000
+ 16857 multiletter control sequences out of 15000+600000
+ 93635 words of font info for 138 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 43i,14n,45p,1663b,470s stack positions out of 5000i,500n,10000p,200000b,80000s
-pdfTeX warning (dest): name{ref-Gustafson2015} has been referenced but does n
-ot exist, replaced by a fixed one
-
-{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/te
-xlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2015/tex
-mf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2015/texmf-dist/fo
-nts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/dv
-ips/base/8r.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-ts1.e
-nc}</usr/local/texlive/2015/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb></usr
-/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/tex
-live/2015/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2015/
-texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2015/texmf-dist/
-fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
-/public/lm/lmr7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/l
-mss10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmss8.pfb><
-/usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmssbo10.pfb></usr/loc
-al/texlive/2015/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></usr/local/texli
-ve/2015/texmf-dist/fonts/type1/public/lm/lmsso10.pfb></usr/local/texlive/2015/t
-exmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2015/texmf-dist/
-fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
-/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/he
-lvetic/uhvr8a.pfb>
-Output written on go3.pdf (12 pages, 4813904 bytes).
+ 43i,14n,45p,1608b,470s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/
+texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/2015/t
+exmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2015/texmf-dist/
+fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/
+dvips/base/8r.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-ts1
+.enc}</usr/local/texlive/2015/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb></u
+sr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/t
+exlive/2015/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/201
+5/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2015/texmf-dis
+t/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/typ
+e1/public/lm/lmr7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm
+/lmss10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmss8.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/lm/lmssbo10.pfb></usr/l
+ocal/texlive/2015/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></usr/local/tex
+live/2015/texmf-dist/fonts/type1/public/lm/lmsso10.pfb></usr/local/texlive/2015
+/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2015/texmf-dis
+t/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2015/texmf-dist/fonts/typ
+e1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/
+helvetic/uhvr8a.pfb>
+Output written on go3.pdf (13 pages, 4758209 bytes).
 PDF statistics:
- 376 PDF objects out of 1000 (max. 8388607)
- 331 compressed objects within 4 object streams
- 60 named destinations out of 1000 (max. 500000)
+ 402 PDF objects out of 1000 (max. 8388607)
+ 356 compressed objects within 4 object streams
+ 65 named destinations out of 1000 (max. 500000)
  10280 words of extra memory for PDF output out of 12000 (max. 10000000)
 

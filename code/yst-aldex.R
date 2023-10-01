@@ -24,7 +24,7 @@ x.all <- cbind(x.e, x.t)
 save(x.all, file='analysis/x.all.Rda')
 
 set.seed(2023)
-x.s <- aldex.clr(yst, conds, gamma=0.3, verbose=F)
+x.s <- aldex.clr(yst, conds, gamma=0.5, verbose=F)
 x.s.e <- aldex.effect(x.s, include.sample.summary=T, verbose=F)
 x.s.t <- aldex.ttest(x.s, verbose=F)
 x.s.all <- cbind(x.s.e, x.s.t)

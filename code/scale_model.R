@@ -46,7 +46,7 @@ for(i in 1:5){
   data.out[20,i] <- mean(x.e$diff.btw)
 for(j in 1:19){
   mu <- c(1, 1+scale[j])
-  g.scale <- aldex.makeScaleMatrix(0.5, mu, conds[[i]])
+  g.scale <- aldex.makeScaleMatrix(0.5, mu, conds[[i]], log=FALSE)
   x <- aldex.clr(datasets[[i]], conds[[i]], gamma=g.scale, verbose=F)
   x.e <- aldex.effect(x)
   data.out[j,i] <- mean(x.e$diff.btw)
