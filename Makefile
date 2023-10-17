@@ -6,9 +6,11 @@ all : go3.pdf supplement_figs.pdf
 # Rule to generate the metatranscriptome output files
 go3.pdf : go3.Rmd analysis/xt.Rda analysis/xg.Rda\
     analysis/xt.m.Rda analysis/res.Rda \
-    analysis/x.all.Rda analysis/x.s.all.Rda
-	Rscript -e "rmarkdown::render('go3.Rmd')"
-	
+    analysis/x.all.Rda analysis/x.s.all.Rda\
+    analysis/normalizations.Rda\
+    analysis/normalizations.nl.Rda
+	Rscript code/markdown.R 
+
 analysis/xt.Rda : code/meta-aldex.R
 	Rscript code/meta-aldex.R
 
@@ -28,6 +30,13 @@ analysis/x.all.Rda : code/yst-aldex.R
 	
 analysis/x.s.all.Rda : code/yst-aldex.R
 	Rscript code/yst-aldex.R
+	
+analysis/normalizations.nl.Rda : code/scale_norms.R
+	Rscript code/scale_norms.R
+	
+analysis/normalizations.Rda : code/scale_norms.R
+	Rscript code/scale_norms.R
+
 
 # Rule for supplement
 supplement_figs.pdf : supplement_figs.Rmd analysis/x.s.mu.all.Rda\

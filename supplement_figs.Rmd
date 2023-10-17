@@ -18,12 +18,12 @@ link-citations: true
 
 # GM is related to Information and Shannon's entropy in HTS datasets
 
-Information content is a fundamental property of all systems. We can think about the scale relationship from an information theoretic point of view which measures how much information is encoded in a particular sample. Intuitively,   systems with different scales will contain different amounts of information and so we would expect \(W^{\perp}_n \sim H_n\). Below, we show that the scale of a system as defined by Nixon et al. [-@nixon2023scale] is related to the information content and entropy of the data. 
+Information content is a fundamental property of all systems. We can think about  scale  from an information theoretic point of view as a measure of how much information is encoded in a particular sample. Intuitively,   systems with different scales will contain different amounts of information and so we would expect \(W^{\perp}_n \sim H_n\). Below, we show that the scale of a system as defined by Nixon et al. [-@nixon2023scale] is inversely related to the information content and entropy of the data. 
 
-Recall the underlying system is described by a \(D \times N\) matrix of counts \(\mathbf{W}\) decomposed into the proportions for the \(n^{th}\) sample \(\mathbf{W}^{\parallel}_n\) (or the equivalent probability distribution \( \mathbf{p}(w_n) \) ), and its scale \(\mathbf{W}^{\perp}_n\). Sequencing  measures which is related to the underlying proportion; i.e., \(\mathbf{Y}^{\parallel}_n \sim \mathbf{W}^{\parallel}_n\)
+Recall the underlying system is described by a \(D \times N\) matrix of counts \(\mathbf{W}\) decomposed into the proportions for the \(n^{th}\) sample \(\mathbf{W}^{\parallel}_n\) (or the equivalent probability distribution \( \mathbf{p}(w_n) \) ), and its scale \(\mathbf{W}^{\perp}_n\), such that \(\mathbf{W}=\mathbf{W}^{\parallel}\mathbf{W}^{\perp} \). Sequencing  returns counts which are related to the underlying proportion; i.e., \(\mathbf{Y}^{\parallel}_n \sim \mathbf{W}^{\parallel}_n\)
  
 
-For notational simplicity assume we will use a single discrete random variable to represent the probability distribution; i.e. \( X =  \mathbf{p}(w_n) \)  over \(1 \dots d \) features. The geometric mean can be calculated as: 
+For notational simplicity assume we will use a single discrete random variable to represent the probability distribution; i.e. \( X =  \mathbf{p}(w_n) \)  over \(1 \dots d \) elements. The geometric mean can be calculated as: 
 
 \[
 \log_2 G(X) = \frac{1}{d} \sum_{i=1}^{d} \log_2 p_i
@@ -31,15 +31,17 @@ For notational simplicity assume we will use a single discrete random variable t
 
 here every element in \(log_2 G(X)\) is the logarithm of the elemental probability \( log_2(p_i)\). 
 
-In information theory, the elemental amount of information or uncertainty for \(p_i\) is the inverse \(I(X)_i = -log_2(p_i)\)[@rezaInfoIntro]. The total entropy of the system  \( H(x) \) is the weighted sum of the elemental information
+In information theory, the elemental amount of information or uncertainty for \(p_i\) is the inverse \(I(X)_i = -log_2(p_i)\)[@rezaInfoIntro]. 
+
+The total entropy of the system  \( H(x) \) is the weighted sum of the elemental information
 
 \[
 H(x) = -\sum_{i=1}^{d} p_i \log_2 p_i
 \]
 
-In this formulation, \( \log_2(G(X)) \) and \( H(X) \) can be understood from an information theoretic point of view to be an unweighted and a weighted measure  of 'surprisal' in the dataset.  The total and the mean surprisal are related by the number of terms in \( p(x) \) and by the weighting factor for each term. \( H(X) \) corresponds to the amount of information needed in order to reproduce  \( X \). Conversely, \( G \) is an unweighted mean of the same distribution and  \( G \) is the denominator to calculate the centred log-ratio normalization (CLR).
+In this formulation, \( \log_2(G(X)) \) and \( H(X) \) can be understood  to be an unweighted and a weighted measure  of 'surprisal' in the dataset.  The total and the mean surprisal are related by the number of terms in \( p(x) \) and by the weighting factor for each term. \( H(X) \) corresponds to the amount of information needed in order to reproduce  \( X \). Conversely, \( G \) is an unweighted mean of the same distribution and  \( G \) is the denominator to calculate the centred log-ratio normalization (CLR). Note that when calculating the CLR we are taking a ratio, and similarly for calculating entropy, but that the scale formula takes the product. Thus, the scale of a system is inversely related to the other two measures.
 
-Empirically, we can see that \(G(\mathbf{Y}^{\parallel}_{n})\) is strongly correlated with Shannon's Entropy \(H(Y^{\parallel}_{n})\) (Supplemental Figure 1 and Table 1).  These two measures are expected to have different behaviours with different distributions of \( p_i \). In the case of a uniform distribution both \( H(Y^{\parallel}_{n}) \) and \( G(Y^{\parallel}_{n}) \) are maximal since \( p(x) \) is equally and identically distributed. Thus, we expect that they are positively correlated here. In a Normal or a skewed distribution, we also anticipate a positive correlation because both are affected in the same direction by outlier values. In very sparse  datasets, the two measures could become uncoupled because \( H(Y^{\parallel}_{n}) \) could ascribe some uncertainty to the large number of low probability events, while \( G(Y^{\parallel}_{n}) \) would tend to be very small. Here these two measures could be either uncorrelated or exhibit negative correlation. We can see this distributional behaviour in different datasets.
+Empirically, we can see that \(G(\mathbf{Y}^{\parallel}_{n})\) is strongly correlated with Shannon's Entropy \(H(\mathbf{Y}^{\parallel}_{n})\) (Supplemental Figure 1 and Table 1).  These two measures are expected to have different behaviours with different distributions of \( p_i \). In the case of a uniform distribution both \( H(\mathbf{Y}^{\parallel}_{n}) \) and \( G(\mathbf{Y}^{\parallel}_{n}) \) are maximal since \( p(x) \) is equally and identically distributed. Thus, we expect that they are positively correlated here. In a Normal or a skewed distribution, we also anticipate a positive correlation because both are affected in the same direction by outlier values. In very sparse  datasets, the two measures could become uncoupled because \( H(\mathbf{Y}^{\parallel}_{n}) \) could ascribe some uncertainty to the large number of low probability events, while \( G(\mathbf{Y}^{\parallel}_{n}) \) would tend to be very small. Here these two measures could be either uncorrelated or exhibit negative correlation. We can see this distributional behaviour in different datasets.
 
 
 ```{r info, echo=F,warning=F, message=F,comment=F, fig.cap="Plot of Shannon's entropy (H) vs geometric mean (G) for each sample in different datasets. The groups that each sample belong to are highlighted as filled or open circles. Each group in each dataset has different entropy with the groups in the selex and metatranscriptome datasets being highly distinct."}
@@ -143,32 +145,38 @@ legend(0.7, 0, legend=c('16S','selex','tscome','metatscome','ss'),
 
 ```
 
-Nixon et al. [-nixon2023scale] showed that many operations on HTS datasets relied on both the proportion and scale components of the data. Moreover, all normalizations impose a scale model on the data, but the appropriateness of these models has never been explicitly acknowledged or tested. Thus, the full scale model option allows the investigator to set both the offset between the geometric means of the features and their dispersion and observe how this affects the analysis outcome. 
+Nixon et al. [-@nixon2023scale] showed that many operations on HTS datasets relied on both the proportion and scale components of the data. Moreover, all normalizations impose a scale model on the data, but the appropriateness of these models has never been explicitly acknowledged or tested. Thus, the full scale model option allows the investigator to set both the offset between the geometric means of the features and their dispersion and observe how this affects the analysis outcome. 
 
 In the offset plot above we can see the cause and the effect of the full model with a fixed gamma of 0.5 and a base scale of 1 in each group. We see that the mean location of well centred datasets (yeast transcriptome, single-cell transcriptome) are close to 0, but could be centred better with small changes in scale ranging from 0 (single cell) to 1:1.1 for the yeast transcriptome dataset. In contrast, centring the 16S dataset requires about a 1:1.3 fold change. The metatranscriptome dataset would require about a 0.5:1 change in relative scale between groups, but as shown in the main text, centring the housekeeping genes is more apt. 
 
-The in vitro selection dataset is clearly an outlier in both the difference between the average group geometric mean, and in the offset plot.  However, this dataset can  be used to illustrate the power of the full scale model. In Figure 3 we can see that the default output of ALDEx2 has a centered output. This occurs largely by chance, as the high sparsity of the selected (S) group is balanced almost exactly by the arbitrarily chosen sequencing depth so the non-selected group (NS) appears to have a similar location as the S group. The difference in entropy between the two groups and the differences in geometric mean are very large, with the difference in \(\log_2{\overline{G}(S)}\) and \(log_2{\overline{G}(NS)}\) being about \(2^{6.6}\). Setting the scale of both the S and NS groups to 1 we find that the difference in location is approximately \(2^{7.7}\) in close agreement with the difference the geometric means. For this dataset to be centered we need to have a scale ratio \( \approx \) 1:50 or more. In fact, in this dataset the relative abundances of the majority of features are nearly invariant, but this is masked by the large absolute changes in a small number of features [@mcmurrough:2014], thus changing the scale of the data. Neither DESeq nor edgeR are able to provide a reasonable analysis of this dataset because the normalizations used assume equivalent scales [@gloorAJS:2016]. 
+The in vitro selection dataset is clearly an outlier in both the difference between the average group geometric mean, and in the offset plot.  However, this dataset can  be used to illustrate the power of the full scale model and the relationship between \( G_n \) and scale. In Figure 3 we can see that the default output of ALDEx2 has a centered output. This occurs largely by chance, as the high sparsity of the selected (S) group is balanced almost exactly by the arbitrarily chosen sequencing depth so the non-selected group (NS) appears to have a similar location as the S group. The difference in entropy between the two groups and the differences in geometric mean are very large, with the difference in \(\log_2{\overline{G}(S)}\) and \(log_2{\overline{G}(NS)}\) being about \(2^{6.6}\). Setting the scale of both the S and NS groups to 1 we find that the difference in location is approximately \(2^{7.7}\) in close agreement with the difference the geometric means. For this dataset to be centered we need to have a scale ratio \( \approx \) 1:50 or more. Note that the scale ratio is inverse to the ratio of geometric means as described above.  In fact, in this dataset the relative abundances of the majority of features are nearly invariant, but this is masked by the large absolute changes in a small number of features [@mcmurrough:2014], thus changing the scale of the data. Neither DESeq nor edgeR are able to provide a reasonable analysis of this dataset because the normalizations used assume equivalent scales [@gloorAJS:2016]. 
 
-Figure 3 shows an effect plot of various scale models with this dataset. The full scale model, where the strong assumption that the mean \(G\) is assumed to be 1:1 between the two groups, dramatically skews the output and the large number of relatively invariant features are now identified as significantly different. While not wrong as long as the assumption that the scales are identical is stated, this is not a useful analysis outcome. Modifying the mean scale difference between groups to be \( \approx \) 1:50 different moves the centre of the large number of relatively invariant features to the centreline of no difference, and recapitulates the default result obtained using \(G_n\) as the scale estimate. Note that we get exactly the same answer (within random sampling error) with a scale of 0.02 for group 1 and a scale of 1 for group 2, or using a scale of 1 for group 1 and a scale of 50 for group 2. This shows that it is the relative difference between scales that is important in this dataset, not the absolute values. From this result we can conclude that, on average, the difference in underlying scale in the system is about \(\approx 50\)-fold, and this is congruent with the circa 100-fold difference in  \(\overline{G}\) between groups; the discrepancy being explained because the default scale model is applied uniformly to all samples, whereas the different values of the within-group geometric means ranging over a \{ > 2.5 \) fold range.  Thus, an advantage of a full scale model is that we have gained both information and understanding about the drivers of asymmetry underlying system.
+Figure 3 shows an effect plot of various scale models with this dataset. The full scale model, where the strong assumption that the mean \(G\) is assumed to be 1:1 between the two groups, dramatically skews the output and the large number of relatively invariant features are now identified as significantly different. While not wrong as long as the assumption that the scales are identical is stated, this is not a useful analysis outcome. Modifying the mean scale difference between the NS:S groups to be \( \approx \) 1:50 different moves the centre of the large number of relatively invariant features to the centreline of no difference, and recapitulates the default result obtained using \(G_n\) as the scale estimate where the ratio is \( \sim 100:1 \). Note that we get exactly the same answer (within random sampling error) with a scale of .02 for group NS and a scale of 1 for group S, or using a scale of 1 for group NS and a scale of 50 for group S. This shows that it is the relative difference between scales that is important in this dataset, not the absolute values. From this result we can conclude that, on average, the difference in underlying scale in the system is about \(\approx 50\)-fold, and this is congruent with the circa 100-fold difference in  \(\overline{G}\) between groups; the discrepancy being explained because the default scale model is applied uniformly to all samples, whereas the different values of the within-group geometric means ranging over a \{ > 2.5 \) fold range.  Thus, an advantage of a full scale model is that we have gained both information and understanding about the drivers of asymmetry underlying system.
 
 
 ```{r selex, echo=F, warning=F, message=F,comment=F, fig.cap="Effect plots of the selex dataset with various gamma and scale parameters. All scales are calculated with a logNormal distribution to ensure symmetry for the user. "}
 
 conds <- c(rep('NS',7), rep('S',7))
 
-x.all <- aldex(selex, conditions=conds, gamma=0.5)
+x.all <- aldex(selex, conditions=conds, CI=T, gamma=0.5)
 
 sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(10,10), conds)
-x.1.all <- aldex(selex, conditions=conds, gamma=sel.mu)
+x.1.all <- aldex(selex, conditions=conds, CI=T, gamma=sel.mu)
 
 # setting ratio as 1:50 explicitly
-sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(1,50), conds, log=FALSE)
-x.5.all <- aldex(selex, conditions=conds, gamma=sel.mu)
+#sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(1,50), conds, log=FALSE)
+scale <- c(rep(1,7), rep(50,7)) 
+sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=scale, conds, log=FALSE)
+x.5.all <- aldex(selex, conditions=conds, CI=T, gamma=sel.mu)
 
 # setting ratio in log space
 # 2^-5.64 : 2^0  = 0.02 : 1
-sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(-5.64,0), conds, log=TRUE)
-x.2.all <- aldex(selex,conditions=conds, gamma=sel.mu)
+# this also works, but reversed because of factor()  
+# sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(0,-5.64), conds, log=TRUE)
+scale <- c(rep(-5.6,7), rep(0,7))
+sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=scale, conds, log=TRUE)
+
+x.2.all <- aldex(selex,conditions=conds, CI=T, gamma=sel.mu)
 
 par(mfrow=c(1,4))
 aldex.plot(x.all, main=('gamma=0.5\nmu=G'))
@@ -229,3 +237,25 @@ points(meta.edg.qlf$logFC[hk.off], -1*log10(p.adjust(meta.edg.qlf$PValue)[hk.off
 Examining the plots, edge R clearly not centred with the median housekeeping functions offset by `r median(meta.edg.qlf$logFC[hk.off==T])` and minimum FDR value  is `r min(p.adjust(meta.edg.qlf$PValue)[hk.off==T])`. Additionally, as shown in Figure 4there is little range in the p-values relative to those seen for DESeq2, and the values are more in line with the range seen with ALDEx2.
 
 DESeq2 is better centred with median housekeeping functions offset by `r median(meta.DES.res@listData$log2FoldChange[hk.off==T])` but the minimum FDR value  is `r min(meta.DES.res@listData$padj[hk.off==T])`. In addition there are a large number of functions with 0 variance, these are very low count functions with very high sparsity in the dataset. These are not differential in the DESeq2 analysis. However, there are a number of functions in the DESeq2 analysis that are very differentially abundant, with a log2 fold change of < -20. Examination of the raw counts shows that these are uniformly 0 or 1 in the H dataset, and present at high counts in some, but not all of the BV dataset. That these stand out is odd, since inspection of the count table shows that there are many other functions that are missing from the H dataset, and have higher and more uniform counts in the BV dataset. Thus, the importance of the outlier functions seen in the DESeq2 volcano plot should be viewed with suspicion and may be an artefact of the normalization used. When overplotted on the edgeR volcano plot (blue), it is clear that these functions have non-signficant p-values.
+
+# Checking the scale assumptions of the RLE and TMM normalizations
+
+We can show that the normalizations built into the edgeR Bioconductor package (RLE, TMM, TMMwsp, upperquantile) are scale assumptions by using the normalization factor as an input to `aldex.makeScaleMatrix()` and then measure the mean location of the data as above. The ideal behavior of a normalization is that the mean location of the data should be close to 0 or unchanged. This behavior will ensure that Type 1 and Type 2 errors due to scale assumptions are minimized. 
+
+The results, shown in the tables below compare these normalizations to the no scale assumption (iso) and the geometric mean normalization (GM) assuming that the normalizations are either on a log scale or a linear scale. That these affect scale can be observed by their effect on the mean location of the data. For the most part assuming no scale differences between groups centres the date less well than does the geometric mean. In most cases the other normalizations perform poorer than assuming no scale at all for the rRNA dataset and about as well as the no scale assumption in the metatranscriptome datasets and the single-cell transcriptome dataset. All normalizations perform poorly in the selex dataset. Overall, these results may not be surprising because the TMM and RLE (and related normalizations) were developed specifically to scale and normalize transcriptome datasets [@Robinson:2010a;@Anders:2010], but have become widely used in the analysis of other data modalities; e.g. [@McMurdie:2014a]. 
+
+```{r getNorm, echo=F}
+# output from code/scale_norms.R
+
+load('analysis/normalizations.Rda')
+knitr::kable(norm.data.out, 'simple', caption='Log scale models')
+```
+
+```{r getNormNL, echo=F}
+# output from code/scale_norms.R
+
+load('analysis/normalizations.nl.Rda')
+knitr::kable(norm.nl.data.out, 'simple', caption='Linear scale models')
+```
+
+# References

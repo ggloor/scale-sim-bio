@@ -1,3 +1,5 @@
 \contentsline {section}{\numberline {1}GM is related to Information and Shannon's entropy in HTS datasets}{2}{section.1}
 \contentsline {section}{\numberline {2}Issues with DESeq2 and edgeR}{5}{section.2}
+\contentsline {section}{\numberline {3}Checking the scale assumptions of the RLE and TMM normalizations}{7}{section.3}
+\contentsline {section}{References}{7}{table.3}
 \contentsfinish 

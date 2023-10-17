@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  30 SEP 2023 10:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  16 OCT 2023 13:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1178,83 +1178,91 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
 [1
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<supplement_figs_files/figure-latex/info-1.pdf, id=32, 557.08125pt x 336.25626p
+<supplement_figs_files/figure-latex/info-1.pdf, id=45, 557.08125pt x 336.25626p
 t>
 File: supplement_figs_files/figure-latex/info-1.pdf Graphic file (type pdf)
 <use supplement_figs_files/figure-latex/info-1.pdf>
 Package pdftex.def Info: supplement_figs_files/figure-latex/info-1.pdf used on 
-input line 203.
+input line 205.
 (pdftex.def)             Requested size: 341.44264pt x 206.09601pt.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <8> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 203.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 205.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 203--203
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 205--205
 [] [] 
  []
 
 [2]
-<supplement_figs_files/figure-latex/full.scale-1.pdf, id=48, 545.03625pt x 285.
+<supplement_figs_files/figure-latex/full.scale-1.pdf, id=61, 545.03625pt x 285.
 065pt>
 File: supplement_figs_files/figure-latex/full.scale-1.pdf Graphic file (type pd
 f)
 <use supplement_figs_files/figure-latex/full.scale-1.pdf>
 Package pdftex.def Info: supplement_figs_files/figure-latex/full.scale-1.pdf us
-ed on input line 229.
+ed on input line 231.
 (pdftex.def)             Requested size: 341.42857pt x 178.57405pt.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 229--229
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 231--231
 [] [] 
  []
 
-
-Overfull \vbox (258.08305pt too high) has occurred while \output is active []
-
-[3 <./supplement_figs_files/figure-latex/info-1.pdf> <./supplement_figs_files/f
-igure-latex/full.scale-1.pdf>]
-<supplement_figs_files/figure-latex/selex-1.pdf, id=77, 560.0925pt x 339.2675pt
+[3 <./supplement_figs_files/figure-latex/info-1.pdf>] [4 <./supplement_figs_fil
+es/figure-latex/full.scale-1.pdf>]
+<supplement_figs_files/figure-latex/selex-1.pdf, id=98, 560.0925pt x 339.2675pt
 >
 File: supplement_figs_files/figure-latex/selex-1.pdf Graphic file (type pdf)
 <use supplement_figs_files/figure-latex/selex-1.pdf>
 Package pdftex.def Info: supplement_figs_files/figure-latex/selex-1.pdf used on
- input line 241.
+ input line 243.
 (pdftex.def)             Requested size: 341.44226pt x 206.82344pt.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 241--241
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 243--243
 [] [] 
  []
 
-[4]
-<supplement_figs_files/figure-latex/DESedg-1.pdf, id=86, 551.05875pt x 327.2225
-pt>
+
+<supplement_figs_files/figure-latex/DESedg-1.pdf, id=100, 551.05875pt x 327.222
+5pt>
 File: supplement_figs_files/figure-latex/DESedg-1.pdf Graphic file (type pdf)
 <use supplement_figs_files/figure-latex/DESedg-1.pdf>
 Package pdftex.def Info: supplement_figs_files/figure-latex/DESedg-1.pdf used o
-n input line 250.
+n input line 252.
 (pdftex.def)             Requested size: 341.44267pt x 202.75102pt.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 250--250
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 252--252
 [] [] 
  []
 
-[5 <./supplement_figs_files/figure-latex/selex-1.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 277.
-[6 <./supplement_figs_files/figure-latex/DESedg-1.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 277.
+[5 <./supplement_figs_files/figure-latex/selex-1.pdf>] [6 <./supplement_figs_fi
+les/figure-latex/DESedg-1.pdf>]
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 267--267
+[] [] 
+ []
+
+
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 285--285
+[] [] 
+ []
+
+[7]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 335.
+[8]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 335.
 (./supplement_figs.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 277.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 277.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 335.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 335.
 Package rerunfilecheck Info: File `supplement_figs.out' has not changed.
-(rerunfilecheck)             Checksum: F3D53681051EC2C0C466D540CD713C31;166.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 277.
+(rerunfilecheck)             Checksum: E1D04C93768DBBD780A3096CA684A5B0;308.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 335.
  ) 
 Here is how much of TeX's memory you used:
- 13793 strings out of 493089
- 212614 string characters out of 6134842
- 364169 words of memory out of 5000000
- 16860 multiletter control sequences out of 15000+600000
- 90080 words of font info for 107 fonts, out of 8000000 for 9000
+ 13827 strings out of 493089
+ 213121 string characters out of 6134842
+ 365197 words of memory out of 5000000
+ 16870 multiletter control sequences out of 15000+600000
+ 90874 words of font info for 114 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 43i,14n,45p,1645b,470s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 54i,14n,49p,1689b,470s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
 texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/local/texlive/20
 15/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2015/texmf-dist/
@@ -1275,10 +1283,10 @@ xmf-dist/fonts/type1/public/lm/lmssbx10.pfb></usr/local/texlive/2015/texmf-dist
 pe1/public/lm/lmsy10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public
 /lm/lmsy7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb
 8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on supplement_figs.pdf (6 pages, 1496942 bytes).
+Output written on supplement_figs.pdf (8 pages, 1505580 bytes).
 PDF statistics:
- 194 PDF objects out of 1000 (max. 8388607)
- 154 compressed objects within 2 object streams
- 22 named destinations out of 1000 (max. 500000)
- 10277 words of extra memory for PDF output out of 12000 (max. 10000000)
+ 236 PDF objects out of 1000 (max. 8388607)
+ 192 compressed objects within 2 object streams
+ 32 named destinations out of 1000 (max. 500000)
+ 10293 words of extra memory for PDF output out of 12000 (max. 10000000)
 
