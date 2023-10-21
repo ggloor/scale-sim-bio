@@ -1,2 +1,2 @@
 # scale-sim-bio
- The gentle, no math scale sim description
+ The gentle, minimla math scale sim description
