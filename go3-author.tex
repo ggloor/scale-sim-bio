@@ -98,7 +98,7 @@ $^2$ College of Information Sciences and Technology, Pennsylvania  State Univers
 $^3$ Department of Medicine, Pennsylvania  State University
 $^4$ Institute for Computational and Data Science, Pennsylvania State University
 
-\begin{abstract}
+\section{Abstract}\label{abstract}
 In many high-throughput sequencing (HTS) studies, sample-to-sample
 variation in sequencing depth is not driven by variation in the scale
 (e.g., total size, microbial load, or total gene expression) of the
@@ -115,11 +115,12 @@ describe updates to the ALDEx2 R package that mitigate these problems by
 directly modeling uncertainty in the unmeasured system scale through the
 use of a \textit{scale model}. Scale models generalize the idea of
 normalizations and can be thought of as explicitly modeling potential
-error in the chosen normalization. Beyond enhancing the robustness of
-HTS analyses, the use of scale models within ALDEx2 enhances the
-transparency and reproducibility of analyses by making implicit
-normalizing assumptions an explicit part of the model building process.
-\end{abstract}
+error in normalization by examining a distribution over all possible 
+normalizations.  Beyond enhancing the robustness of HTS analyses, 
+the use of scale models within ALDEx2 enhances the transparency and 
+reproducibility of analyses by making implicit normalizing assumptions an 
+explicit part of the model building process.
+%\end{abstract}
 
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
@@ -340,10 +341,10 @@ scale of the data brings about an increasing false precision with
 increasing sample sizes. Furthermore, the yeast transcriptome experiment
 has an unacknowledged difference in scale between conditions: yeast
 deficient for snf1 are smaller, grow more slowly and are sensitive to a
-variety of common agents that cause cell stress (Yoshikawa et al.
-2011){]}. Thus, by adding scale uncertainty, we can be more confident
-that the results of the analysis reflect true biological differences and
-not differences due to the assumptions made by the normalization method.
+variety of common agents that cause cell stress (Yoshikawa et al. 2011).
+Thus, by adding scale uncertainty, we can be more confident that the
+results of the analysis reflect true biological differences and not
+differences due to the assumptions made by the normalization method.
 
 We start by examining the dispersion (variance) of the data as counts
 and as the logarithm of the normalized counts when calculated by DESeq2

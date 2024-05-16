@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  17 OCT 2023 13:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  14 FEB 2024 15:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1177,96 +1177,156 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
 
 [1
 
-{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<supplement_figs_files/figure-latex/info-1.pdf, id=45, 557.08125pt x 336.25626p
-t>
-File: supplement_figs_files/figure-latex/info-1.pdf Graphic file (type pdf)
-<use supplement_figs_files/figure-latex/info-1.pdf>
-Package pdftex.def Info: supplement_figs_files/figure-latex/info-1.pdf used on 
-input line 205.
-(pdftex.def)             Requested size: 341.44264pt x 206.09601pt.
+{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
+LaTeX Font Info:    Try loading font information for TS1+fvm on input line 220.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/bera/ts1fvm.fd
+File: ts1fvm.fd 2004/09/07 scalable font definitions for TS1/fvm.
+)
+LaTeX Font Info:    Font shape `TS1/fvm/m/n' will be
+(Font)              scaled to size 7.98004pt on input line 220.
+
+<supplement_figs_files/figure-latex/unnamed-chunk-1-1.pdf, id=83, 545.03625pt x
+ 287.0725pt>
+File: supplement_figs_files/figure-latex/unnamed-chunk-1-1.pdf Graphic file (ty
+pe pdf)
+<use supplement_figs_files/figure-latex/unnamed-chunk-1-1.pdf>
+Package pdftex.def Info: supplement_figs_files/figure-latex/unnamed-chunk-1-1.p
+df used on input line 228.
+(pdftex.def)             Requested size: 341.42857pt x 179.83162pt.
+[3 <./supplement_figs_files/figure-latex/unnamed-chunk-1-1.pdf>]
+<supplement_figs_files/figure-latex/unnamed-chunk-2-1.pdf, id=100, 557.08125pt 
+x 334.24875pt>
+File: supplement_figs_files/figure-latex/unnamed-chunk-2-1.pdf Graphic file (ty
+pe pdf)
+<use supplement_figs_files/figure-latex/unnamed-chunk-2-1.pdf>
+Package pdftex.def Info: supplement_figs_files/figure-latex/unnamed-chunk-2-1.p
+df used on input line 237.
+(pdftex.def)             Requested size: 341.44264pt x 204.86557pt.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <8> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 205.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 237.
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 205--205
-[] [] 
- []
-
-[2]
-<supplement_figs_files/figure-latex/full.scale-1.pdf, id=61, 545.03625pt x 285.
-065pt>
-File: supplement_figs_files/figure-latex/full.scale-1.pdf Graphic file (type pd
-f)
-<use supplement_figs_files/figure-latex/full.scale-1.pdf>
-Package pdftex.def Info: supplement_figs_files/figure-latex/full.scale-1.pdf us
-ed on input line 231.
-(pdftex.def)             Requested size: 341.42857pt x 178.57405pt.
-
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 231--231
-[] [] 
- []
-
-[3 <./supplement_figs_files/figure-latex/info-1.pdf>] [4 <./supplement_figs_fil
-es/figure-latex/full.scale-1.pdf>]
-<supplement_figs_files/figure-latex/selex-1.pdf, id=98, 560.0925pt x 339.2675pt
->
-File: supplement_figs_files/figure-latex/selex-1.pdf Graphic file (type pdf)
-<use supplement_figs_files/figure-latex/selex-1.pdf>
-Package pdftex.def Info: supplement_figs_files/figure-latex/selex-1.pdf used on
- input line 243.
-(pdftex.def)             Requested size: 341.44226pt x 206.82344pt.
-
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 243--243
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 237--237
 [] [] 
  []
 
 
-<supplement_figs_files/figure-latex/DESedg-1.pdf, id=100, 551.05875pt x 327.222
-5pt>
-File: supplement_figs_files/figure-latex/DESedg-1.pdf Graphic file (type pdf)
-<use supplement_figs_files/figure-latex/DESedg-1.pdf>
-Package pdftex.def Info: supplement_figs_files/figure-latex/DESedg-1.pdf used o
-n input line 252.
-(pdftex.def)             Requested size: 341.44267pt x 202.75102pt.
+<supplement_figs_files/figure-latex/unnamed-chunk-3-1.pdf, id=101, 557.08125pt 
+x 334.24875pt>
+File: supplement_figs_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (ty
+pe pdf)
+<use supplement_figs_files/figure-latex/unnamed-chunk-3-1.pdf>
+Package pdftex.def Info: supplement_figs_files/figure-latex/unnamed-chunk-3-1.p
+df used on input line 252.
+(pdftex.def)             Requested size: 341.44264pt x 204.86557pt.
 
 Overfull \hbox (42.67912pt too wide) in paragraph at lines 252--252
 [] [] 
  []
 
-[5 <./supplement_figs_files/figure-latex/selex-1.pdf>] [6 <./supplement_figs_fi
-les/figure-latex/DESedg-1.pdf>]
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 267--267
+[4 <./supplement_figs_files/figure-latex/unnamed-chunk-2-1.pdf>]
+<supplement_figs_files/figure-latex/info-1.pdf, id=121, 557.08125pt x 336.25626
+pt>
+File: supplement_figs_files/figure-latex/info-1.pdf Graphic file (type pdf)
+<use supplement_figs_files/figure-latex/info-1.pdf>
+Package pdftex.def Info: supplement_figs_files/figure-latex/info-1.pdf used on 
+input line 264.
+(pdftex.def)             Requested size: 341.44264pt x 206.09601pt.
+
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 264--264
+[] [] 
+ []
+
+[5 <./supplement_figs_files/figure-latex/unnamed-chunk-3-1.pdf>]
+<supplement_figs_files/figure-latex/full.scale-1.pdf, id=135, 545.03625pt x 285
+.065pt>
+File: supplement_figs_files/figure-latex/full.scale-1.pdf Graphic file (type pd
+f)
+<use supplement_figs_files/figure-latex/full.scale-1.pdf>
+Package pdftex.def Info: supplement_figs_files/figure-latex/full.scale-1.pdf us
+ed on input line 290.
+(pdftex.def)             Requested size: 341.42857pt x 178.57405pt.
+
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 290--290
 [] [] 
  []
 
 
-Overfull \hbox (42.67912pt too wide) in paragraph at lines 285--285
+Overfull \vbox (258.08305pt too high) has occurred while \output is active []
+
+[6 <./supplement_figs_files/figure-latex/info-1.pdf> <./supplement_figs_files/f
+igure-latex/full.scale-1.pdf>]
+<supplement_figs_files/figure-latex/selex-1.pdf, id=165, 560.0925pt x 339.2675p
+t>
+File: supplement_figs_files/figure-latex/selex-1.pdf Graphic file (type pdf)
+<use supplement_figs_files/figure-latex/selex-1.pdf>
+Package pdftex.def Info: supplement_figs_files/figure-latex/selex-1.pdf used on
+ input line 302.
+(pdftex.def)             Requested size: 341.44226pt x 206.82344pt.
+
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 302--302
 [] [] 
  []
 
 [7]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 335.
-[8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 335.
+<supplement_figs_files/figure-latex/disp-1.pdf, id=176, 551.05875pt x 300.12125
+pt>
+File: supplement_figs_files/figure-latex/disp-1.pdf Graphic file (type pdf)
+<use supplement_figs_files/figure-latex/disp-1.pdf>
+Package pdftex.def Info: supplement_figs_files/figure-latex/disp-1.pdf used on 
+input line 313.
+(pdftex.def)             Requested size: 341.44267pt x 185.95876pt.
+
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 313--313
+[] [] 
+ []
+
+[8 <./supplement_figs_files/figure-latex/selex-1.pdf>]
+<supplement_figs_files/figure-latex/DESedg-1.pdf, id=197, 557.08125pt x 336.256
+26pt>
+File: supplement_figs_files/figure-latex/DESedg-1.pdf Graphic file (type pdf)
+<use supplement_figs_files/figure-latex/DESedg-1.pdf>
+Package pdftex.def Info: supplement_figs_files/figure-latex/DESedg-1.pdf used o
+n input line 322.
+(pdftex.def)             Requested size: 341.44264pt x 206.09601pt.
+
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 322--322
+[] [] 
+ []
+
+[9 <./supplement_figs_files/figure-latex/disp-1.pdf>]
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 337--337
+[] [] 
+ []
+
+[10 <./supplement_figs_files/figure-latex/DESedg-1.pdf>]
+Overfull \hbox (42.67912pt too wide) in paragraph at lines 355--355
+[] [] 
+ []
+
+[11]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 423.
+[12]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 423.
 (./supplement_figs.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 335.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 335.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 423.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 423.
 Package rerunfilecheck Info: File `supplement_figs.out' has not changed.
-(rerunfilecheck)             Checksum: E1D04C93768DBBD780A3096CA684A5B0;308.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 335.
+(rerunfilecheck)             Checksum: E149A96EAF3F3F275E2BE36E6B992FC3;464.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 423.
  ) 
 Here is how much of TeX's memory you used:
- 13827 strings out of 493089
- 213121 string characters out of 6134842
- 365197 words of memory out of 5000000
- 16870 multiletter control sequences out of 15000+600000
- 90874 words of font info for 114 fonts, out of 8000000 for 9000
+ 13935 strings out of 493089
+ 215413 string characters out of 6134842
+ 365944 words of memory out of 5000000
+ 16923 multiletter control sequences out of 15000+600000
+ 96755 words of font info for 134 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 54i,14n,49p,1689b,470s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 54i,14n,49p,1751b,470s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
-texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/local/texlive/20
-15/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2015/texmf-dist/
-fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/
+texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/20
+15/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/local/texlive/2015/texmf-d
+ist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/
 dvips/lm/lm-mathit.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base
 /8r.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</usr
 /local/texlive/2015/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb></usr/local/t
@@ -1283,10 +1343,10 @@ xmf-dist/fonts/type1/public/lm/lmssbx10.pfb></usr/local/texlive/2015/texmf-dist
 pe1/public/lm/lmsy10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public
 /lm/lmsy7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb
 8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on supplement_figs.pdf (8 pages, 1504875 bytes).
+Output written on supplement_figs.pdf (12 pages, 5278007 bytes).
 PDF statistics:
- 236 PDF objects out of 1000 (max. 8388607)
- 192 compressed objects within 2 object streams
- 32 named destinations out of 1000 (max. 500000)
- 10293 words of extra memory for PDF output out of 12000 (max. 10000000)
+ 340 PDF objects out of 1000 (max. 8388607)
+ 277 compressed objects within 3 object streams
+ 49 named destinations out of 1000 (max. 500000)
+ 10329 words of extra memory for PDF output out of 12000 (max. 10000000)
 

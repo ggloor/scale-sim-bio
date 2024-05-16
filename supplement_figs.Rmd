@@ -16,32 +16,175 @@ date: 21 August 2023
 link-citations: true
 ---
 
+```{r HvG_function, echo=F}
+H <- function(x.vec){
+  x.p <- x.vec/sum(x.vec)
+  return(-1 * sum(x.p * log2(x.p)))
+}
+myfun.H <- function(x){ y <- c(x, 1-x); H(y)}
+mf.H <- Vectorize(myfun.H)
+
+G <- function(x.vec){
+  x.p <- x.vec/sum(x.vec)
+  return(mean(log2(x.p)))
+}
+
+myfun.G <- function(x){ y <- c(x, 1-x); G(y)}
+mf.G <- Vectorize(myfun.G)
+
+
+n.random = 20
+n.parts = 500
+test='N' # or U, B for Normal or Uniform or Beta
+
+# note mean is only used when 
+HvG <- function(n.random, n.parts, test='U', mean=30){
+
+  mat.log <- matrix(data=NA, nrow=n.parts, ncol=n.random)
+  mat.h <- matrix(data=NA, nrow=n.parts, ncol=n.random)
+
+  # 2000 entries
+  val <- seq(2,(n.parts*2), by=2)
+
+  # this will generate data of the 
+  # correspondence between H and G in a runif
+  # for random number vectors of length
+  # 2 to 10000. Does this 5 times
+  # N approaches 0 difference as the mean of the N approaches infinity
+  for(i in 1:n.parts){
+    for(j in 1:n.random){	 
+     if(test=='N'){ d <- rnorm(val[i], mean=mean) }
+     else if (test == 'U'){ d <- runif(val[i]) * mean }
+     else if (test == 'B'){ d <- rbeta(val[i], 0.1, 10) * mean }
+     d[d < 0] <- 0
+     d <- d/sum(d)
+     # mean of log(d), exp = G
+     mat.log[i,j] <- G(d)
+     # entropy
+     mat.h[i,j] <- H(d)
+    }
+}
+
+jnk <- list(mat.log, mat.h)
+names(jnk) <- c("mat.log","mat.h")
+return(jnk)
+}
+
+HvG.plot <- function(HvG.out){
+
+#plot(rep(val,n.random),mat.log- mat.h, pch=19, cex=0.5, col=rgb(0,0,0,0.2),
+#  log='x', xlab='length vector', ylab='(-1* G) - H')
+plot(HvG.out$mat.log, HvG.out$mat.h, pch=19, cex=0.5, col=rgb(0,0,0,0.2),
+   xlab='G', ylab='H')
+
+#abline(lm((HvG.out$mat.log[,2]-HvG.out$mat.h[,2]) ~ val), col='red')
+abline(lm((HvG.out$mat.h[,2]~HvG.out$mat.log[,2])), col='red')
+
+#lm((mat.log[,2]-mat.h[,2]) ~ val)
+lm((HvG.out$mat.h[,2]~HvG.out$mat.log[,2]))
+}
+ 
+```
+
 # GM is related to Information and Shannon's entropy in HTS datasets
 
-Information content is a fundamental property of all systems. We can think about  scale  from an information theoretic point of view as a measure of how much information is encoded in a particular sample. Intuitively,   systems with different scales will contain different amounts of information and so we would expect \(W^{\perp}_n \sim H_n\). Below, we show that the scale of a system as defined by Nixon et al. [-@nixon2023scale] is inversely related to the information content and entropy of the data. 
+## Shannon's entropy has a volume or size
+
+Information  is a fundamental property of all measured systems. For discrete probability vectors, Shannon defined their information properties and launched the field of information theory for communications. Famously, for any probability vector, Shannon set the total entropy as the inverse of the sum of the probability weighted logarithm of the probabilities. Less well known is that an unweighted average entropy was also defined, and that this turns out to be the inverse of the logarithm of the geometric mean of the probability vector. Thus, information theory and compositional data analysis intersect through the geometric mean of a probability vector. Here I show that the information theoretic interpretation can help us understand the scale of a system as defined by Nixon and Silverman, and that this interpretation can help in the interpretation of highly asymmetric datasets. I will show the Asymptotic Equipartition Property of information can be defined as a volume for discrete distributions, and how that volume relates to the scale of a system. Finally, I will show how Shannon's entropy can substitute for the geometric mean in common CoDa operations and how that alters the interpretation of the results.
+
+We can think about  scale  from an information theoretic point of view as a measure of how much information, or total uncertainty, is encoded in a particular sample [@Shannon.48;@Jaynes:2003]. In the geometric interpretation of information theory used in quantum information theory, formally described as  the  Asymptotic Equipartition Property of information [@Cover:1991;@wilde_2017], entropy can be interpreted as the volume occupied by a probability distribution. See chapters 4 of the PhD thesis of Lecamwasam [-@ruvi.blog] for a nice explanation of this. 
+
+For notational simplicity assume we have a single discrete random variable to represent a probability distribution with d elements; i.e. \( X =  \mathbf{p}_{i=(1 \dots d )} \). In information theory, the elemental amount of information or surprisal for \(p_i\) is the inverse of the logarithm of the elemental probability, \( -log_2(p_i)\)[@rezaInfoIntro]. This measure is often called self-information.
+
+The total entropy of the system  \( H(X) \) is the weighted sum of the elemental information;
+
+\[
+H(X) = - \sum_{i=1}^{d} p_i \log_2 p_i
+\]
+
+\( H(X) \) corresponds to the amount of information needed in order to reproduce  \( X \). We can also calculate the expected amount of information for each observation in the random variable, and this is the mean of the elemental probability. This measure is also called the sample average of the information [@wilde_2017];
+
+\[
+ h(X) = - \frac{1}{d} \sum_{i=1}^{d} \log_2 p_i
+\]
+
+The linkage between compositional analysis, scale inference and information theory comes when we realize that the logarithm of the geometric mean calculated in base(2) is: 
+
+\[
+ l2G(X) = \log_2 G(X) = \frac{1}{d} \sum_{i=1}^{d} \log_2 p_i
+\];
+
+We see that \( h(X) = - l2G(x) \). Furthermore, \(l2G\) is used as the basis for the centred log-ratio transform and is the starting point for scale-based inference:
+
+ \[CLR(X) = log2(p_i) - l2G(X) = log2(p_i) + h(X)  \]
+ 
+Thus we see that the geometric mean used in the centred log ratio (CLR), often used for Compositional Data Analysis (CoDa) [@aitchison1982] is directly related to entropy or \(H\). Indeed, we can rearrange the CLR formula to show that it can be interpreted as computing the difference between the elemental information and the mean information content: 
+  
+  \[CLR(X) = -log2(p_i) - (-l2G(X)) = -(-log2(p_i) - h(X))\]
+
+As defined in [@nixon2023scale], the scale is the inverse of \( l2G \), which is \(h(X)\). Thus, one way we can understand scale is that it is measuring the total complexity of the system, and this is expected to increase with absolute size in most cases. Moreover, \(H(X)\) and \(G(X)\) share similar shapes in the continuum between 0-1 for a bivariate distribution as shown below:
+
+```{r} 
+par(mfrow=c(1,1))
+curve(mf.G, from=1e-2, to =.99,  col='red', lty=2, ylim=c(-3,1),
+   xlab="x in [0,1]", ylab="value")
+curve(mf.H, from=1e-2, to =.99,  col='black', lty=2, add=T )
+legend(.4,-1.5, legend=c('H','G'), col=c('black','red'), pch="-")
+```
+
+The difference being that entropy is constructed to have a value of 0 at the margins because Shannon defined \( 0log(0) = 0\) while the geometric mean approaches negative infinity. 
+
+Now let's think about the idea of entropy as a volume which allows us to identify what amount of the available entropy space a given observation fills. The following is taken and modified from [@ruvi.blog], to which you should refer for a more fulsome discussion, and it is covered in Chapter 2 of Wilde[-@wilde_2017] and Chapter 3 of Cover and Thomas [-@Cover:1991].  If we start with a four part system \(X1 = [A,C,G,T]\) where the frequencies are equally and identically distributed, then \(p_A = p_C = p_G = p_T = \frac{1}{4} \). \( H(X1) = -1 * 4 * (\frac{1}{4} * log2(\frac{1}{4}) ) = 2\). This is the maximum entropy possible. We can obtain the "volume" of \(X1\) by exponentiating \(H1\) using the same base as was used to calculate the entropy; \( V1 = 2^{H1} = 4 \). This is the same as the number of letters in the system; so the volume needed to explain the system is 4 units (in this case bits). But what happens in another system, \(X2\) where A occurs with a much higher probability, say 0.7, and the other three are distributed equiprobably amongst the remainder with a probability of 0.1; i.e. \(p_C = p_G = p_T = 0.1 \). In this case \( H2 = -1 * ((\frac{7}{10} * log2(\frac{7}{10}) ) + (3 * (\frac{1}{10} * log2(\frac{1}{10}) ))) = 1.358 \). Here the volume of \(X2 = 2^{H2} = 2.56\); meaning that less than the maximum volume is taken up by the information. Here \(X2\) consumes about 64% of the volume of system \(X1\). Thus, the volume is a measure of the total complexity or the scales of the two systems. In this way we can understand that scale is related to the information volume of a system. 
+
+Empirically, we can see that \(G(\mathbf{Y}^{\parallel}_{n})\) is strongly correlated with Shannon's Entropy \(H(\mathbf{Y}^{\parallel}_{n})\) as expected from the discussion above, and that this difference converges to a constant as the number of entries in the probability vector increases regardless of the distribution, although different distributions converge at different rates. For example, if we plot the relationship between H and G as a function of the length of the probability vector we can see a direct inverse relationship. 
+
+```{r, echo=F, fig.cap="Association between entropy (H) and geometric mean (G) as a function of vector length. Twenty random vectors were constructed for each length between  2 and 1000 in increments of 2 for each of the random distributions in the legend; N = Normal, U = Uniform, B = Beta. The bottom right of each plot represents vectors of length 2, and the top left represents the vector of lenght 500. The maximum value of H increases as the vector length increases, and the maximum value of G decreases in lock-step. Each random distribution has an obviously distinct relationship between the two measures. For the purposes of high throughput sequencing the Beta distribution is most similar to that seen in the majority of instances."}
+set.seed=24
+par(mfrow=c(1,3))
+U <- HvG(20, 500, test='U', mean=1)
+U.plot <- HvG.plot(U)
+text(-4,0.5,labels='vec len = 2')
+text(-7.4,9.8,labels='vec len = 1000')
+title(main='random uniform')
+B <- HvG(20, 500, test='B', mean=1)
+B.plot <- HvG.plot(B)
+title(main='Extreme skew')
+N <- HvG(20, 500, test='N', mean=30)
+N.plot <- HvG.plot(N)
+title(main='N, mean=300')
+# intercept
+U.plot$coefficients[1]
+B.plot$coefficients[1]
+N.plot$coefficients[1]
+par(mfrow=c(1,1))
+
+```
+
+When we plot the relationship for any individual probability vector, we  see that there is an direct relationship between the entropy and the log of the geometric mean, but that this relationship strongly depends on the underlying distribution of the probability distribution \( X \). 
+
+
+
+```{r, echo=F, fig.cap="Plot of the association between H and G at a vector length of 30. The relationship between H and G is inverse, and the strength of that association depends on the distribution. The N distribution shows a very strong assocation, while the Beta distribution is less well defined. Associations are shown for a vector length of 30."}
+par(mfrow=c(1,3))
+plot(N$mat.log[15,], N$mat.h[15,], main="Normal", xlab="G", ylab="H")
+abline(lm(N$mat.h[15,]~N$mat.log[15,]), lty=2, col='grey', lwd=2)
+plot(U$mat.log[15,], U$mat.h[15,], main="Uniform", xlab="G", ylab="H")
+abline(lm(U$mat.h[15,]~U$mat.log[15,]), lty=2, col='grey', lwd=2)
+plot(B$mat.log[15,], B$mat.h[15,], main="Beta", xlab="G", ylab="H")
+abline(lm(B$mat.h[15,]~B$mat.log[15,]), lty=2, col='grey', lwd=2)
+par(mfrow=c(1,1))
+```
+
+
+In real data, shown in Supplemental Figure 3 and Table 1 the correspondence is not as predictable, likely because the real data is a more complex distribution than any of the idealized distributions.  Thus, these two measures have different behaviours with different distributions of \( p_i \). In the case of a uniform distribution both \( H(\mathbf{Y}^{\parallel}_{n}) \) and \( G(\mathbf{Y}^{\parallel}_{n}) \) are maximal when \( p(x) \) is equally and identically distributed. Thus, we expect that they are positively correlated here. In a Normal or a skewed distribution, we also observe a positive correlation because both are affected in the same direction by outlier values. In very sparse  datasets, the two measures could become uncoupled because \( H(\mathbf{Y}^{\parallel}_{n}) \) could ascribe some uncertainty to the large number of low probability events, while \( G(\mathbf{Y}^{\parallel}_{n}) \) would tend to be very small. Here these two measures could be either uncorrelated or exhibit negative correlation. We can see this distributional behaviour in different datasets.
+
+Intuitively,  systems with different scales will contain different amounts of information and so we would expect \(W^{\perp}_n \sim H_n\). As the scale of a system as defined by Nixon et al. [-@nixon2023scale] is inversely related to \(G\), this means that scale is directly proportional to the information content and entropy of the data. 
+
+Below I show that we can replace \( G \) with \(H \) in the calculations performed by ALDEx2 without loss of utility.
 
 Recall the underlying system is described by a \(D \times N\) matrix of counts \(\mathbf{W}\) decomposed into the proportions for the \(n^{th}\) sample \(\mathbf{W}^{\parallel}_n\) (or the equivalent probability distribution \( \mathbf{p}(w_n) \) ), and its scale \(\mathbf{W}^{\perp}_n\), such that \(\mathbf{W}=\mathbf{W}^{\parallel}\mathbf{W}^{\perp} \). Sequencing  returns counts which are related to the underlying proportion; i.e., \(\mathbf{Y}^{\parallel}_n \sim \mathbf{W}^{\parallel}_n\)
  
 
-For notational simplicity assume we will use a single discrete random variable to represent the probability distribution; i.e. \( X =  \mathbf{p}(w_n) \)  over \(1 \dots d \) elements. The geometric mean can be calculated as: 
-
-\[
-\log_2 G(X) = \frac{1}{d} \sum_{i=1}^{d} \log_2 p_i
-\];
-
-here every element in \(log_2 G(X)\) is the logarithm of the elemental probability \( log_2(p_i)\). 
-
-In information theory, the elemental amount of information or uncertainty for \(p_i\) is the inverse \(I(X)_i = -log_2(p_i)\)[@rezaInfoIntro]. 
-
-The total entropy of the system  \( H(x) \) is the weighted sum of the elemental information
-
-\[
-H(x) = -\sum_{i=1}^{d} p_i \log_2 p_i
-\]
-
-In this formulation, \( \log_2(G(X)) \) and \( H(X) \) can be understood  to be an unweighted and a weighted measure  of 'surprisal' in the dataset.  The total and the mean surprisal are related by the number of terms in \( p(x) \) and by the weighting factor for each term. \( H(X) \) corresponds to the amount of information needed in order to reproduce  \( X \). Conversely, \( G \) is an unweighted mean of the same distribution and  \( G \) is the denominator to calculate the centred log-ratio normalization (CLR). Note that when calculating the CLR we are taking a ratio, and similarly for calculating entropy, but that the scale formula takes the product. Thus, the scale of a system is inversely related to the other two measures.
-
-Empirically, we can see that \(G(\mathbf{Y}^{\parallel}_{n})\) is strongly correlated with Shannon's Entropy \(H(\mathbf{Y}^{\parallel}_{n})\) (Supplemental Figure 1 and Table 1).  These two measures are expected to have different behaviours with different distributions of \( p_i \). In the case of a uniform distribution both \( H(\mathbf{Y}^{\parallel}_{n}) \) and \( G(\mathbf{Y}^{\parallel}_{n}) \) are maximal since \( p(x) \) is equally and identically distributed. Thus, we expect that they are positively correlated here. In a Normal or a skewed distribution, we also anticipate a positive correlation because both are affected in the same direction by outlier values. In very sparse  datasets, the two measures could become uncoupled because \( H(\mathbf{Y}^{\parallel}_{n}) \) could ascribe some uncertainty to the large number of low probability events, while \( G(\mathbf{Y}^{\parallel}_{n}) \) would tend to be very small. Here these two measures could be either uncorrelated or exhibit negative correlation. We can see this distributional behaviour in different datasets.
 
 
 ```{r info, echo=F,warning=F, message=F,comment=F, fig.cap="Plot of Shannon's entropy (H) vs geometric mean (G) for each sample in different datasets. The groups that each sample belong to are highlighted as filled or open circles. Each group in each dataset has different entropy with the groups in the selex and metatranscriptome datasets being highly distinct."}
@@ -65,20 +208,20 @@ yst <- yst[rownames(yst) != "YOR072W-B",]
 yst[,c('SNF2.6', 'SNF2.13','SNF2.25','SNF2.35')] <- NULL 
 yst[,c('WT.21','WT.22','WT.25','WT.28','WT.34','WT.36')] <- NULL  
 
-HS <- apply(selex+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
-GS <- apply(selex+0.5, 2, function(x) mean(log2(x/sum(x))))
+HS <- apply(selex+0.5, 2, function(x)  H(x) )
+GS <- apply(selex+0.5, 2, function(x) G(x) )
 
-HY <- apply(yst+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
-GY <- apply(yst+0.5, 2, function(x) mean(log2(x/sum(x))))
+HY <- apply(yst+0.5, 2, function(x) H(x) )
+GY <- apply(yst+0.5, 2, function(x) G(x) )
 
-HM <- apply(ko.both+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
-GM <- apply(ko.both+0.5, 2, function(x) mean(log2(x/sum(x))))
+HM <- apply(ko.both+0.5, 2, function(x) H(x) )
+GM <- apply(ko.both+0.5, 2, function(x) G(x) )
 
-H16 <- apply(rRNA+0.5, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
-G16 <- apply(rRNA+0.5, 2, function(x) mean(log2(x/sum(x))))
+H16 <- apply(rRNA+0.5, 2, function(x)  H(x) )
+G16 <- apply(rRNA+0.5, 2, function(x) G(x) )
 
-Hss <- apply(ss+0.1, 2, function(x) {-1 * sum( (x/sum(x)) * log2( (x/sum(x)) ) ) })
-Gss <- apply(ss+0.1, 2, function(x) mean(log2(x/sum(x))))
+Hss <- apply(ss+0.1, 2, function(x) H(x) )
+Gss <- apply(ss+0.1, 2, function(x) G(x) )
 
 par(mfrow=c(2,3))
 plot(HS, GS, ylab="Geometric mean", xlab="Shannon's entropy",
@@ -154,7 +297,7 @@ The in vitro selection dataset is clearly an outlier in both the difference betw
 Figure 3 shows an effect plot of various scale models with this dataset. The full scale model, where the strong assumption that the mean \(G\) is assumed to be 1:1 between the two groups, dramatically skews the output and the large number of relatively invariant features are now identified as significantly different. While not wrong as long as the assumption that the scales are identical is stated, this is not a useful analysis outcome. Modifying the mean scale difference between the NS:S groups to be \( \approx \) 1:50 different moves the centre of the large number of relatively invariant features to the centreline of no difference, and recapitulates the default result obtained using \(G_n\) as the scale estimate where the ratio is \( \sim 100:1 \). Note that we get exactly the same answer (within random sampling error) with a scale of .02 for group NS and a scale of 1 for group S, or using a scale of 1 for group NS and a scale of 50 for group S. This shows that it is the relative difference between scales that is important in this dataset, not the absolute values. From this result we can conclude that, on average, the difference in underlying scale in the system is about \(\approx 50\)-fold, and this is congruent with the circa 100-fold difference in  \(\overline{G}\) between groups; the discrepancy being explained because the default scale model is applied uniformly to all samples, whereas the different values of the within-group geometric means ranging over a \{ > 2.5 \) fold range.  Thus, an advantage of a full scale model is that we have gained both information and understanding about the drivers of asymmetry underlying system.
 
 
-```{r selex, echo=F, warning=F, message=F,comment=F, fig.cap="Effect plots of the selex dataset with various gamma and scale parameters. All scales are calculated with a logNormal distribution to ensure symmetry for the user. "}
+```{r selex, eval=T, echo=F, warning=F, message=F,comment=F, fig.cap="Effect plots of the selex dataset with various gamma and scale parameters. All scales are calculated with a logNormal distribution to ensure symmetry for the user. "}
 
 conds <- c(rep('NS',7), rep('S',7))
 
@@ -185,17 +328,69 @@ aldex.plot(x.5.all, main=('gamma=0.5\nmu=1,50'))
 aldex.plot(x.2.all, main=('gamma=0.5\nmu=0.02, 1'))
 ```
 
+# How scaling affects dispersion
+
+Thus far we have observed that adding scale uncertainty increases the minimum dispersion value with little effect on the difference between values as in panel A. Panel B shows the change in dispersion relative to the rAbundance of the features. Here we can see that the minimum dispersion is increased as gamma increases. The horizontal lines show the median value for the features with a rAbundance between -0.5 and 0.5. Panel C shows that this increase is non-linear, being more pronounced among those features that had minimal dispersion when gamma=0. Panel D shows that increasing gamma actually shrinks the dispersion estimates towards the mean dispersion, while increasing the total dispersion as shown in panel C.
+
+Thus, adding scale uncertainty has two effects both on dispersion. The first is to increase the dispersion estimate for each part and this has its primary effect to reduce the  p-values and standardized effect sizes returned by ALDEx2. The second is to reduce the range of dispersions such that the parts with the lowest dispersions have the greatest increase. This increase in dispersion comes about because the underlying distributions are widened because of the additional uncertainty added by the inclusion of scale uncertainty.
+
+```{r disp, eval=T, echo=F, warning=F, message=F,comment=F, fig.cap="jnk"}
+yst.conds <- c(rep('S',44),rep('W',42))
+x <- aldex.clr(yst, yst.conds, gamma=NULL)
+xs <- aldex.clr(yst, yst.conds, gamma=0.5)
+x1 <- aldex.clr(yst, yst.conds, gamma=1)
+
+x.e <- aldex.effect(x)
+xs.e <- aldex.effect(xs)
+x1.e <- aldex.effect(x1)
+
+par(mfrow=c(2,2))
+# we imperceptibly change difference
+plot(x.e$diff.btw, x1.e$diff.btw, xlab='diff g=0', ylab='diff g=1')
+abline(0,1, col='grey', lwd=2, lty=2)
+title(main='A', line=-1.2, adj=0.5)
+#=-1
+cuts <- x.e$rab.all > -0.5 & x.e$rab.all < 0.5
+# the residual of the 
+mn.mid <- median(x.e$diff.win[cuts])
+mn.mid.s <- median(xs.e$diff.win[cuts])
+mn.mid.1 <- median(x1.e$diff.win[cuts])
+
+# we change dispersion a lot for the bulk of the features
+plot(x.e$rab.all, x.e$diff.win, pch=19, cex=0.5, col=rgb(0,0,0,0.3),
+  xlab='rAbundance', ylab='dispersion')
+points(xs.e$rab.all, xs.e$diff.win, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
+points(x1.e$rab.all, x1.e$diff.win, pch=19, cex=0.5, col=rgb(0,0,1,0.3))
+abline(h=mn.mid, lty=2)
+abline(h=mn.mid.s, lty=2, col='red')
+abline(h=mn.mid.1, lty=2, col='blue')
+title(main='B', line=-1.2, adj=0.5)
+
+plot(x.e$diff.win, x1.e$diff.win, pch=19, cex=0.5, col=rgb(0,0,0,0.3), ylim=c(0,4.5), 
+  xlab='g=0 dispersion', ylab='g=0.5 | g=1 dispersion')
+points(x.e$diff.win, xs.e$diff.win, pch=19, cex=0.5, col=rgb(1,.4,.1,0.3))
+abline(0,1, lty=2)
+title(main='C', line=-1.2, adj=0.5)
+
+strip.data <- list(x.e$diff.win[cuts] - mn.mid, xs.e$diff.win[cuts] - mn.mid.s, x1.e$diff.win[cuts] - mn.mid.1)
+
+stripchart( strip.data, col=c(rgb(0,0,0,0.3), rgb(1,0,0,0.3), rgb(0,0,1,0.3)), vertical=T, method='jitter', pch=19, group.names=c('g=0', 'g=0.5', 'g=1'), ylab='residual dispersion')
+title(main='D', line=-1.2, adj=0.5)
+
+```
+
+
 # Issues with DESeq2 and edgeR
 
 DESeq2 and edgeR are two of the most commonly used tools for differential abundance analysis of bule RNA sequencing datasets. They both operate by finding a scaling factor that makes all the samples commesurate. DESeq2 does this by finding a midpoint feature that can be used as a reference in each sample; this can be different for different samples. The edgeR reference finds the midpoint of the 'typical' sample instead. In both cases the data are then scaled by dividing by a small factor that makes the read counts commesurate. Differential abundance analysis is then performed on the scaled values after taking their logarithm to base 2. In some ways this is similar to the log-ratio approach used by ALDEx2, but is more prone to dataset and sample effects than is the log-ratio method [@GloorAJS2023] 
 
-```{r DESedg, echo=F, fig.cap="Shown here are the mean log2 fold change as a density plot, and a Volcano plot showing the location and adjusted p-value for each feature in the metatranscriptomic dataset. The DESeq2 approach does a good job of centring this data, while edgeR is less suitable. The volcano plots show dramatically different outcomes. The DESeq2 algorithm assigns very large fold changes to features that have only moderate change, and further identifies a very large proportion of features as significantly different. In contrast, edgeR exhibits a much smaller number of differentially abundant features. In both volcano plots, the housekeeping genes in the main Figure 3 are shown in orange. We can see that these are asymmetrically distributed in both plots. Additionally the location of the features taht DESeq2 identified as having a very large difference are shown in the edgeR volcano plot as blue circles."}
+```{r DESedg, eval=T, echo=F, fig.cap="Shown here are the mean log2 fold change as a density plot, and a Volcano plot showing the location and adjusted p-value for each feature in the metatranscriptomic dataset. The DESeq2 approach does a good job of centring this data, while edgeR is less suitable. The volcano plots show dramatically different outcomes. The DESeq2 algorithm assigns very large fold changes to features that have only moderate change, and further identifies a very large proportion of features as significantly different. In contrast, edgeR exhibits a much smaller number of differentially abundant features. In both volcano plots, the housekeeping genes in the main Figure 3 are shown in orange. We can see that these are asymmetrically distributed in both plots. Additionally the location of the features taht DESeq2 identified as having a very large difference are shown in the edgeR volcano plot as blue circles."}
 
 # find housekeeping from ALDEx2
 
 load('analysis/xt.m.Rda')
 load('analysis/xt.Rda')
-hk.off <- xt.all$diff.win < 2.5 & xt.all$diff.btw > 0 & xt.all$diff.btw < 3
+hk.off <- xt.all$diff.win < 5 & xt.all$diff.btw > 0 & xt.all$diff.btw < 3
 
 load('analysis/meta.DES.res.Rda')
 load('analysis/meta.edge.qlf.Rda')
@@ -209,18 +404,33 @@ weird.des <- which(meta.DES.res@listData$log2FoldChange < -20 )
 
 sig.des <- which(meta.DES.res@listData$padj < 0.01)
 sig.edge <- which(p.adjust(meta.edg.qlf$PValue) < 0.01)
-par(mfrow=c(2,2))
+sig.ald <- which(xt.m.all$we.eBH < 0.01)
 
-plot(density(meta.DES.res@listData$log2FoldChange[hk.off]), main='DESeq2 FC')
+par(mfrow=c(2,3))
+
+plot(density(xt.all$diff.btw), xlim=c(-5,5), ylim=c(0,1), main='ALDEx2 FC')
+points(density(xt.all$diff.btw[hk.off]), type='l', col='orange')
+abline(v=0, col='orange', lty=2)
+
+plot(density(meta.DES.res@listData$log2FoldChange), xlim=c(-5,5), ylim=c(0,0.8), main='DESeq2 FC')
+points(density(meta.DES.res@listData$log2FoldChange[hk.off]), type='l', col='orange')
+abline(v=0, col='orange', lty=2)
+
+plot(density(meta.edg.qlf$logFC), xlim=c(-5,5), ylim=c(0,0.5), main='edgeR FC')
+points(density(meta.edg.qlf$logFC[hk.off]), type='l', col='orange')
 abline(v=0, col='red', lty=2)
+
+
+plot(xt.m.all$diff.btw, -1*log10(xt.m.all$we.eBH), 
+  col=rgb(0,0,0,0.1), xlab='log2 Difference', ylab='-1 log10(p.adjust)', main='ALDEx2 volcano')
+points(xt.m.all$diff.btw[sig.ald],-1*log10(xt.m.all$we.eBH)[sig.ald] + 1e-8, col='red')
+points(xt.m.all$diff.btw[hk.off],-1*log10(xt.m.all$we.eBH)[hk.off] + 1e-8, col='orange', cex=0.6)
+
 
 plot(meta.DES.res@listData$log2FoldChange, -1*log10(meta.DES.res@listData$padj), 
   col=rgb(0,0,0,0.1), xlab='log2 Difference', ylab='-1 log10(p.adjust)', main='DESeq2 volcano')
 points(meta.DES.res@listData$log2FoldChange[sig.des],-1*log10(meta.DES.res@listData$padj[sig.des] + 1e-70), col='red')
 points(meta.DES.res@listData$log2FoldChange[hk.off],-1*log10(meta.DES.res@listData$padj[hk.off] + 1e-70), col='orange', cex=0.6)
-
-plot(density(meta.edg.qlf$logFC[hk.off]), main='edgeR FC')
-abline(v=0, col='red', lty=2)
 
 plot(meta.edg.qlf$logFC, -1*log10(p.adjust(meta.edg.qlf$PValue)), 
   col=rgb(0,0,0,0.1), xlab='LFC', ylab='-1log10(p)', main='edgeR volcano')

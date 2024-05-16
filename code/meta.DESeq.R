@@ -1,6 +1,6 @@
 
 # get the dataset
-load(url('https://raw.githubusercontent.com/ggloor/datasets/main/ko.both.all.Rda'))
+load(url('https://raw.githubusercontent.com/ggloor/datasets/main/ko.both.Rda'))
 
 conds.K0 <- c(rep('H',8), rep('B',14), rep('B',14), rep('H', 8)) 
 
@@ -10,7 +10,7 @@ library(DESeq2)
 # make a vector of conditions
 coldata <- data.frame(conds.K0)
 
-dds <- DESeqDataSetFromMatrix(countData = ko.both.all,
+dds <- DESeqDataSetFromMatrix(countData = ko.both,
           colData = coldata, design= ~ conds.K0)
 dds <- DESeq(dds)
 meta.DES.res <- results(dds, name="conds.K0_H_vs_B")
@@ -20,7 +20,7 @@ save(meta.DES.res, file='analysis/meta.DES.res.Rda')
 # qlf is recommended for bulk RNA seq 
 library(edgeR)
 group=factor(conds.K0)
-y <- DGEList(counts=ko.both.all,group=group)
+y <- DGEList(counts=ko.both,group=group)
 y <- normLibSizes(y)
 design <- model.matrix(~group)
 y <- estimateDisp(y,design)

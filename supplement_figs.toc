@@ -1,5 +1,7 @@
 \contentsline {section}{\numberline {1}GM is related to Information and Shannon's entropy in HTS datasets}{2}{section.1}
-\contentsline {section}{\numberline {2}Issues with DESeq2 and edgeR}{5}{section.2}
-\contentsline {section}{\numberline {3}Checking the scale assumptions of the RLE and TMM normalizations}{7}{section.3}
-\contentsline {section}{References}{7}{table.3}
+\contentsline {subsection}{\numberline {1.1}Shannon's entropy has a volume or size}{2}{subsection.1.1}
+\contentsline {section}{\numberline {2}How scaling affects dispersion}{8}{section.2}
+\contentsline {section}{\numberline {3}Issues with DESeq2 and edgeR}{9}{section.3}
+\contentsline {section}{\numberline {4}Checking the scale assumptions of the RLE and TMM normalizations}{10}{section.4}
+\contentsline {section}{References}{11}{table.3}
 \contentsfinish 
