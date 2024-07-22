@@ -6,268 +6,165 @@ author:
 - name: Greg Gloor, Michelle Pistner Nixon, Justin Silverman
   affiliation: Dep't of Biochemistry, University of Western Ontario, Penn State
   email: ggloor@uwo.ca
+citeproc: TRUE
+cite-method: citeproc
 bibliography: /Users/ggloor/Library/texmf/bibtex/bib/bibdesk_refs.bib
+csl: /Users/ggloor/Documents/0_git/csl_styles/nucleic-acids-research.csl
+pdf-engine: latex
 output:
-  BiocStyle::pdf_document: default
-package: ALDEx2 1.33.1
-abstract: |
-    Introduction to scale simulation and FDR correction with ALDEx2.
-date: 21 August 2023
-link-citations: true
+  pdf_document
 ---
 
-```{r HvG_function, echo=F}
-H <- function(x.vec){
-  x.p <- x.vec/sum(x.vec)
-  return(-1 * sum(x.p * log2(x.p)))
-}
-myfun.H <- function(x){ y <- c(x, 1-x); H(y)}
-mf.H <- Vectorize(myfun.H)
-
-G <- function(x.vec){
-  x.p <- x.vec/sum(x.vec)
-  return(mean(log2(x.p)))
-}
-
-myfun.G <- function(x){ y <- c(x, 1-x); G(y)}
-mf.G <- Vectorize(myfun.G)
-
-
-n.random = 20
-n.parts = 500
-test='N' # or U, B for Normal or Uniform or Beta
-
-# note mean is only used when 
-HvG <- function(n.random, n.parts, test='U', mean=30){
-
-  mat.log <- matrix(data=NA, nrow=n.parts, ncol=n.random)
-  mat.h <- matrix(data=NA, nrow=n.parts, ncol=n.random)
-
-  # 2000 entries
-  val <- seq(2,(n.parts*2), by=2)
-
-  # this will generate data of the 
-  # correspondence between H and G in a runif
-  # for random number vectors of length
-  # 2 to 10000. Does this 5 times
-  # N approaches 0 difference as the mean of the N approaches infinity
-  for(i in 1:n.parts){
-    for(j in 1:n.random){	 
-     if(test=='N'){ d <- rnorm(val[i], mean=mean) }
-     else if (test == 'U'){ d <- runif(val[i]) * mean }
-     else if (test == 'B'){ d <- rbeta(val[i], 0.1, 10) * mean }
-     d[d < 0] <- 0
-     d <- d/sum(d)
-     # mean of log(d), exp = G
-     mat.log[i,j] <- G(d)
-     # entropy
-     mat.h[i,j] <- H(d)
-    }
-}
-
-jnk <- list(mat.log, mat.h)
-names(jnk) <- c("mat.log","mat.h")
-return(jnk)
-}
-
-HvG.plot <- function(HvG.out){
-
-#plot(rep(val,n.random),mat.log- mat.h, pch=19, cex=0.5, col=rgb(0,0,0,0.2),
-#  log='x', xlab='length vector', ylab='(-1* G) - H')
-plot(HvG.out$mat.log, HvG.out$mat.h, pch=19, cex=0.5, col=rgb(0,0,0,0.2),
-   xlab='G', ylab='H')
-
-#abline(lm((HvG.out$mat.log[,2]-HvG.out$mat.h[,2]) ~ val), col='red')
-abline(lm((HvG.out$mat.h[,2]~HvG.out$mat.log[,2])), col='red')
-
-#lm((mat.log[,2]-mat.h[,2]) ~ val)
-lm((HvG.out$mat.h[,2]~HvG.out$mat.log[,2]))
-}
- 
-```
-
-# GM is related to Information and Shannon's entropy in HTS datasets
-
-## Shannon's entropy has a volume or size
-
-Information  is a fundamental property of all measured systems. For discrete probability vectors, Shannon defined their information properties and launched the field of information theory for communications. Famously, for any probability vector, Shannon set the total entropy as the inverse of the sum of the probability weighted logarithm of the probabilities. Less well known is that an unweighted average entropy was also defined, and that this turns out to be the inverse of the logarithm of the geometric mean of the probability vector. Thus, information theory and compositional data analysis intersect through the geometric mean of a probability vector. Here I show that the information theoretic interpretation can help us understand the scale of a system as defined by Nixon and Silverman, and that this interpretation can help in the interpretation of highly asymmetric datasets. I will show the Asymptotic Equipartition Property of information can be defined as a volume for discrete distributions, and how that volume relates to the scale of a system. Finally, I will show how Shannon's entropy can substitute for the geometric mean in common CoDa operations and how that alters the interpretation of the results.
-
-We can think about  scale  from an information theoretic point of view as a measure of how much information, or total uncertainty, is encoded in a particular sample [@Shannon.48;@Jaynes:2003]. In the geometric interpretation of information theory used in quantum information theory, formally described as  the  Asymptotic Equipartition Property of information [@Cover:1991;@wilde_2017], entropy can be interpreted as the volume occupied by a probability distribution. See chapters 4 of the PhD thesis of Lecamwasam [-@ruvi.blog] for a nice explanation of this. 
-
-For notational simplicity assume we have a single discrete random variable to represent a probability distribution with d elements; i.e. \( X =  \mathbf{p}_{i=(1 \dots d )} \). In information theory, the elemental amount of information or surprisal for \(p_i\) is the inverse of the logarithm of the elemental probability, \( -log_2(p_i)\)[@rezaInfoIntro]. This measure is often called self-information.
-
-The total entropy of the system  \( H(X) \) is the weighted sum of the elemental information;
-
-\[
-H(X) = - \sum_{i=1}^{d} p_i \log_2 p_i
-\]
-
-\( H(X) \) corresponds to the amount of information needed in order to reproduce  \( X \). We can also calculate the expected amount of information for each observation in the random variable, and this is the mean of the elemental probability. This measure is also called the sample average of the information [@wilde_2017];
-
-\[
- h(X) = - \frac{1}{d} \sum_{i=1}^{d} \log_2 p_i
-\]
-
-The linkage between compositional analysis, scale inference and information theory comes when we realize that the logarithm of the geometric mean calculated in base(2) is: 
-
-\[
- l2G(X) = \log_2 G(X) = \frac{1}{d} \sum_{i=1}^{d} \log_2 p_i
-\];
-
-We see that \( h(X) = - l2G(x) \). Furthermore, \(l2G\) is used as the basis for the centred log-ratio transform and is the starting point for scale-based inference:
-
- \[CLR(X) = log2(p_i) - l2G(X) = log2(p_i) + h(X)  \]
- 
-Thus we see that the geometric mean used in the centred log ratio (CLR), often used for Compositional Data Analysis (CoDa) [@aitchison1982] is directly related to entropy or \(H\). Indeed, we can rearrange the CLR formula to show that it can be interpreted as computing the difference between the elemental information and the mean information content: 
-  
-  \[CLR(X) = -log2(p_i) - (-l2G(X)) = -(-log2(p_i) - h(X))\]
-
-As defined in [@nixon2023scale], the scale is the inverse of \( l2G \), which is \(h(X)\). Thus, one way we can understand scale is that it is measuring the total complexity of the system, and this is expected to increase with absolute size in most cases. Moreover, \(H(X)\) and \(G(X)\) share similar shapes in the continuum between 0-1 for a bivariate distribution as shown below:
-
-```{r} 
-par(mfrow=c(1,1))
-curve(mf.G, from=1e-2, to =.99,  col='red', lty=2, ylim=c(-3,1),
-   xlab="x in [0,1]", ylab="value")
-curve(mf.H, from=1e-2, to =.99,  col='black', lty=2, add=T )
-legend(.4,-1.5, legend=c('H','G'), col=c('black','red'), pch="-")
-```
-
-The difference being that entropy is constructed to have a value of 0 at the margins because Shannon defined \( 0log(0) = 0\) while the geometric mean approaches negative infinity. 
-
-Now let's think about the idea of entropy as a volume which allows us to identify what amount of the available entropy space a given observation fills. The following is taken and modified from [@ruvi.blog], to which you should refer for a more fulsome discussion, and it is covered in Chapter 2 of Wilde[-@wilde_2017] and Chapter 3 of Cover and Thomas [-@Cover:1991].  If we start with a four part system \(X1 = [A,C,G,T]\) where the frequencies are equally and identically distributed, then \(p_A = p_C = p_G = p_T = \frac{1}{4} \). \( H(X1) = -1 * 4 * (\frac{1}{4} * log2(\frac{1}{4}) ) = 2\). This is the maximum entropy possible. We can obtain the "volume" of \(X1\) by exponentiating \(H1\) using the same base as was used to calculate the entropy; \( V1 = 2^{H1} = 4 \). This is the same as the number of letters in the system; so the volume needed to explain the system is 4 units (in this case bits). But what happens in another system, \(X2\) where A occurs with a much higher probability, say 0.7, and the other three are distributed equiprobably amongst the remainder with a probability of 0.1; i.e. \(p_C = p_G = p_T = 0.1 \). In this case \( H2 = -1 * ((\frac{7}{10} * log2(\frac{7}{10}) ) + (3 * (\frac{1}{10} * log2(\frac{1}{10}) ))) = 1.358 \). Here the volume of \(X2 = 2^{H2} = 2.56\); meaning that less than the maximum volume is taken up by the information. Here \(X2\) consumes about 64% of the volume of system \(X1\). Thus, the volume is a measure of the total complexity or the scales of the two systems. In this way we can understand that scale is related to the information volume of a system. 
-
-Empirically, we can see that \(G(\mathbf{Y}^{\parallel}_{n})\) is strongly correlated with Shannon's Entropy \(H(\mathbf{Y}^{\parallel}_{n})\) as expected from the discussion above, and that this difference converges to a constant as the number of entries in the probability vector increases regardless of the distribution, although different distributions converge at different rates. For example, if we plot the relationship between H and G as a function of the length of the probability vector we can see a direct inverse relationship. 
-
-```{r, echo=F, fig.cap="Association between entropy (H) and geometric mean (G) as a function of vector length. Twenty random vectors were constructed for each length between  2 and 1000 in increments of 2 for each of the random distributions in the legend; N = Normal, U = Uniform, B = Beta. The bottom right of each plot represents vectors of length 2, and the top left represents the vector of lenght 500. The maximum value of H increases as the vector length increases, and the maximum value of G decreases in lock-step. Each random distribution has an obviously distinct relationship between the two measures. For the purposes of high throughput sequencing the Beta distribution is most similar to that seen in the majority of instances."}
-set.seed=24
-par(mfrow=c(1,3))
-U <- HvG(20, 500, test='U', mean=1)
-U.plot <- HvG.plot(U)
-text(-4,0.5,labels='vec len = 2')
-text(-7.4,9.8,labels='vec len = 1000')
-title(main='random uniform')
-B <- HvG(20, 500, test='B', mean=1)
-B.plot <- HvG.plot(B)
-title(main='Extreme skew')
-N <- HvG(20, 500, test='N', mean=30)
-N.plot <- HvG.plot(N)
-title(main='N, mean=300')
-# intercept
-U.plot$coefficients[1]
-B.plot$coefficients[1]
-N.plot$coefficients[1]
-par(mfrow=c(1,1))
-
-```
-
-When we plot the relationship for any individual probability vector, we  see that there is an direct relationship between the entropy and the log of the geometric mean, but that this relationship strongly depends on the underlying distribution of the probability distribution \( X \). 
-
-
-
-```{r, echo=F, fig.cap="Plot of the association between H and G at a vector length of 30. The relationship between H and G is inverse, and the strength of that association depends on the distribution. The N distribution shows a very strong assocation, while the Beta distribution is less well defined. Associations are shown for a vector length of 30."}
-par(mfrow=c(1,3))
-plot(N$mat.log[15,], N$mat.h[15,], main="Normal", xlab="G", ylab="H")
-abline(lm(N$mat.h[15,]~N$mat.log[15,]), lty=2, col='grey', lwd=2)
-plot(U$mat.log[15,], U$mat.h[15,], main="Uniform", xlab="G", ylab="H")
-abline(lm(U$mat.h[15,]~U$mat.log[15,]), lty=2, col='grey', lwd=2)
-plot(B$mat.log[15,], B$mat.h[15,], main="Beta", xlab="G", ylab="H")
-abline(lm(B$mat.h[15,]~B$mat.log[15,]), lty=2, col='grey', lwd=2)
-par(mfrow=c(1,1))
-```
-
-
-In real data, shown in Supplemental Figure 3 and Table 1 the correspondence is not as predictable, likely because the real data is a more complex distribution than any of the idealized distributions.  Thus, these two measures have different behaviours with different distributions of \( p_i \). In the case of a uniform distribution both \( H(\mathbf{Y}^{\parallel}_{n}) \) and \( G(\mathbf{Y}^{\parallel}_{n}) \) are maximal when \( p(x) \) is equally and identically distributed. Thus, we expect that they are positively correlated here. In a Normal or a skewed distribution, we also observe a positive correlation because both are affected in the same direction by outlier values. In very sparse  datasets, the two measures could become uncoupled because \( H(\mathbf{Y}^{\parallel}_{n}) \) could ascribe some uncertainty to the large number of low probability events, while \( G(\mathbf{Y}^{\parallel}_{n}) \) would tend to be very small. Here these two measures could be either uncorrelated or exhibit negative correlation. We can see this distributional behaviour in different datasets.
-
-Intuitively,  systems with different scales will contain different amounts of information and so we would expect \(W^{\perp}_n \sim H_n\). As the scale of a system as defined by Nixon et al. [-@nixon2023scale] is inversely related to \(G\), this means that scale is directly proportional to the information content and entropy of the data. 
-
-Below I show that we can replace \( G \) with \(H \) in the calculations performed by ALDEx2 without loss of utility.
-
-Recall the underlying system is described by a \(D \times N\) matrix of counts \(\mathbf{W}\) decomposed into the proportions for the \(n^{th}\) sample \(\mathbf{W}^{\parallel}_n\) (or the equivalent probability distribution \( \mathbf{p}(w_n) \) ), and its scale \(\mathbf{W}^{\perp}_n\), such that \(\mathbf{W}=\mathbf{W}^{\parallel}\mathbf{W}^{\perp} \). Sequencing  returns counts which are related to the underlying proportion; i.e., \(\mathbf{Y}^{\parallel}_n \sim \mathbf{W}^{\parallel}_n\)
- 
-
-
-
-```{r info, echo=F,warning=F, message=F,comment=F, fig.cap="Plot of Shannon's entropy (H) vs geometric mean (G) for each sample in different datasets. The groups that each sample belong to are highlighted as filled or open circles. Each group in each dataset has different entropy with the groups in the selex and metatranscriptome datasets being highly distinct."}
-# Gm ~ Im
-# plotting geometric mean vs Shannon's entropy
-# shows differential information by group
-devtools::load_all('~/Documents/0_git/ALDEx_bioc')
+```{r echo=F, warning=F, message=F}
+library(ALDEx2)
 data(selex)
+```
 
-load(url('https://raw.githubusercontent.com/ggloor/datasets/main/ko.both.Rda'))
+One root cause of the large number of significant parts is the very low dispersion when the data are normalized and log-transformed. The raw data counts derived from sequencing are overdispersed with the mean value being less than the variance [@Robinson:2010a;@Robinson:2010] as seen in Panel A of Figure 1. However, the actual analysis of differential abundance is performed on the logarithm of the normalized counts [@Robinson:2010;@Love:2014aa;@Andrews:2019aa] which has a very different abundance-dispersion relationship. Similar relationships are found in both DESeq2 (Panel B) and ALDEx2 (Panel C), and have been  noted before [@fernandes:2013;@Love:2014aa].
+
+ 
+```{r, echo=F, warning=F, message=F,comment=F, result=F} 
+library(DESeq2)
+library(ALDEx2)
+```
+
+```{r echo=F, warning=F, message=F,comment=F,, fig.cap="Effect and volcano plots for unscaled and scaled transcriptome analysis. DESeq2 was used to conduct a differential abundance (DA) analysis on the yeast transcriptome dataset. The results were plotted to show the relationship between difference and dispersion using effect plots or difference and the Benjamini-Hochberg corrected p-values (volcano plot).  Each point represents the values for one transcript, with the color indicating if that transcript was significant in the ALDEx2 scaled analysis and the DESeq2 analysis (red) or in the DESeq2 unscaled analysis only (orange). Points in grey are not statistically signficantly different with any analysis. The horizontal dashed lines represent a log2(difference) of \\(\\pm 1.4\\)"}
+# DESeq2
+load('analysis/res.Rda')
+
+#ALDEx2
+load(file="analysis/yst.all.Rda")
+load(file="analysis/yst.s.all.Rda")
+load(file="analysis/yst.1.all.Rda")
+# with gamma = 0.5
+load('analysis/x.s.all.Rda')
+
+sig.des <- which(res@listData$padj < 0.05)
+sig.ald <- which(yst.all$we.eBH < 0.05)
+sig.s.ald <- which(yst.s.all$we.eBH < 0.05)
+
+sig.all <- yst.all$we.eBH < 0.05
+sig.t <- yst.all$we.eBH < 0.05 & abs(yst.all$diff.btw) > 1.4
+sig.s <- yst.s.all$we.eBH < 0.05
+sig.1 <- yst.1.all$we.eBH < 0.05
+
+par(mfrow=c(1,2))
+plot(res@listData$lfcSE, res@listData$log2FoldChange, xlim=c(0,1), 
+  col=rgb(0,0,0,0.1), xlab='LFC SD', ylab='log2 Difference')
+title('A: DESeq2 effect', adj=0, line= 0.8)
+points(res@listData$lfcSE[sig.des],
+  res@listData$log2FoldChange[sig.des], col=rgb(1,.66,0,0.5), 
+  pch=19, cex=0.5)
+points(res@listData$lfcSE[sig.s.ald],
+  res@listData$log2FoldChange[sig.s.ald], col=rgb(1,0,0,0.5), 
+  pch=19, cex=0.5)
+abline(h=c(-1.4,1.4), lty=2,lwd=2, col='grey')
+
+# volcano
+plot(res@listData$log2FoldChange,-1*log10(res@listData$padj + 1e-300), 
+  col=rgb(0,0,0,0.1), xlab='log2 Difference', ylab='-1 log10(p.adjust)')
+title('B: DESeq2 volcano', adj=0, line= 0.8)
+points(res@listData$log2FoldChange[sig.des],-1*log10(res@listData$padj[sig.des] + 1e-300), col=rgb(1,.66,0,0.3), 
+  pch=19, cex=0.5)
+points(res@listData$log2FoldChange[sig.s.ald],-1*log10(res@listData$padj[sig.s.ald] + 1e-300), col=rgb(1,0,0,1), 
+  pch=19, cex=0.5)
+  abline(v=c(-1.4,1.4), lty=2,lwd=2, col='grey')
+
+```
+
+```{r echo=FALSE, include=TRUE, out.width="0.8\\linewidth",  fig.align="center", fig.cap=c("the aldex.senAnalysis() function was used to generate a dataset with \\(\\gamma\\) values of 1e-3, 0.1, 0.2, 0.3, 0.4,0.5, 0.7 and 1. The plotGamma() function was used to plot the result. Transcripts that are statistically significant are shown in black, and if not significant are in grey. The \\(\\gamma\\) values, standardized effect size and number of significant transcripts at each value are given on the axes.  ")}
+knitr::include_graphics("analysis/scaleSim-yeast.pdf")
+## plotGamma needs to be cleaned up for production
+## so this figure was done by hand with the example
+## snippet below - ugly sorry
+#load('analysis/yst.sens.Rda')
+#plotGamma(x.sens, blackWhite=T)
+#text(6.2,345, label=length(which(x.sens[[8]]$we.eBH < 0.05)))
+#text(-2,345, label=length(which(x.sens[[7]]$we.eBH < 0.05)))
+#text(-6.9,345, label=length(which(x.sens[[6]]$we.eBH < 0.05)))
+#text(-9.6,345, label=length(which(x.sens[[5]]$we.eBH < 0.05)))
+#text(-12.2,345, label=length(which(x.sens[[4]]$we.eBH < 0.05)))
+#text(-14.8,345, label=length(which(x.sens[[3]]$we.eBH < 0.05)))
+#text(-17.4,345, label=length(which(x.sens[[2]]$we.eBH < 0.05)))
+#text(-20,345, label=length(which(x.sens[[1]]$we.eBH < 0.05)))
+#text(-6.9,355, label="N significant")```
+
+```{r dispersion, echo=F, warning=F, message=F,comment=F, result=F, cache=T,fig.dim=c(7,3), fig.cap="Plot of abundance v dispersion for a typical transcriptome dataset as counts,	 as logarithms of counts, and as CLR values. Panel A shows that the data are over-dispersed relative to a Poisson distribution which is represented by the dashed line when plotted on a log-log scale. Panel B shows that the relationship between the mean and the dispersion calculated in DESeq2, here the standard error (SE) of the mean, is very different when the data are log-transformed first. Panel C shows the equivalent values calculated by ALDEx2	 in which the expected CLR value for each transcipt are plotted vs. the expected dispersion. Panel D shows the output for ALDEx2 with \\( \\gamma=0.5 \\). The red line in each panel shows the LOESS line of fit to the mid-point of the distributions. In panels B and C the amount of dispersion reaches a minimum at moderate	 values.  The dashed orange line in panel A is the line of equivalence, and in panel B and C is the minimum y value. The values below the dashed grey line in panels B and C represent those below the first decile of dispersion." }
+
+
 url <- "https://raw.githubusercontent.com/ggloor/datasets/main/transcriptome.tsv"
 yst <- read.table(url, header=T, row.names=1)
-url <- "https://raw.githubusercontent.com/ggloor/datasets/main/meta16S.tsv"
-rRNA <- read.table(url, header=T, row.names=1, sep='\t')
-url <- "https://raw.githubusercontent.com/ggloor/datasets/main/singleCell.tsv"
-ss <- read.table(url, header=T, row.names=1, sep='\t')
-ss <- ss[,c(1:100,1502:1601)]
 # remove the one gene with 0 reads
+
 yst <- yst[rownames(yst) != "YOR072W-B",]
+
 # Gierlinski:2015aa
 yst[,c('SNF2.6', 'SNF2.13','SNF2.25','SNF2.35')] <- NULL 
 yst[,c('WT.21','WT.22','WT.25','WT.28','WT.34','WT.36')] <- NULL  
 
-HS <- apply(selex+0.5, 2, function(x)  H(x) )
-GS <- apply(selex+0.5, 2, function(x) G(x) )
+conds <- c(rep('S', 44), rep('W', 42))
+coldata <- data.frame(conds)
 
-HY <- apply(yst+0.5, 2, function(x) H(x) )
-GY <- apply(yst+0.5, 2, function(x) G(x) )
+# DESeq2
+load('analysis/res.Rda')
 
-HM <- apply(ko.both+0.5, 2, function(x) H(x) )
-GM <- apply(ko.both+0.5, 2, function(x) G(x) )
+#ALDEx2
+load('analysis/x.all.Rda')
+load('analysis/x.s.all.Rda')
 
-H16 <- apply(rRNA+0.5, 2, function(x)  H(x) )
-G16 <- apply(rRNA+0.5, 2, function(x) G(x) )
+# with gamma = 1
+load('analysis/x.s.all.Rda')
+sig.des <- which(res@listData$padj < 0.05)
+sig.ald <- which(x.all$we.eBH < 0.05)
+sig.s.ald <- which(x.s.all$we.eBH < 0.05)
 
-Hss <- apply(ss+0.1, 2, function(x) H(x) )
-Gss <- apply(ss+0.1, 2, function(x) G(x) )
+# get and plot mean/var or mean/SE for counts
+# and log counts
+yst.mn <- apply(yst, 1, mean)
+yst.mn.log <- apply(yst, 1, function(x) mean(log2(x)))
+yst.mn.log[is.infinite(yst.mn.log)] <- 0
 
-par(mfrow=c(2,3))
-plot(HS, GS, ylab="Geometric mean", xlab="Shannon's entropy",
-  pch=c(rep(19,7),rep(1,7)), col=rgb(0,0,0,0.5))
-title(main='selex')
+yst.v <- apply(yst, 1, var)
 
-plot(HY,GY, 
-  ylab="Geometric mean", xlab="Shannon's entropy", pch=c(rep(19,44),rep(1,42)),
-  col=rgb(1,0.6,0,0.5))
-title(main='transcriptome')
+par(mfrow=c(1,4))
+plot(log2(yst.mn), log2(yst.v), pch=19, cex=0.5, col=rgb(0,0,0,0.2),
+  xlab='Mean count', ylab='Variance')
+#points(log2(yst.mn[sig.des]), log2(yst.v[sig.des]), pch=19, cex=0.5, col='orange')
+def <- data.frame(log2(yst.mn),log2(yst.v))
+lines(lowess(def, f=0.1), col=2, lwd=2)
+title('A', adj=0, line= 0.8)
+abline(0,1, col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
 
-plot(HM, GM, col=rgb(1,0,0,0.5), pch=c(rep(1,8), rep(19,28), rep(1,8)), 
-  ylab="Geometric mean", xlab="Shannon's entropy")
-title(main='meta-transcriptome')
+l.df <- data.frame(yst.mn.log, res@listData$lfcSE)
+plot(l.df, pch=19, cex=0.5, col=rgb(0,0,0,0.2),
+  xlab='Mean log2(count)', ylab='SE log2(count)',ylim=c(0,0.4))
+lines(lowess(l.df, f=0.25), col=2, lwd=2)
+abline(h=min(lowess(l.df)$y), col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
+ abline(h=0.0275, col='grey', lty=2)
+title('B', adj=0, line= 0.8)
 
-plot(H16,G16, col=rgb(0,1,1,0.5),
-  pch=c(rep(1,198), rep(19,161)), 
-  ylab="Geometric mean", xlab="Shannon's entropy")
-title(main='16S rRNA')
+l.df <- data.frame(x.all$rab.all, x.all$diff.win)
+plot(x.all$rab.all, x.all$diff.win, cex=0.5, col=rgb(0,0,0,0.2),
+  xlab='E(clr)', ylab='E(disp)')
+#points(x.all$rab.all[sig.ald], x.all$diff.win[sig.ald], col='orange', cex=0.4)
+lines(lowess(l.df, f=.1), col=2, lwd=2)
+abline(h=min(lowess(l.df)$y), col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
+ abline(h=0.208, col='grey', lty=2)
+title('C', adj=0, line= 0.8)
 
-plot(Hss,Gss, col=rgb(0.5,1,0,0.5),
- pch=c(rep(1,100), rep(19,100)), 
-  ylab="Geometric mean", xlab="Shannon's entropy")
-title(main="single cell")
-
-# empty plot for legend
-plot(selex[,1], selex[,2], xlab=NA, ylab=NA, axes=F,xlim=c(-10,-1), ylim=c(-10,-1))
-legend(-10,-1, legend=c('selex', 'transcriptome','metatranscriptome', '16S', 'SS', 'low entropy group', 'high entropy group'),
-  col=c('darkgrey', 'orange', 'red', 'cyan', 'greenyellow','grey','grey'), pch=c(19,19,19,19,19,1,19))
-  
+l.s.df <- data.frame(x.s.all$rab.all, x.s.all$diff.win)
+plot(x.s.all$rab.all, x.s.all$diff.win, cex=0.5, col=rgb(0,0,0,0.2),
+  xlab='E(clr)', ylab='E(disp)', ylim=c(0,4.5))
+#points(x.s.all$rab.all[sig.ald], x.s.all$diff.win[sig.ald], col='orange', cex=0.4)
+lines(lowess(l.s.df, f=.1), col=2, lwd=2)
+abline(h=min(lowess(l.s.df)$y), col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
+ abline(h=0.208, col='grey', lty=2)
+title('D', adj=0, line= 0.8)
 ```
 
-The table below summarizes the mean values for, and the correlation between, \( G \) and \( H \)  (cor)  and the sparsity defined as the proportion of features with less than 1 count per sample (spar) for each association in each group of samples:
+The variance or dispersion always increases with increasing raw (or normalized) read count but decreases when measured on the log-ratio transformed data [@fernandes:2013;@Love:2014aa], reaching a minimum at some mid-point of the distribution. This makes the counter-intuitive suggestion that genes with moderate expression have more predictable expression than genes with very high expression such as housekeeping genes. This is at odds with the known biology of cells where single cell counting of housekeeping transcripts shows that they are both highly expressed and have little intrinsic variation [@Taniguchi:2010aa]. Furthermore, the dispersion is exceeding small being, for many transcripts, almost negligible. To show this point more clearly, the majority of the transcripts in the lowest decile of dispersion indicated below the dashed grey line are statistically significantly different (75\% with DESeq2, 69\% with ALDEx2), suggesting that low dispersion estimates lead to many false positives.  Indeed, benchmarking and comparison studies  repeatedly show that the choice of normalization plays a role in which results are returned as significant [@maza2013;@Dillies:2013;@Weiss:2017aa]. From the perspective of Nixon et al. [-@nixon2023scale], it is reasonable to conclude that some of these results may be due to the choice of normalization.
 
-| Dataset | group | \(\overline{G}\) | \( \overline{H} \) | cor | spar |
-|---------|-------|---|---|-----|-------|
-| Selex   | control | -11.2 | 10.2 | 0.99 | 0 |
-| $~~~$"  | selected | -17.8 | 2.8 | -0.88 | 0.802 |
-| yeast   | snf2 ko  | -14.0 | 10.7 | 0.99 | 0.004 |
-| $~~~$"  | WT    | -14.2 | 10.4 | 0.99 | 0.007 |
-| Meta    | H     | -18.8 | 8.6 | 0.78 | 0.451 |
-| $~~~$"  | BV   | -18.2 | 8.9 | 0.79 | 0.238 |
-| 16S     | Pup   | -14.7 | 5.4 | 0.68 | 0.079 |
-| $~~~$"  | Cent | -15.2 | 5.4 | 0.53 | 0.251 |
-| SS      | A     | -13.0 | 8.2 | 0.83 | 0.978 |
-| $~~~$"  | B    | -12.9 | 8.3 | 0.80 | 0.977 |
+While not necessary in all datasets (e.g., the transcriptome example discussed in the previous section and see the Supplementary material), it can greatly improve modeling in certain cases, especially when the scale is highly asymmetric between conditions. In order to specify a scale model from scratch, we need to revisit the concept that all normalizations in widespread use are actually ratios with the denominator implied by the normalization. Therefore, we can easily deviate from a certain normalization (e.g., the geometric mean assumption implied by the CLR) by specifying a total model based on the mean difference between conditions. While knowing the mean difference between conditions may seem cumbersome in practice, it is the \emph{relationship} between the group scale values that is important, not their raw values (Nixon et al. 2023). This can be illustrated quite simply by starting with the mean ratio in \(G\) between groups for the yeast transcriptome dataset which are \(6.05\times 10^{-5}\) for snf2 and \(5.08\times 10^{-5}\) for WT; their ratio being 1.17, or a 0.17-fold difference. Using this information, we can recapitulate the differential abundance analysis in Figure 2B and 2C exactly by using setting the mean denominator of group 1 to 1, and group 2 to 1.17 with a gamma of 0.5 as shown in Supplemental Figure 2. This ratio can be adjusted to alter the mean assumption placed on the group scale values. 
 
 We can see that for most datasets the difference between the \(\overline{G}\) in each group is relatively small. Most significantly, the selex dataset has a very large difference of about 100-fold, and both the 16S and the metatranscriptome dataset have about a 1.5 fold difference. These three datasets are candidates for a full scale model correction.
 
@@ -299,98 +196,42 @@ Figure 3 shows an effect plot of various scale models with this dataset. The ful
 
 ```{r selex, eval=T, echo=F, warning=F, message=F,comment=F, fig.cap="Effect plots of the selex dataset with various gamma and scale parameters. All scales are calculated with a logNormal distribution to ensure symmetry for the user. "}
 
-conds <- c(rep('NS',7), rep('S',7))
-
-x.all <- aldex(selex, conditions=conds, CI=T, gamma=0.5)
-
-sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(10,10), conds)
-x.1.all <- aldex(selex, conditions=conds, CI=T, gamma=sel.mu)
-
-# setting ratio as 1:50 explicitly
-#sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(1,50), conds, log=FALSE)
-scale <- c(rep(1,7), rep(50,7)) 
-sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=scale, conds, log=FALSE)
-x.5.all <- aldex(selex, conditions=conds, CI=T, gamma=sel.mu)
-
-# setting ratio in log space
-# 2^-5.64 : 2^0  = 0.02 : 1
-# this also works, but reversed because of factor()  
-# sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=c(0,-5.64), conds, log=TRUE)
-scale <- c(rep(-5.6,7), rep(0,7))
-sel.mu <- aldex.makeScaleMatrix(gamma=0.5, mu=scale, conds, log=TRUE)
-
-x.2.all <- aldex(selex,conditions=conds, CI=T, gamma=sel.mu)
+# from selex.aldex.mu.R
+load(file="analysis/sel.2.all.Rda")
+load(file="analysis/sel.5.all.Rda")
+load(file="analysis/sel.1.all.Rda")
+load(file="analysis/sel.all.Rda")
 
 par(mfrow=c(1,4))
-aldex.plot(x.all, main=('gamma=0.5\nmu=G'))
-aldex.plot(x.1.all, main=('gamma=0.5\nmu=1,1'))
-aldex.plot(x.5.all, main=('gamma=0.5\nmu=1,50'))
-aldex.plot(x.2.all, main=('gamma=0.5\nmu=0.02, 1'))
+aldex.plot(sel.all, main=('gamma=0.5\nmu=G'))
+aldex.plot(sel.1.all, main=('gamma=0.5\nmu=1,1'))
+aldex.plot(sel.5.all, main=('gamma=0.5\nmu=1,50'))
+aldex.plot(sel.2.all, main=('gamma=0.5\nmu=0.02, 1'))
 ```
 
 # How scaling affects dispersion
 
-Thus far we have observed that adding scale uncertainty increases the minimum dispersion value with little effect on the difference between values as in panel A. Panel B shows the change in dispersion relative to the rAbundance of the features. Here we can see that the minimum dispersion is increased as gamma increases. The horizontal lines show the median value for the features with a rAbundance between -0.5 and 0.5. Panel C shows that this increase is non-linear, being more pronounced among those features that had minimal dispersion when gamma=0. Panel D shows that increasing gamma actually shrinks the dispersion estimates towards the mean dispersion, while increasing the total dispersion as shown in panel C.
-
-Thus, adding scale uncertainty has two effects both on dispersion. The first is to increase the dispersion estimate for each part and this has its primary effect to reduce the  p-values and standardized effect sizes returned by ALDEx2. The second is to reduce the range of dispersions such that the parts with the lowest dispersions have the greatest increase. This increase in dispersion comes about because the underlying distributions are widened because of the additional uncertainty added by the inclusion of scale uncertainty.
-
-```{r disp, eval=T, echo=F, warning=F, message=F,comment=F, fig.cap="jnk"}
-yst.conds <- c(rep('S',44),rep('W',42))
-x <- aldex.clr(yst, yst.conds, gamma=NULL)
-xs <- aldex.clr(yst, yst.conds, gamma=0.5)
-x1 <- aldex.clr(yst, yst.conds, gamma=1)
-
-x.e <- aldex.effect(x)
-xs.e <- aldex.effect(xs)
-x1.e <- aldex.effect(x1)
-
-par(mfrow=c(2,2))
-# we imperceptibly change difference
-plot(x.e$diff.btw, x1.e$diff.btw, xlab='diff g=0', ylab='diff g=1')
-abline(0,1, col='grey', lwd=2, lty=2)
-title(main='A', line=-1.2, adj=0.5)
-#=-1
-cuts <- x.e$rab.all > -0.5 & x.e$rab.all < 0.5
-# the residual of the 
-mn.mid <- median(x.e$diff.win[cuts])
-mn.mid.s <- median(xs.e$diff.win[cuts])
-mn.mid.1 <- median(x1.e$diff.win[cuts])
-
-# we change dispersion a lot for the bulk of the features
-plot(x.e$rab.all, x.e$diff.win, pch=19, cex=0.5, col=rgb(0,0,0,0.3),
-  xlab='rAbundance', ylab='dispersion')
-points(xs.e$rab.all, xs.e$diff.win, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
-points(x1.e$rab.all, x1.e$diff.win, pch=19, cex=0.5, col=rgb(0,0,1,0.3))
-abline(h=mn.mid, lty=2)
-abline(h=mn.mid.s, lty=2, col='red')
-abline(h=mn.mid.1, lty=2, col='blue')
-title(main='B', line=-1.2, adj=0.5)
-
-plot(x.e$diff.win, x1.e$diff.win, pch=19, cex=0.5, col=rgb(0,0,0,0.3), ylim=c(0,4.5), 
-  xlab='g=0 dispersion', ylab='g=0.5 | g=1 dispersion')
-points(x.e$diff.win, xs.e$diff.win, pch=19, cex=0.5, col=rgb(1,.4,.1,0.3))
-abline(0,1, lty=2)
-title(main='C', line=-1.2, adj=0.5)
-
-strip.data <- list(x.e$diff.win[cuts] - mn.mid, xs.e$diff.win[cuts] - mn.mid.s, x1.e$diff.win[cuts] - mn.mid.1)
-
-stripchart( strip.data, col=c(rgb(0,0,0,0.3), rgb(1,0,0,0.3), rgb(0,0,1,0.3)), vertical=T, method='jitter', pch=19, group.names=c('g=0', 'g=0.5', 'g=1'), ylab='residual dispersion')
-title(main='D', line=-1.2, adj=0.5)
-
+```{r, echo=F}
+load(file="analysis/yst.all.Rda")
+load(file="analysis/yst.s.all.Rda")
+load(file="analysis/yst.1.all.Rda")
 ```
+
 
 
 # Issues with DESeq2 and edgeR
 
 DESeq2 and edgeR are two of the most commonly used tools for differential abundance analysis of bule RNA sequencing datasets. They both operate by finding a scaling factor that makes all the samples commesurate. DESeq2 does this by finding a midpoint feature that can be used as a reference in each sample; this can be different for different samples. The edgeR reference finds the midpoint of the 'typical' sample instead. In both cases the data are then scaled by dividing by a small factor that makes the read counts commesurate. Differential abundance analysis is then performed on the scaled values after taking their logarithm to base 2. In some ways this is similar to the log-ratio approach used by ALDEx2, but is more prone to dataset and sample effects than is the log-ratio method [@GloorAJS2023] 
 
-```{r DESedg, eval=T, echo=F, fig.cap="Shown here are the mean log2 fold change as a density plot, and a Volcano plot showing the location and adjusted p-value for each feature in the metatranscriptomic dataset. The DESeq2 approach does a good job of centring this data, while edgeR is less suitable. The volcano plots show dramatically different outcomes. The DESeq2 algorithm assigns very large fold changes to features that have only moderate change, and further identifies a very large proportion of features as significantly different. In contrast, edgeR exhibits a much smaller number of differentially abundant features. In both volcano plots, the housekeeping genes in the main Figure 3 are shown in orange. We can see that these are asymmetrically distributed in both plots. Additionally the location of the features taht DESeq2 identified as having a very large difference are shown in the edgeR volcano plot as blue circles."}
+```{r DESedg, eval=T, echo=F, fig.cap="Shown here are the mean log2 fold change as a density plot, and a Volcano plot showing the location and adjusted p-value for each feature in the metatranscriptomic dataset. The DESeq2 approach does a good job of centring this data, while edgeR is less suitable. The volcano plots show dramatically different outcomes. The DESeq2 algorithm assigns very large fold changes to features that have only moderate change, and further identifies a very large proportion of features as significantly different. In contrast, edgeR exhibits a much smaller number of differentially abundant features. In both volcano plots, the housekeeping genes in the main Figure 3 are shown in orange. We can see that these are asymmetrically distributed in both plots. Additionally the location of the features that DESeq2 identified as having a very large difference are shown in the edgeR volcano plot as blue circles."}
 
 # find housekeeping from ALDEx2
 
 load('analysis/xt.m.Rda')
 load('analysis/xt.Rda')
-hk.off <- xt.all$diff.win < 5 & xt.all$diff.btw > 0 & xt.all$diff.btw < 3
+load('analysis/xg.Rda')
+hk <- rownames(xt.all)[xt.all$diff.win < 2.5 & xt.all$diff.btw > 1 & xt.all$diff.btw < 3]
+hk.off <- xt.all$diff.win < 2.5 & xt.all$diff.btw > 1 & xt.all$diff.btw < 3
 
 load('analysis/meta.DES.res.Rda')
 load('analysis/meta.edge.qlf.Rda')
@@ -448,6 +289,23 @@ Examining the plots, edge R clearly not centred with the median housekeeping fun
 
 DESeq2 is better centred with median housekeeping functions offset by `r median(meta.DES.res@listData$log2FoldChange[hk.off==T])` but the minimum FDR value  is `r min(meta.DES.res@listData$padj[hk.off==T])`. In addition there are a large number of functions with 0 variance, these are very low count functions with very high sparsity in the dataset. These are not differential in the DESeq2 analysis. However, there are a number of functions in the DESeq2 analysis that are very differentially abundant, with a log2 fold change of < -20. Examination of the raw counts shows that these are uniformly 0 or 1 in the H dataset, and present at high counts in some, but not all of the BV dataset. That these stand out is odd, since inspection of the count table shows that there are many other functions that are missing from the H dataset, and have higher and more uniform counts in the BV dataset. Thus, the importance of the outlier functions seen in the DESeq2 volcano plot should be viewed with suspicion and may be an artefact of the normalization used. When overplotted on the edgeR volcano plot (blue), it is clear that these functions have non-signficant p-values.
 
+```{r eval=T, echo=F, fig.cap="Shown here are two volcano plots that plot the mean log2 fold change plotted vs the log of the FDR for the yeast transcriptome dataset and for the metatranscriptome dataset. Data were generated in ALDEx2 with \\(\\gamma = [0, 0.5] \\) in black or in red."}
+
+par(mfrow=c(1,2))
+plot(yst.all$diff.btw, -log10(yst.all$we.eBH +1e-70), pch=19, cex=0.5, col=rgb(0,0,0,0.3), 
+  ylab='-log10(FDR)', xlab="log2(diff)", main='yeast')
+points(yst.s.all$diff.btw, -log10(yst.s.all$we.eBH + 1e-20), pch=19, cex=0.5, col=rgb(1,0,0,0.3))
+legend(4,60, legend=c("gamma=0", "gamma=0.5"), pch=19, cex=0.5, col=c("black", "red"))
+
+plot(xt.all$diff.btw, -log10(xt.all$we.eBH), pch=19, cex=0.5, col=rgb(0,0,0,0.3),
+  ylab='-log10(FDR)', xlab="log2(diff)", main='meta')
+points(xg.all$diff.btw, -log10(xg.all$we.eBH), pch=19, cex=0.5, col=rgb(1,0,0,0.3))
+
+```
+
+Adding a small amount of scale, \(\gamma=0.5\), has a major effect on the volcano plot for the yeast transcriptome dataset, but mimimal effect on the vaginal metatranscriptome dataset.  In both datasets the FDR values are raised, but no effect is observed on the difference between values. However, the concordance between the FDR values and the difference between become very tight for the yeast transcriptome dataset, but the concordance is not visibly unchanged for the other dataset. This is likely because both the difference between and the dispersion were both very small in the former and substantially larger in the latter.
+
+
 # Checking the scale assumptions of the RLE and TMM normalizations
 
 We can show that the normalizations built into the edgeR Bioconductor package (RLE, TMM, TMMwsp, upperquantile) are scale assumptions by using the normalization factor as an input to `aldex.makeScaleMatrix()` and then measure the mean location of the data as above. The ideal behavior of a normalization is that the mean location of the data should be close to 0 or unchanged. This behavior will ensure that Type 1 and Type 2 errors due to scale assumptions are minimized. 
@@ -466,6 +324,67 @@ knitr::kable(norm.data.out, 'simple', caption='Log scale models')
 
 load('analysis/normalizations.nl.Rda')
 knitr::kable(norm.nl.data.out, 'simple', caption='Linear scale models')
+```
+
+Thus far we have observed that adding scale uncertainty has a negligible effect on either the differences between groups or the relative abundance measure with a correlation of `r round(cor(yst.all$diff.btw, yst.1.all$diff.btw), 3)` and `r round(cor(yst.all$rab.all, yst.1.all$rab.all), 3)`. The effect is entirely restricted to the dispersion estimats as shown below.  Panel A shows the change in dispersion relative to the rAbundance of the features. Here we can see that the minimum dispersion is increased as gamma increases. The horizontal lines show the median value for the features with a rAbundance between -0.5 and 0.5. Panel B shows that this increase is non-linear, being more pronounced among those features that had minimal dispersion when gamma=0. Panel C shows that increasing gamma rotates the dispersion estimates at high relative abundances, such that housekeeping genes no longer have larger mean dispersions (rAB > 5) than do regulated genes (rAB >0, < 5). Overplotted are the lowess lines of fit through the densities of transcripts that are judged as significantly different using either scaled or unscaled data, and with or without thresholding. Statistical significance was determined with a FDR < 0.05.
+
+Thus, adding scale uncertainty has two effects both on dispersion. The first is to increase the dispersion estimate for each part and this has its primary effect to reduce the  p-values and standardized effect sizes returned by ALDEx2. The second is to reduce the range of dispersions, and rotate them such that the parts with the lowest dispersions have the greatest increase. This increase in dispersion comes about because the underlying distributions are widened with the inclusion of scale uncertainty.
+
+```{r disp, eval=T, echo=F, warning=F, message=F,comment=F, fig.cap="Adding scale uncertainty changes the dispersion distribution. Panel A shows a plot of the expected value for relative abundance vs the expected value for the pooled dispersion as output by aldex.effect. The dashed  horizontal lines show the median value for the features with a rAbundance between -0.5 and 0.5. Panel B plots the unscaled vs scaled dispersion, note the non-linear relationship. Panel C plots relative abundance vs the  difference between dispersion with gamma set to 0 and to 1 to highlight the rotation that is evident in Panel A. The colored lines indicate the lowess line of fit through the centre of mass of the plot. Line colors represent different populations of points. The grey line is the total population, the red line is the population of significant transcripts with no scale, the orange line is the population of significant transcripts with a difference threshold of about 2.5-fold change, the blue line is the population of significant transcripts with gamma =0.5, and the cyan line is the significant population with gamma = 1.  "}
+
+cuts <- yst.all$rab.all > -0.5 & yst.all$rab.all < 5
+par(mfrow=c(1,3))
+mn.mid <- median(yst.all$diff.win[cuts])
+mn.mid.s <- median(yst.s.all$diff.win[cuts])
+mn.mid.1 <- median(yst.1.all$diff.win[cuts])
+
+# we change dispersion a lot for the bulk of the features
+plot(yst.all$rab.all, yst.all$diff.win, pch=19, cex=0.5, col=rgb(0,0,0,0.3),
+  xlab='rAbundance', ylab='dispersion')
+points(yst.s.all$rab.all, yst.s.all$diff.win, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
+points(yst.1.all$rab.all, yst.1.all$diff.win, pch=19, cex=0.5, col=rgb(0,0,1,0.3))
+abline(h=mn.mid, lty=2)
+abline(h=mn.mid.s, lty=2, col='red')
+abline(h=mn.mid.1, lty=2, col='blue')
+title(main='A', line=-1.2, adj=0.5)
+legend(0,4, legend=c("0", "0.5", "1"), 
+  pch=19, col=c("black", "red", "blue"))
+
+plot(yst.all$diff.win, yst.1.all$diff.win, pch=19, cex=0.5, col=rgb(0,0,1,0.3), ylim=c(0,4.5), 
+  xlab='g=0 dispersion', ylab='g=0.5 | g=1 dispersion')
+points(yst.all$diff.win, yst.s.all$diff.win, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
+abline(0,1, lty=2)
+title(main='B', line=-1.2, adj=0.5)
+legend(0,4, legend=c( "0.5", "1"), 
+  pch=19, col=c("red", "blue"))
+
+sig.all <- yst.all$we.eBH < 0.05
+sig.t <- yst.all$we.eBH < 0.05 & abs(yst.all$diff.btw) > 1.4
+sig.s <- yst.s.all$we.eBH < 0.05
+sig.1 <- yst.1.all$we.eBH < 0.05
+
+diff.df <- data.frame(yst.all$rab.all, 
+  yst.1.all$diff.win- yst.all$diff.win)
+sig.df <- data.frame(yst.all$rab.all[sig.all],
+   yst.1.all$diff.win[sig.all]- yst.all$diff.win[sig.all])
+sig.t.df <- data.frame(yst.all$rab.al[sig.t], 
+  yst.1.all$diff.win[sig.t] - yst.all$diff.win[sig.t])
+sig.s.df <- data.frame(yst.all$rab.all[sig.s], 
+  yst.1.all$diff.win[sig.s] - yst.all$diff.win[sig.s])
+sig.1.df <- data.frame(yst.all$rab.all[sig.1], 
+  yst.1.all$diff.win[sig.1]- yst.all$diff.win[sig.1])
+
+plot(yst.all$rab.all, yst.1.all$diff.win- yst.all$diff.win, xlab='rAbundance', ylab="disp:1 - disp:0", pch=19, cex=0.5)
+title(main='C', line=-1.2, adj=0.5)
+lines(lowess(diff.df, f=0.1), col='grey60', lwd=3)
+lines(lowess(sig.df, f=0.1), col='red', lwd=3)
+lines(lowess(sig.t.df, f=0.5), col='orange', lwd=3)
+lines(lowess(sig.s.df, f=0.5), col='royalblue', lwd=3)
+lines(lowess(sig.1.df, f=0.7), col='cyan', lwd=3)
+
+legend(-10,1.3, legend=c( "diff", "sig diff", "t + sig","0.5 sig", "1 sig"), 
+  pch="-", col=c("grey", "red", "orange", "royalblue", "cyan"))
+
 ```
 
 # References

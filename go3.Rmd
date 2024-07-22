@@ -10,220 +10,303 @@ author:
     affiliation: College of Information Sciences and Technology, Pennsylvania	 State University
   - name: Justin Silverman
     affiliation: College of Information Sciences and Technology and Department of Medicine, Pennsylvania	 State University
+citeproc: TRUE
+cite-method: citeproc
 bibliography: /Users/ggloor/Library/texmf/bibtex/bib/bibdesk_refs.bib
+csl: /Users/ggloor/Documents/0_git/csl_styles/nucleic-acids-research.csl
+pdf-engine: latex
 output:
-  nucleic-acids-research.csl: pdf_document
+  pdf_document 
+header-includes:
+  - \usepackage{setspace}
 package: ALDEx2
-abstract: In many high-throughput sequencing (HTS) studies, sample-to-sample variation  in sequencing depth is  not driven by  variation in the scale (e.g., total size, microbial load, or total gene  expression) of the underlying biological systems being measured but rather is driven by technical factors. Typically the technical variation  is addressed using some form of statistical normalization.  Normalizations are data or parameter transformations that remove unwanted  technical variation in the hopes of facilitating analyses sensitive to scale;  e.g., differential abundance and differential expression analyses. Recently we  showed that any normalization makes implicit assumptions about the unmeasured  system scale and that errors in these assumptions can lead to dramatic increases in  false positive and false negative rates. Here we describe updates to the ALDEx2 R  package that mitigate these problems by directly modeling uncertainty in the  unmeasured system scale through the use of a \textit{scale model}. Scale  models generalize the idea of normalizations and can be thought of as  explicitly modeling potential error in the chosen normalization. Beyond  enhancing the robustness of HTS analyses, the use of scale models within ALDEx2   enhances the transparency and reproducibility of analyses by making implicit  normalizing assumptions an explicit part of the model building process.
----
+abstract: In  high-throughput sequencing (HTS) studies, sample-to-sample variation in sequencing depth is driven by technical factors, and not by variation in the scale (e.g., total size, microbial load, or total gene expression) of the underlying biological systems. Typically a statistical normalization is used  to remove unwanted technical variation in the data or the parameters of the model to enable analyses that are sensitive to scale; e.g., differential abundance and differential expression analyses. Recently we showed that all normalizations make implicit assumptions about the unmeasured system scale and that errors in these assumptions can lead to dramatic increases in false positive and false negative rates. Here we describe updates to the ALDEx2 R package that mitigate these problems by directly modeling uncertainty in the unmeasured system scale through the use of a \textit{scale model}. Scale models generalize the idea of normalizations and can be thought of as explicitly modeling the error in normalization by examining a distribution over all possible  normalizations.  Beyond enhancing the robustness of HTS analyses,  the use of scale models within ALDEx2 enhances the transparency and  reproducibility of analyses by making implicit normalizing assumptions an explicit part of the model building process.
 
+---
+  
 # Introduction
 
-High-throughput sequencing (HTS) is a ubiquitous tool used to explore many biological phenomenon such as gene expression (single-cell sequencing, RNA-sequencing, meta-transcriptomics), microbial community composition (16S rRNA gene sequencing, shotgun metagenomics) and differential enzyme activity (selex, CRISPR killing). HTS proceeds by taking a sample from the environment, making a library, multiplexing (merging) multiple libraries together, and then applying a sample of the multiplexed library to the flow cell. Each of these steps can be though of as a sampling step: a pool of DNA that could be measured is sampled and only that subsampled DNA is carried over to subsequent steps. Within each sampling step, the connection between the size of the sampled DNA pool and the scale (e.g., size, microbial load, or total gene expression) of the measured biological system is degraded or lost. Increasingly, researchers are turning to modified experimental protocols (e.g., DNA spike-ins or cell counting) in an attempt to recover the lost biological variation in scale; see for example [@Vandeputte:2017aa;@Props:2017aa]. However, these protocols often do not recover meaningful biological variation but instead recover scale variation at some intermediate step in the sample preparation protocol (e.g., at the stage where the DNA spike-in was added). In short, the disconnect between sample-to-sample variation in sequencing depth and biological variation in scale remains an outstanding challenge. 
+High-throughput sequencing (HTS) is a ubiquitous tool used to explore
+many biological phenomenon such as gene expression (single-cell
+sequencing, RNA-sequencing, meta-transcriptomics), microbial community
+composition (16S rRNA gene sequencing, shotgun metagenomics) and
+differential enzyme activity (selex, CRISPR killing). HTS proceeds by
+taking a sample from the environment, making a library, multiplexing
+(merging) multiple libraries together, and then applying a sample of the
+multiplexed library to the flow cell. Each of these steps is a 
+compositional sampling step as only a fixed-size subsample of nucleic acid is 
+carried over to subsequent steps. Thus, with
+each sampling step the connection between the size of the sampled DNA
+pool and the scale (e.g., size, microbial load, or total gene
+expression) of the measured biological system is degraded or lost.
+Increasingly, researchers are turning to modified experimental protocols
+(e.g., DNA spike-ins or cell counting) in an attempt to recover the lost
+biological variation in scale; see for example  [@Vandeputte:2017aa;@Props:2017aa]. 
+However, these protocols often do not recover
+meaningful biological variation but instead recover scale variation at
+the intermediate step in the sample preparation protocol where the DNA spike-in was added. 
+In short, the disconnect
+between sample-to-sample variation in sequencing depth and biological
+variation in scale remains an outstanding challenge.
 
-Biological variation in scale can represent an important unmeasured confounder in HTS analyses [@Lovell:2015]. For example, cells transformed by the cMyc oncogene have about 3 times the amount of mRNA and about twice the rRNA content than  non-transformed cells [@Nie:2012aa], and this dramatically skews transcriptome analysis [@Loven:2012aa]. In addition, wild-type and mutant strains of cell lines, yeast or bacteria often have different growth rates, which would affect our ability to identify truly differentially abundant genes [@Yoshikawa:2011aa]. As another example, the total bacterial load of the vaginal microbiome differs by 1-2 orders of magnitude in absolute abundance between the healthy and bacterial vaginosis states [@Zozaya:2010], and the composition between these states is dramatically different [@Ravel:2010;@Hummelen:2010]. Thus, a full description of these systems includes both relative change (composition) and absolute abundance (scale), yet current methods access only the compositional information. 
+The analysis of  HTS data suffers from several known problems that can be
+traced, in whole or in part, to  misspecification of scale. The first issue 
+is poor control of the false discovery rate (FDR) [@Thorsen:2016aa;@Quinn:2018aa], 
+  exhibited as dataset-dependent 
+FDR control.  The FDR problem is connected to the double-filtering approach
+that is often used, but which is known not to have appropriate FDR control 
+[@Zhang:2009aa;@Ebrahimpoor:2021aa]. The second issue is poor performance when 
+analyzing asymmetric data; data that arises because of a bias in the direction of change.
+This type of data frequently arises in in-vitro selection experiments (SELEX), 
+transcriptome analysis, and microbiome analysis [@Wu2021]. The third issue is that these
+problems become more pronounced as more samples are collected; that is,
+more information results in a worsening of the accuracy of the analysis [@nixon2023scale,@Nixon2024B]. 
+The final problem is that these data are relative data, i.e. compositional, 
+and substantial effort has been put into removing this constraint.
 
-To be more concrete, let \(\mathbf{Y}\) denote an \(D \times N\) matrix of sequence counts with elements \(\mathbf{Y}_{dn}\) denoting the number of measured DNA molecules mapping to feature \(d\) (e.g., a taxon or gene) in sample \(n\). Let \(\mathbf{W}\) also represent a \(D \times N\) matrix but with elements \(\mathbf{W}_{dn}\) representing the true (as opposed to measured) amount of class \(d\) in the biological system from which sample \(n\) was obtained. Succinctly, \(\mathbf{Y}\) denotes the observed HTS data whereas \(\mathbf{W}\) denotes the true counts in the system under study. We can think of \(\mathbf{W}\) as consisting of two parts, the scale \(\mathbf{W}^{\perp}\) (e.g., totals) and the composition \(\mathbf{W}^{\parallel}\) (i.e., proportions). That is, \(\mathbf{W}^{\perp}\) is a \(N\)-vector with elements \(\mathbf{W}^{\perp}_{n}=\sum_{d}\mathbf{W}_{dn}\) while \(\mathbf{W}^{\parallel}\) is a \(D \times N\) matrix with elements \(\mathbf{W}^{\parallel}_{dn}=\mathbf{W}_{dn}/\mathbf{W}^{\perp}_{n}\). Note that with these definitions \(\mathbf{W}\) can be written as the element-wise combination of scale and composition: \(\mathbf{W}_{dn}=\mathbf{W}^{\parallel}_{dn}\mathbf{W}^{\perp}_{n}\). The technical variation in sequencing depth (\(\mathbf{Y}^{\perp}_{n}=\sum_{d}\mathbf{Y}_{dn}\)) implies that observed data \(\mathbf{Y}\) provides us with information about the system composition \(\mathbf{W}^{\parallel}\) but little to no information in the system scale \(\mathbf{W}^{\perp}\) (Lovell et al. 2011).  
+The first three problems were recently shown by Nixon and Silverman [@nixon2023scale] to be a result of a mismatch between the underlying size or scale of the system and the assumptions of the normalizations used for the analysis of HTS.  Biological variation in scale often represents an important unmeasured confounder in HTS analyses [@Lovell:2015]. For example, cells transformed by the cMyc oncogene have about 3 times the amount of mRNA and about twice the rRNA content than  non-transformed cells [@Nie:2012aa], and this dramatically skews transcriptome analysis [@Loven:2012aa]. In addition, wild-type and mutant strains of cell lines, yeast or bacteria  have different growth rates and RNA contents under different conditions, which  affect our ability to identify truly differentially abundant genes [@Scott:2010;@Yoshikawa:2011aa;@Lin:2018aa]. As another example, the total bacterial load of the vaginal microbiome differs by 1-2 orders of magnitude in absolute abundance between the healthy and bacterial vaginosis states [@Zozaya:2010], and the composition between these states is dramatically different [@Ravel:2010;@Hummelen:2010]. Thus, a full description of any of these systems includes both relative change (composition) and absolute abundance (scale).  Current methods access only the compositional information yet make implicit assumptions about the scale. 
 
-Early on, researchers recognized the potential confounding effects of the non-biological variation in sequencing depth and approached the problem using various forms of \textit{normalization}. The idea of normalization is to remove this variation thus making the samples commensurate and to correct any minor asymmetries in the data. A large number of normalizations were developed. Rarefaction [@Hughes:2005tu] was used in the microbiome field, while transcriptome investigators developed and used proportions and derivatives (reads per kilobase per million, and transcripts per kilobase per million) [@Mortazavi:2008; @wagner:tpm], the relative log expression (RLE) [@Anders:2010] and trimmed mean of M values (TMM) [@Robinson:2010a]. The Centered Log Ratio (CLR) [@aitchison1982]  was proposed as a unifying normalization [@fernandes:2014]. With the exception of rarefaction, all of these normalizations are data transformations that can be stated as ratios of the form \(\hat{\mathbf{Y}}_{dn}=\mathbf{Y}_{dn}/f(\mathbf{Y})\); the major differences being how the denominator is chosen and whether the ratio is subsequently always log-transformed or not. 
+Recently, Nixon et al. [-@nixon2023scale] showed that the challenge of non-biological variation in sequencing depth be viewed as a problem of partially-identified models. They showed that \emph{all} normalizations make some assumption about  scale. These implicit assumptions are often  difficult to interpret, and different normalizations provide different outputs when applied to the same dataset [@Bullard:2010;@Dillies:2013;@Thorsen:2016aa;@Weiss:2017aa]. Intuitively, normalizations in widespread use  assume that either all samples have the same scale, e.g. proportions, rarefaction [@Hughes:2005tu], RPKM [@Mortazavi:2008; @wagner:tpm], etc; or that a subset of features in one sample can be chosen as a reference to which the others are scaled e.g. the TMM,[@Robinson:2010a], or LVHA [@Wu2021]; or that different sub-parts of each sample maintain a constant scale across samples e.g. the RLE [@Anders:2010];  or that the geometric mean of the parts is appropriate e.g the CLR [@aitchison1982] and its derivatives. 
 
-Recently, Nixon et al. [-@nixon2023scale] suggested that the challenge of non-biological variation in sequencing depth be viewed as a problem of partially-identified models. Through this lens, they showed that \emph{all} normalizations make some assumption about the system scale \(\mathbf{W}^{\perp}\) in order to identify the chosen model. Moreover, these assumptions are often implicit, difficult to interpret, and provided different outputs when applied to the same dataset [@Dillies:2013;@Weiss:2017aa]. Intuitively, normalizations in widespread use assume that either one sample can be chosen as a reference to which the others are scaled (TMM), or that different sub-parts of each sample maintain a constant scale across samples (RLE, CLR and derivatives). Further, Nixon et al. [-@nixon2023scale] showed  that the original ALDEx2 model made a strict assumption about scale through the CLR normalization. They showed that this assumption could be remedied since ALDEx2 permits scale to be easily incorporated into its framework. In this paper, we discuss these modifications and show how including scale uncertainty can greatly improve modeling and lead to more robust and reproducible results.
+The original ALDEx2 [@fernandes:2013] model made a strict assumption about scale through the CLR normalization [@nixon2023scale]. While this assumption could be useful in many cases it could  never be exactly true, and others have shown that it is not always the best option [@Yerke:2024aa]. Nixon et al. [-@nixon2023scale] showed that better scale assumptions resulted in more reproducible data analysis including better control of both false positive and false negative results. In essence ALDEx2 has been modified to explicitly model the scale over a range of reasonable normalization parameters. Here, we briefly introduce these modifications and then show how scale uncertainty can greatly improve modeling in transcriptome and meta-transcriptome datasets to provide more robust and reproducible results.
+
+# Implementation
+
+To be  concrete, we let \(\mathbf{Y}\) denote the \emph{measured} \(D \times N\) matrix of sequence counts with elements \(\mathbf{Y}_{dn}\) indicating the number of measured DNA molecules mapping to feature \(d\) (e.g., a taxon or gene) in sample \(n\).  Likewise, we can denote \(\mathbf{W}\) as the \emph{true}  amount of class \(d\) in the biological system from which sample \(n\) was obtained. We can think of \(\mathbf{W}\) as consisting of two parts, the scale \(\mathbf{W}^{\perp}\) (e.g., totals) and the composition \(\mathbf{W}^{\parallel}\) (i.e., proportions). That is, \(\mathbf{W}^{\perp}\) is a \(N\)-vector with elements \(\mathbf{W}^{\perp}_{n}=\sum_{d}\mathbf{W}_{dn}\) while \(\mathbf{W}^{\parallel}\) is a \(D \times N\) matrix with elements \(\mathbf{W}^{\parallel}_{dn}=\mathbf{W}_{dn}/\mathbf{W}^{\perp}_{n}\). Note that with these definitions \(\mathbf{W}\) can be written as the element-wise combination of scale and composition: \(\mathbf{W}_{dn}=\mathbf{W}^{\parallel}_{dn}\mathbf{W}^{\perp}_{n}\).
+
+All  the normalizations in current use are data transformations that can be stated as ratios of the form \(\hat{{\mathbf{W}}}_{dn}=\mathbf{Y}_{dn}/f(\mathbf{Y})\), where the denominator is determined by some function of the observation and the \(\hat{{\mathbf{W}}}\) notation indicates that the normalization is attempting to provide an estimate of the true value.  The technical variation in sequencing depth (\(\mathbf{Y}^{\perp}_{n}=\sum_{d}\mathbf{Y}_{dn}\)) implies that observed data \(\mathbf{Y}\) provides us with information about the system composition \(\mathbf{W}^{\parallel}\) but little to no information in the system scale \(\mathbf{W}^{\perp}\) (Lovell et al. 2011).  
 
 ## Adding Scale Uncertainty in ALDEx2
 
-The ALDEx2 R package [@fernandes:2013] is a general purpose toolbox for Bayesian modeling of HTS data. For brevity and concreteness, we discuss ALDEx2 in its simplest form as a tool for estimating Log-Fold-Changes (LFC) (e.g., differential abundance or differential expression analysis), but note that it can be used to fit more complex linear models. At a high-level, ALDEx2 involves three steps: 1) a Bayesian model is used to estimate \(\mathbf{W}^{\parallel}\) given observations \(\mathbf{Y}\); 2) a normalization is used to estimate \(\mathbf{W}\) given the estimate \(\mathbf{W}^{\parallel}\); 3) the \(\mathbf{W}\) estimates are used to estimate LFC as part of differential abundance (or expression) analyses. For more details on ALDEx2 see Fernandes et al. [-@fernandes:2013]. 
+The ALDEx2 R package [@fernandes:2013] is a general purpose toolbox for Bayesian modeling of HTS data. For brevity, we discuss ALDEx2 in its simplest form as a tool for estimating the magnitude and statistical significance of Log-Fold-Changes (LFC) (e.g., differential abundance or differential expression analysis), but note that it can be used to fit more complex linear models. At a high-level, ALDEx2 involves three steps: 1) a Bayesian model is used to estimate \(\mathbf{\hat{W}}^{\parallel}\) given observations \(\mathbf{Y}\); 2) a normalization is used to estimate \(\mathbf{\hat{W}}\) given the estimate \(\mathbf{\hat{W}}^{\parallel}\); 3) the \(\mathbf{\hat{W}}\) estimates are used to estimate LFC as part of differential abundance (or expression) analyses. For more details on ALDEx2 see [@fernandes:2013;@nixon2023scale]. 
 
-By default, ALDEx2 uses the CLR normalization which can be written as \(\log \mathbf{W}_{dn}=\log [\mathbf{W}^{\parallel}_{dn}/G_{n}]\) where \(G_{n}\) denotes the geometric mean of the vector \((W^{\parallel}_{1n}, \dots, W^{\parallel}_{Dn})\) (see Supplemental Materials for how the CLR connects to Shannon entropy). Nixon et al. (2023) showed that in this context the CLR normalization equates to an implicit assumption that \(\mathbf{W}^{\perp}_{n}=1/G_{n}\). They showed that even slight errors in this assumption introduced bias into LFC estimate that was not accounted for in estimates of uncertainty (e.g., confidence intervals or credible sets). In fact, they showed that the only way in which the ALDEx2 model, or any model that uses  normalizations, could ever be calibrated (e.g., control Type-I Error rates) was if this assumption was exactly true. While this assumption may be approximately correct in some instances it is surely never exactly true. In support of this assertion it is known that false discovery rates vary widely by analysis and normalization method [@hawinkel2017;@Li:2022aa]. As a result, Nixon et al. (2023) suggested that models should consider potential error in the assumptions implied by normalizations.
+By default, ALDEx2 uses the CLR normalization which can be written as \(\log \mathbf{\hat{W}}_{dn}=\log (\mathbf{\hat{W}}^{\parallel}_{dn}/G_{n})\) where \(G_{n}\) denotes the geometric mean of the vector \((\hat{W}^{\parallel}_{1n}, \dots, \hat{W}^{\parallel}_{Dn})\). The CLR normalization equates to an implicit assumption that \(\mathbf{\hat{W}}^{\perp}_{n}=1/G_{n}\)[@nixon2023scale,Nixon2024B] and even slight errors in this assumption introduces bias into the LFC estimate that is not accounted for when estimating uncertainty (e.g., confidence intervals or credible sets). In fact, Nixon et al. [-@nixon2023scale] showed that the only way in which the ALDEx2 model, or any normalization-based model, could ever be calibrated (e.g., control Type-I Error rates) was if this assumption was exactly true.  In support of this assertion it is known that false discovery rates vary widely by analysis, dataset, and normalization method [@hawinkel2017;@Li:2022aa,Nixon2024B]. To fix this, Nixon et al. [-@nixon2023scale] showed that models should incorporate potential error in the assumptions implied by normalizations.
 
-Nixon et al. (2023) proposed the concept of a \textit{scale model} as a generalization of normalizations that account for potential error. They showed how scale models can be incorporated into ALDEx2, turning the ALDEx2 model into a specialized type of statistical model which they called a \textit{Scale Simulation Random   Variable} (SSRV). Recall that \(\mathbf{W}_{dn}=\mathbf{W}^{\parallel}_{dn}\mathbf{W}^{\perp}_{n}\).  As the HTS data only informs directly on $\mathbf{W}^{\parallel}_{dn}$, they proposed to augment analyses with a model for $\mathbf{W}^{\perp}_{n}$ (the scale model). Since the CLR normalization makes the assumption \(\mathbf{W}^{\perp}_{n}=1/G_{n}\), the CLR normalization can be generalized by considering probability models for the scale \(\mathbf{W}^{\perp}_{n}\) that have mean \(1/G_{n}\). For example, the following scale model generalizes the CLR:
+Nixon et al. (2023) generalized the concept of normalizations by introducing  the concept of a \textit{scale model} to account for potential error. Scale models can be incorporated into ALDEx2, turning the ALDEx2 model into a specialized type of statistical model which they called a \textit{Scale Simulation Random   Variable} (SSRV). They did this by including a model for \(\mathbf{\hat{W}}^{\perp}_{n}\). Since the CLR normalization makes the assumption \(\mathbf{\hat{W}}^{\perp}_{n}=1/G_{n}\), the CLR normalization can be generalized by considering probability models for the scale \(\mathbf{\hat{W}}^{\perp}_{n}\) that have mean \(1/G_{n}\). For example, the following scale model generalizes the CLR:
 
-\[\log \mathbf{W}^{\perp}_{n} = -\log G_{n} + \Lambda x_{n} \qquad \Lambda \sim N(0, \gamma^{2})\]
+\[\log \mathbf{\hat{W}}^{\perp}_{n} = -\log G_{n} + \Lambda x_{n} \qquad \Lambda \sim N(0, \gamma^{2})\]
 
-where \(\gamma\) is a tunable parameter that controls the degree of uncertainty in the CLR assumption and \(x_{n}\) denotes a binary condition indicator (e.g., \(x_{n}=1\) denotes case and \(x_{n}=0\) denotes control). Beyond theoretical studies, they demonstrated through the analysis of simulated and real data the remarkable performance improvements that could result from incorporating this type of scale uncertainty into analyses. Subsequently, we have made those modifications a permanent fixture of ALDEx2 which now represents the first software package designed for SSRV-based inference. 
-
-Beyond concerns of fidelity and rigor, scale models also enhance the reproducibility and transparency of HTS analyses. This occurs because rather than using an implicit assumption (e.g., \(\log \mathbf{W}^{\perp}=1/G_{n}\) for the CLR normalization), scale models make this an explicit part of the model building process. While it is beyond the scope of the present article, we note that there are many ways of building scale models that enhance the interpretability of the parameters and assumptions. Moreover, the scale model listed above, which is now the default in ALDEx2, also has an appealing interpretation. A detailed description of these points as well as the mathematical underpinnings of the updated ALDEx2 R package is forthcoming and will be made available as a companion publication. Here, we simply treat the parameter \(\gamma\) in the default scale model as an abstract term that represents uncertainty in the CLR assumption and note that larger values of $\gamma$ correspond to more uncertainty in this assumption. We also show that the ratio of scales between conditions can be used to build a full scale model when the conditions have dramatically different underlying scales.  
-
-An advantage of incorporating scale is that analyses can be made much more robust such that actual or potential differences in scale can be tested and accounted for explicitly. The examples below and in the supplement show how incorporating scale provides robust and interpretable differential abundance estimates in several different datasets. 
+where \(\gamma\) is a tunable parameter drawn from a Gaussian distribution that controls the degree of uncertainty in the CLR assumption and \(x_{n}\) denotes a binary condition indicator (e.g., \(x_{n}=1\) denotes case and \(x_{n}=0\) denotes control). We have made those modifications a permanent fixture of ALDEx2 which now represents the first software package designed for SSRV-based inference. 
 
 # Results
 
 ## Adding scale uncertainty replaces the need for dual significance cutoffs.
 
-Gierliński et al. [-@Gierlinski:2015aa] conducted a highly replicated yeast transcriptome experiment comparing a wild-type strain with a snf1 gene knockout. This dataset has been used to argue that only a small number of replicates are needed to identity differentially abundant genes and makes the recommendation that some tools should be used in some conditions because each tool has different intrinsic statistical power and Type 1 and Type 2 errors [@Schurch:2016aa]]. This guidance runs counter to standard statistical practice where power is intrinsically linked to sample size [@Halsey:2015aa], yet the concept of sample-size independent power is entrenched in all fields that use HTS as an experimental readout. Through the lens of this paper, this is a hallmark of unacknowledged bias: a false certainty in the scale of the data brings about an increasing false precision with increasing sample sizes. Furthermore, the yeast transcriptome experiment has an unacknowledged difference in scale between conditions: yeast deficient for snf1 are smaller, grow more slowly and are sensitive to a variety of common agents that cause cell stress [@Yoshikawa:2011aa].  Thus, by adding scale uncertainty, we can be more confident that the results of the analysis reflect true biological differences and not differences due to the assumptions made by the normalization method. 
+It is standard practice in many fields of HTS, but especially transcriptomics, to use the dual cutoff approach graphically exemplified by volcano plots [@Cui:2003aa;@Schurch:2016aa] because not all statistically significant differences are biologically relevant. Paraphrasing this we can say that in in some types of datasets more samples leads to a majority of features being statistically significant. A detailed reasoning for this using modelled data is explained in two reports by Nixon et al. [-@nixon2023scale;-@Nixon2024B], which shows that scaled models completely address this analytic issue. 
 
-We start by examining the dispersion (variance) of the data as counts and as the logarithm of the normalized counts when calculated by DESeq2 (log(RLE)) or by ALDEx2 (CLR). The raw data counts derived from sequencing are overdispersed with the mean value being less than the variance [@Robinson:2010a;@Robinson:2010] as seen in Panel A of Figure 1. However, the actual analysis of differential abundance is performed on the logarithm of the normalized counts [@Robinson:2010;@Love:2014aa;@Andrews:2019aa], which includes the CLR [@fernandes:2013] yet the mean-dispersion distribution of these log-ratio transformed data is quite different as shown in panels B and C of Figure 1 and as noted elsewhere [@fernandes:2013;@Love:2014aa].
+We use the data of Gierliński et al. [-@Gierlinski:2015aa] who conducted a highly replicated yeast transcriptome experiment comparing a wild-type strain with a snf2 gene knockout, \(\Delta\)snf2. This dataset has been used to argue that a dual cutoff approach is appropriate to limit the number of significant parts and for purposes of reproducibility [@Schurch:2016aa]. However, in this benchmarking study,  the number of significantly different transcripts varied between 65% to >80% of all transcripts depending on the tool; in essence the desired behavior was that almost all transcripts were significantly different. The guidance on reproducibility runs counter to standard statistical practice where power is intrinsically linked to sample size and very large sample sizes are indeed desired [@Halsey:2015aa]. Furthermore, the dual-cutoff approach is  known not to provide appropriate FDR control [@Zhang:2009aa; @Ebrahimpoor:2021aa].  Schurch et al. -@Schurch:2016aa further suggested that different tools might be better in some conditions or datasets than others because each tool has different intrinsic statistical power and Type 1 and Type 2 errors. Through the lens of scale uncertainty, the behaviour of the tools in this study show unacknowledged bias; false confidence in the precision of the estimate as sample size increases because o mis-specification  in the scale of the data. This certainty is driven by the assumptions of the tool not the actual experiment being investigated [@Nixon2024B].  
 
- 
-```{r, echo=F, warning=F, message=F,comment=F, result=F} 
-library(DESeq2)
-devtools::load_all('~/Documents/0_git/ALDEx_bioc')
-#library(ALDEx2)
-```
-```{r dispersion, echo=F, warning=F, message=F,comment=F, result=F, cache=T, fig.cap="Plot of abundance v dispersion for a typical transcriptome dataset as counts,	 as logarithms of counts, and as clr values. Panel A shows that the data are over-dispersed relative to a Poisson distribution which is represented by the dashed line when plotted on a log-log scale. Panel B shows that the relationship between the mean and the dispersion calculated in DESeq2, here the standard error (SE) of the mean, is very different when the data are log-transformed first. Panel C shows the equivalent values calculated by ALDEx2	 in which the expected clr value for each transcipt are plotted vs. the expected dispersion. The red line in each panel shows the loess line of fit to the mid-point of the distributions. In panels B and C the amount of dispersion reaches a minimum at moderate	 values.  The dashed orange line in panel A is the line of equivalence, and in panel B and C is the minimum y value. The values below the dashed grey line in panels B and C represent those below the first decile of dispersion." }
-
-
-url <- "https://raw.githubusercontent.com/ggloor/datasets/main/transcriptome.tsv"
-yst <- read.table(url, header=T, row.names=1)
-# remove the one gene with 0 reads
-
-yst <- yst[rownames(yst) != "YOR072W-B",]
-
-# Gierlinski:2015aa
-yst[,c('SNF2.6', 'SNF2.13','SNF2.25','SNF2.35')] <- NULL 
-yst[,c('WT.21','WT.22','WT.25','WT.28','WT.34','WT.36')] <- NULL  
-
-conds <- c(rep('S', 44), rep('W', 42))
-coldata <- data.frame(conds)
-
+```{r yst-res, echo=F, warning=F, message=F,comment=F,}
+#ALDEx2
+library(ALDEx2)
+load(file="analysis/yst.all.Rda")
+load(file="analysis/yst.s.all.Rda")
+load(file="analysis/yst.1.all.Rda")
 # DESeq2
 load('analysis/res.Rda')
 
-#ALDEx2
-load('analysis/x.all.Rda')
+
+# with gamma = 0.5
 load('analysis/x.s.all.Rda')
+sig.des <- which(res@listData$padj < 0.05)
+sig.ald <- which(yst.all$we.eBH < 0.05)
+sig.s.ald <- which(yst.s.all$we.eBH < 0.05)
 
-# with gamma = 1
-load('analysis/x.s.all.Rda')
-sig.des <- which(res@listData$padj < 0.01)
-sig.ald <- which(x.all$we.eBH < 0.01)
-sig.s.ald <- which(x.s.all$we.eBH < 0.01)
-
-# get and plot mean/var or mean/SE for counts
-# and log counts
-yst.mn <- apply(yst, 1, mean)
-yst.mn.log <- apply(yst, 1, function(x) mean(log2(x)))
-yst.mn.log[is.infinite(yst.mn.log)] <- 0
-
-yst.v <- apply(yst, 1, var)
-
-par(mfrow=c(1,3))
-plot(log2(yst.mn), log2(yst.v), pch=19, cex=0.5, col=rgb(0,0,0,0.2),
-  xlab='Mean count', ylab='Variance')
-#points(log2(yst.mn[sig.des]), log2(yst.v[sig.des]), pch=19, cex=0.5, col='orange')
-def <- data.frame(log2(yst.mn),log2(yst.v))
-lines(lowess(def, f=0.1), col=2, lwd=2)
-title('A: M v. V', adj=0, line= 0.8)
-abline(0,1, col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
-
-l.df <- data.frame(yst.mn.log, res@listData$lfcSE)
-plot(l.df, pch=19, cex=0.5, col=rgb(0,0,0,0.2),
-  xlab='Mean log2(count)', ylab='SE log2(count)',ylim=c(0,0.4))
-lines(lowess(l.df, f=0.25), col=2, lwd=2)
-abline(h=min(lowess(l.df)$y), col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
- abline(h=0.0275, col='grey', lty=2)
-title('B: log2(M) v. log2(V)', adj=0, line= 0.8)
-
-l.df <- data.frame(x.all$rab.all, x.all$diff.win)
-plot(x.all$rab.all, x.all$diff.win, cex=0.5, col=rgb(0,0,0,0.2),
-  xlab='E(clr)', ylab='E(disp)')
-#points(x.all$rab.all[sig.ald], x.all$diff.win[sig.ald], col='orange', cex=0.4)
-lines(lowess(l.df, f=.1), col=2, lwd=2)
-abline(h=min(lowess(l.df)$y), col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
- abline(h=0.208, col='grey', lty=2)
-title('C: E(clr) vs. E(dispersion)', adj=0, line= 0.8)
+sig.all <- yst.all$we.eBH < 0.05
+sig.t <- yst.all$we.eBH < 0.05 & abs(yst.all$diff.btw) > 1.4
+sig.s <- yst.s.all$we.eBH < 0.05
+sig.1 <- yst.1.all$we.eBH < 0.05
 ```
 
-These relationships depend on what is being analyzed: the variance or dispersion always increases with increasing raw (or normalzied) read count but decreases when measured on the log-ratio transformed data [@fernandes:2013;@Love:2014aa], reaching a minimum at some mid-point of the distribution. This makes the counter-intuitive suggestion that genes with moderate expression have more predictable expression than genes with very high expression such as housekeeping genes. This is at odds with the known biology of cells where single cell counting of housekeeping transcripts shows that they are both highly expressed and have little intrinsic variation [@Taniguchi:2010aa]. Furthermore, the dispersion is exceeding small being, for many transcripts, almost negligible. To show this point more clearly, the majority of the transcripts in the lowest decile of dispersion indicated below the dashed grey line are statistically significantly different (75\% with DESeq2, 69\% with ALDEx2), suggesting that low dispersion estimates lead to many false positives. From the perspective of Nixon et al. [-@nixon2023scale], it is reasonable to conclude that some of these results may be due to the choice of normalization. Indeed, benchmarking and comparison studies have repeatedly shown that the choice of normalization plays a role in which results are returned as significant; see for example [@maza2013], [@Dillies:2013] and [@Weiss:2017aa].
-
-Using either DESeq2 or ALDEx2,  a majority of transcripts are statistically significantly different between groups even with a Benjamini-Hochberg [@benjamini:1995] false discovery rate (FDR) of 0.01; i.e. `r length(sig.des)` or `r length(sig.ald)` of the `r nrow(yst)` transcripts are statistically significant. Clearly, a 70\% positive rate seems biologically unjustified, and furthermore this breaks the necessary assumption made by the normalization methods that most features must be invariant. Finally, that `r length(setdiff(sig.ald, sig.des))` transcripts are identified by ALDEx2 and not DESeq2, while DESeq2 identifies `r length(setdiff(sig.des, sig.ald))` transcripts that ALDEx2 does not suggests that the choice of normalization plays a role in which results are returned as significant.
+Using either DESeq2 or ALDEx2, a majority of transcripts are statistically significantly different between groups  with a Benjamini-Hochberg [@benjamini:1995] false discovery rate (FDR) of 0.05; i.e. `r length(sig.des)` (`r round(length(sig.des)/nrow(yst.all), 2)*100`%, DESeq2) or `r length(sig.ald)` (`r round(length(sig.ald)/nrow(yst.all), 2)*100`%, ALDEx2) of the `r nrow(yst.all)` transcripts. Such  large numbers of significant transcripts seems biologically unrealistic  and furthermore  breaks the necessary assumption made by the normalization methods that the majority of the features must be invariant. That `r length(setdiff(sig.ald, sig.des))` transcripts are identified by ALDEx2 and not DESeq2, while DESeq2 identifies `r length(setdiff(sig.des, sig.ald))` transcripts that ALDEx2 does not, suggests that the choice of normalization plays a role in which results are returned as significant and that some if not the majority are driven by technical differences in the analysis [@Soneson:2013;@maza2013;@Dillies:2013;@Weiss:2017aa; @Schurch:2016aa].
 
 
-```{r plot1, echo=F, fig.cap="Effect and volcano plots for unscaled and scaled transcriptome analysis. DESeq2 or ALDEx2 were used to conduct a differential abundance (DA) analysis on the yeast transcriptome dataset. The results were plotted to show the relationship between difference and dispersion using effect plots ) or difference and the Benjamini-Hochberg corrected p-values (volcano plot). Panels A,B,D,E are for the unscaled analysis, and Panels C,F are for the scaled analysis. Each point represents the values for one transcript, with the color indicating if that transcript was significant in the scaled analysis and unscaled analysis (red) or in the unscaled analysis only (orange). Points in grey are not statistically signficantly different with any analysis. The horizontal dashed lines represent a log2(difference) of 1.4, which is a commonly applied cutoff when the majority of features are statistically significant."}
-par(mfrow=c(2,3))
-plot(res@listData$lfcSE*sqrt(ncol(yst)), res@listData$log2FoldChange, xlim=c(0,5), 
-  col=rgb(0,0,0,0.1), xlab='LFC SD', ylab='log2 Difference')
-title('A: DESeq2 effect', adj=0, line= 0.8)
-points(res@listData$lfcSE[sig.des]*sqrt(ncol(yst)),
-  res@listData$log2FoldChange[sig.des], col=rgb(1,.66,0,0.5), 
-  pch=19, cex=0.5)
-points(res@listData$lfcSE[sig.s.ald]*sqrt(ncol(yst)),
-  res@listData$log2FoldChange[sig.s.ald], col=rgb(1,0,0,0.5), 
-  pch=19, cex=0.5)
-abline(h=c(-1.4,1.4), lty=2, col='grey')
+```{r plot1, echo=F, fig.dim=c(5,6), fig.cap="Effect and volcano plots for unscaled and scaled transcriptome analysis. ALDEx2 was used to conduct a differential abundance (DA) analysis on the yeast transcriptome dataset. The results were plotted to show the relationship between difference and dispersion using effect plots ) or difference and the Benjamini-Hochberg corrected p-values (volcano plot). Panels A,C are for the unscaled analysis, and Panels B,D are for the scaled analysis. Each point represents the values for one transcript, with the color indicating if that transcript was significant in the scaled analysis and unscaled analysis (red) or in the unscaled analysis only (orange). Points in grey are not statistically signficantly different with any analysis. The horizontal dashed lines represent a log2(difference) of \\(\\pm 1.4\\)."}
 
-plot(x.all$diff.win, x.all$diff.btw, col=rgb(0,0,0,0.1), 
+
+par(mfrow=c(2,2))
+
+#plot(res@listData$lfcSE*sqrt(ncol(yst)), res@listData$log2FoldChange, xlim=c(0,5), 
+#  col=rgb(0,0,0,0.1), xlab='LFC SD', ylab='log2 Difference')
+#title('A: DESeq2 effect', adj=0, line= 0.8)
+#points(res@listData$lfcSE[sig.des]*sqrt(ncol(yst)),
+#  res@listData$log2FoldChange[sig.des], col=rgb(1,.66,0,0.5), 
+#  pch=19, cex=0.5)
+#points(res@listData$lfcSE[sig.s.ald]*sqrt(ncol(yst)),
+#  res@listData$log2FoldChange[sig.s.ald], col=rgb(1,0,0,0.5), 
+#  pch=19, cex=0.5)
+#abline(h=c(-1.4,1.4), lty=2,lwd=2, col='grey')
+
+plot(yst.all$diff.win, yst.all$diff.btw, col=rgb(0,0,0,0.1), 
    xlab='Dispersion', ylab='log2 Difference')
-title('B: ALDEx2 effect', adj=0, line= 0.8)
-points(x.all$diff.win[sig.ald], x.all$diff.btw[sig.ald], 
+title(expression(paste("A: Effect: ", gamma, " = 0")), adj=0, line= 0.8)
+points(yst.all$diff.win[sig.ald], yst.all$diff.btw[sig.ald], 
   col=rgb(1,.66,0,0.3), cex=0.5, pch=19)
-	abline(h=c(-1.4,1.4), lty=2, col='grey')
-points(x.all$diff.win[sig.s.ald], x.all$diff.btw[sig.s.ald], 
+	abline(h=c(-1.4,1.4), lty=2,lwd=2, col='grey')
+points(yst.all$diff.win[sig.s.ald], yst.all$diff.btw[sig.s.ald], 
   col=rgb(1,0,0,0.6), cex=0.5, pch=19)
-	abline(h=c(-1.4,1.4), lty=2, col='grey')
+	abline(h=c(-1.4,1.4), lty=2,lwd=2, col='grey')
 
-plot(x.s.all$diff.win, x.s.all$diff.btw, col=rgb(0,0,0,0.1),
+plot(yst.s.all$diff.win, yst.s.all$diff.btw, col=rgb(0,0,0,0.1),
    xlab='Dispersion', ylab='log2 Difference', xlim=c(0.1,5))
-title('C: ALDEx2 scaled effect', adj=0, line= 0.8)
-points(x.s.all$diff.win[sig.s.ald], x.s.all$diff.btw[sig.s.ald], 
+title(expression(paste("B: Effect: ", gamma, " = 0.5")), adj=0, line= 0.8)
+points(yst.s.all$diff.win[sig.s.ald], yst.s.all$diff.btw[sig.s.ald], 
   col=rgb(1,0,0,0.5), cex=0.5, pch=19)
-	abline(h=c(-1.4,1.4), lty=2, col='grey')
+	abline(h=c(-1.4,1.4), lty=2,lwd=2, col='grey')
 
 # volcano
-plot(res@listData$log2FoldChange,-1*log10(res@listData$padj + 1e-300), 
-  col=rgb(0,0,0,0.1), xlab='log2 Difference', ylab='-1 log10(p.adjust)')
-title('D: DESeq2 volcano', adj=0, line= 0.8)
-points(res@listData$log2FoldChange[sig.des],-1*log10(res@listData$padj[sig.des] + 1e-300), col=rgb(1,.66,0,0.3), 
-  pch=19, cex=0.5)
-points(res@listData$log2FoldChange[sig.s.ald],-1*log10(res@listData$padj[sig.s.ald] + 1e-300), col=rgb(1,0,0,1), 
-  pch=19, cex=0.5)
-  abline(v=c(-1.4,1.4), lty=2, col='grey')
+#plot(res@listData$log2FoldChange,-1*log10(res@listData$padj + 1e-300), 
+#  col=rgb(0,0,0,0.1), xlab='log2 Difference', ylab='-1 log10(p.adjust)')
+#title('D: DESeq2 volcano', adj=0, line= 0.8)
+#points(res@listData$log2FoldChange[sig.des],-1*log10(res@listData$padj[sig.des] + 1e-300), col=rgb(1,.66,0,0.3), 
+#  pch=19, cex=0.5)
+#points(res@listData$log2FoldChange[sig.s.ald],-1*log10(res@listData$padj[sig.s.ald] + 1e-300), col=rgb(1,0,0,1), 
+#  pch=19, cex=0.5)
+#  abline(v=c(-1.4,1.4), lty=2,lwd=2, col='grey')
 
-plot(x.all$diff.btw, -1*log10(x.all$we.eBH +1e-70), col=rgb(0,0,0,0.1), 
+plot(yst.all$diff.btw, -1*log10(yst.all$we.eBH +1e-70), col=rgb(0,0,0,0.1), 
    xlab='log2 Difference', ylab='-1 log10(p.adjust)')
-title('E: ALDEx2 volcano', adj=0, line= 0.8)
-points(x.all$diff.btw[sig.ald], -1*log10(x.all$we.eBH[sig.ald]	+1e-70), 
+title(expression(paste("C: Volcano: ", gamma, " = 0")), adj=0, line= 0.8)
+points(yst.all$diff.btw[sig.ald], -1*log10(yst.all$we.eBH[sig.ald]	+1e-70), 
   col=rgb(1,.66,0,.3), cex=0.5, pch=19)
-points(x.all$diff.btw[sig.s.ald], -1*log10(x.all$we.eBH[sig.s.ald]	+1e-70), 
+points(yst.all$diff.btw[sig.s.ald], -1*log10(yst.all$we.eBH[sig.s.ald]	+1e-70), 
   col=rgb(1,0,0,1), cex=0.5, pch=19)
-abline(v=c(-1.4,1.4), lty=2, col='grey')
+abline(v=c(-1.4,1.4), lty=2,lwd=2, col='grey')
 
 
-plot(x.s.all$diff.btw, -1*log10(x.s.all$we.eBH +1e-15), col=rgb(0,0,0,0.1),
+plot(yst.s.all$diff.btw, -1*log10(yst.s.all$we.eBH +1e-15), col=rgb(0,0,0,0.1),
    xlab='log2 Difference', ylab='-1 log10(p.adjust)')
-title('F: ALDEx2 scaled volcano', adj=0, line= 0.8)
-
-points(x.s.all$diff.btw[sig.s.ald], -1*log10(x.s.all$we.eBH[sig.s.ald]+1e-15),
+title(expression(paste("D: Volcano: ", gamma, " = 0.5")), adj=0, line= 0.8)
+points(yst.s.all$diff.btw[sig.s.ald], -1*log10(yst.s.all$we.eBH[sig.s.ald]+1e-15),
   col=rgb(1,0,0,1), cex=0.5, pch=19)
-	abline(v=c(-1.4,1.4), lty=2, col='grey')
+	abline(v=c(-1.4,1.4), lty=2,lwd=2, col='grey')
 
 ```
 
-As shown using effect [@gloor:effect] and volcano plots [@Cui:2003aa] in Figure 2 A,B,D,E, the root cause of the many statistically significant positive transcripts is the very large number of transcripts with negligible variance. This phenomenon is shared between methods: almost all the transcripts that are differentially abundant with an FDR \textless 0.01 (orange and red points) have extremely low dispersion and a very low difference between groups. In the most extreme cases, some transcripts have a near zero difference between groups. This issue is not unique to this data set and it is common practice to use a dual-cutoff by choosing transcripts based on a thresholds for both corrected p-values and fold-changes  [@Schurch:2016aa] (commonly set at \(\pm 2^{1.4}\) for the latter). These limits are shown by the dashed grey lines. In this case, applying a dual-cutoff using a heuristic of at least a \(2^{1.4}\) fold change  reduces the number of significant outputs to 193 for DESeq2 and to 186 for ALDEx2. This result begs the question: why bother with significance tests at all? 
+The effect plots  [@gloor:effect] in Figure 1A (ALDEx2) and Supplementary Figure 1 (DESeq2) shows that the majority of significant transcripts (red, orange) have negligible differences between groups and  very low dispersion and we suggest that this is driven by the experimental design [@Schurch:2016aa]. Scale uncertainty can be incorporated using the \texttt{gamma} parameter that controls the amount uncertainty added to the CLR mean assumption when we call either \texttt{aldex()}, or \texttt{aldex.clr()}. Figure 1B shows that  setting  \( \gamma=0.5 \) results in far fewer transcripts being significant (`r length(sig.s.ald)`) and we observe that  the minimum dispersion increases from  `r round(min(yst.all$diff.win), 2)` (unscaled) to  `r round(min(yst.s.all$diff.win), 2)` (scaled). The Volcano plots in Figure 1 C and D show a similar story. Here we can see that adding scale increases the minimum FDR value and increases the concordance between the FDR value and the difference between groups (compare panels C and D). 
 
-The very low dispersion estimate for most features is a by-product of sequencing and normalization. While the actual scale of the data is inaccessible post-sequencing, we can study the sensitivity of the results to the choice of normalization and thus scale. To do this we incorporate scale models [@nixon2023scale] in lieu of normalizations through the default scale model that is now built into ALDEx2. Scale uncertainty is incorporated using the \texttt{gamma} parameter that controls the amount uncertainty added to the CLR mean assumption when we call either \texttt{aldex()}, or \texttt{aldex.clr()}. The \texttt{ALDEx2} package further contains a sensitivity analysis function, \texttt{aldex.senAnalysis()}, that can be used to explore the effect of different amounts of scale uncertainty. In practice, we suggest that a \texttt{gamma} parameter between 0.5 and 1 is realistic for most experimental designs.  
 
-Applying the default scale model with \texttt{gamma=1}, a large number of transcripts with near 0 dispersion have had their dispersion increased (Figure 2C), and this results in many fewer transcripts `r length(sig.s.ald)` being called significantly different as shown in the volcano plot in Figure 1F (red points). Furthermore, overplotting the significant transcripts identified after adding scale uncertainty on the un-scaled analysis shows that adding scale uncertainty removes the need for the dual cutoff. Indeed, adding scale uncertainty reduces the significant transcripts to a subset of those identified with the dual cutoff that have the largest effect size.  Thus, incorporating scale uncertainty through the default scale model allows us to determine which variables are likely to be significant due to sequencing and normalization, and which are significantly different even with scale uncertainty included.   
+
+```{r disp, eval=T, echo=F, warning=F, message=F,comment=F, fig.cap="Adding scale uncertainty changes the dispersion distribution. Panel A shows a plot of the expected value for relative abundance vs the expected value for the pooled dispersion as output by \\texttt{aldex.effect}. The dashed  horizontal lines show the median value for the features with a rAbundance between -0.5 and 0.5, and the light colored lines are lowess lines of fit through the center of mass of the data. Panel B plots the dispersion difference between  \\(\\gamma = 1\\) and \\(\\gamma = 0\\); note the non-linear relationship that highlights  the rotation that is evident in Panel A. The colored lines indicate the lowess line of fit through the centre of mass of the plot for the various  populations of points. The grey line is the total population and shows the difference \\(\\Delta\\), the red line is the population of significant transcripts (\\*) with no scale, the orange line is the population of significant transcripts with a difference threshold (T) of about \\(\\pm 2^{1.4}\\)-fold change, the blue line is the population of significant transcripts with \\(\\gamma = 0.5\\), and the cyan line is the significant population with \\(\\gamma = 1\\). \\(\\Delta\\): Difference, *: significant, T: thresholded. "}
+
+
+cuts <- yst.all$rab.all > -0.5 & yst.all$rab.all < 5
+par(mfrow=c(1,2))
+mn.mid <- median(yst.all$diff.win[cuts])
+mn.mid.s <- median(yst.s.all$diff.win[cuts])
+mn.mid.1 <- median(yst.1.all$diff.win[cuts])
+
+no.scale <- data.frame(yst.all$rab.all, yst.all$diff.win)
+half.scale <- data.frame(yst.s.all$rab.all, yst.s.all$diff.win)
+full.scale <- data.frame(yst.1.all$rab.all, yst.1.all$diff.win)
+
+# we change dispersion a lot for the bulk of the features
+plot(yst.all$rab.all, yst.all$diff.win, pch=19, cex=0.5, col=rgb(0,0,0,0.3),
+  xlab='rAbundance', ylab='dispersion')
+lines(lowess(no.scale, f=0.1), col='grey', lwd=3)
+points(yst.s.all$rab.all, yst.s.all$diff.win, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
+lines(lowess(half.scale, f=0.1), col='pink', lwd=3)
+points(yst.1.all$rab.all, yst.1.all$diff.win, pch=19, cex=0.5, col=rgb(0,0,1,0.3))
+lines(lowess(full.scale, f=0.1), col='royalblue1', lwd=3)
+abline(h=mn.mid, lty=2)
+abline(h=mn.mid.s, lty=2, col='red')
+abline(h=mn.mid.1, lty=2, col='blue')
+title(main='A', line=-1.2, adj=0.9)
+
+g0 <- expression(paste(gamma, " = 0"))
+g5 <- expression(paste(gamma, " = 0.5"))
+g1 <- expression(paste(gamma, " = 1"))
+legend(1,4, legend=c(g0, g5, g1), 
+  pch=19, col=c("black", "red", "blue"))
+
+# plot(yst.all$diff.win, yst.1.all$diff.win, pch=19, cex=0.5, col=rgb(0,0,1,0.3), ylim=c(0,4.5), 
+#   xlab='g=0 dispersion', ylab='g=0.5 | g=1 dispersion')
+# points(yst.all$diff.win, yst.s.all$diff.win, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
+# abline(0,1, lty=2)
+# title(main='B', line=-1.2, adj=0.5)
+# legend(0,4, legend=c( "0.5", "1"), 
+#   pch=19, col=c("red", "blue"))
+
+diff.df <- data.frame(yst.all$rab.all, 
+  yst.1.all$diff.win- yst.all$diff.win)
+sig.df <- data.frame(yst.all$rab.all[sig.all],
+   yst.1.all$diff.win[sig.all]- yst.all$diff.win[sig.all])
+sig.t.df <- data.frame(yst.all$rab.al[sig.t], 
+  yst.1.all$diff.win[sig.t] - yst.all$diff.win[sig.t])
+sig.s.df <- data.frame(yst.all$rab.all[sig.s], 
+  yst.1.all$diff.win[sig.s] - yst.all$diff.win[sig.s])
+sig.1.df <- data.frame(yst.all$rab.all[sig.1], 
+  yst.1.all$diff.win[sig.1]- yst.all$diff.win[sig.1])
+
+ylab1 <- expression(paste("dispersion: ", gamma, "1 - ", gamma, "0"))
+
+plot(yst.all$rab.all, yst.1.all$diff.win- yst.all$diff.win, xlab='rAbundance', 
+  ylab=ylab1, pch=19, cex=0.5, xlim=c(-11,10), ylim=c(.1,1.5))
+title(main='B', line=-1.2, adj=0.9)
+lines(lowess(diff.df, f=0.1), col='grey60', lwd=3)
+lines(lowess(sig.df, f=0.1), col='red', lwd=3)
+lines(lowess(sig.t.df, f=0.5), col='orange', lwd=3)
+lines(lowess(sig.s.df, f=0.5), col='royalblue1', lwd=3)
+lines(lowess(sig.1.df, f=0.7), col='cyan', lwd=3)
+
+d0 <- expression(paste(Delta))
+dstar <- expression(paste(Delta,"*"))
+dstarT <- expression(paste(Delta,"*T"))
+dg5 <- expression(paste(Delta,"*", gamma, "0.5"))
+dg1 <- expression(paste(Delta,"*", gamma, "1"))
+
+legend(-12,1.6, legend=c( d0, dstar, dstarT,dg5, dg1), 
+  pch="-", col=c("grey", "red", "orange", "royalblue1", "cyan"))
+
+```
+
+As shown by the effect plot in Figure 1 the root cause of the many statistically significant positive transcripts is the very large number of transcripts with negligible variance. This phenomenon is not unique to ALDEx2 as Supplementary Figure 1 shows that the same phenomenon occurs in DESeq2 (and presumably other methods although the relevant parameters are not exposed). This issue is not unique to this dataset and it is common practice to use a dual-cutoff by choosing transcripts based on a thresholds for both corrected p-values and fold-changes  [@Schurch:2016aa] (here set at \(\pm 2^{1.4}\) for the latter), although considerable variation in cutoff values is observed. These limits are shown by the dashed grey lines. Here, applying a dual-cutoff using a heuristic of at least a \(2^{1.4}\) fold change  reduces the number of significant outputs to 193 for DESeq2 and to 186 for ALDEx2, and is in-line with that observed with that found by ALDEx2 with \( \gamma = 0.5 \) which identifies `r length(sig.s.ald)`. Indeed, Supplementary Figure 2, shows that even adding a very small amount of scale \( \gamma = 0.1 \) reduces the number of significant transcripts by more than half and the \texttt{aldex.scaleSim()} function can be used to identify those transcripts that are significant only because of an absence of scale. These results begs the question: why bother with significance tests at all if all transcripts with \( > 1.4\)-fold expression change are statistically significant? 
+
+
+The effect on dispersion with increasing  amounts of scale are shown in Figure 2A, where we can see that the  dispersion increases as scale is added. Note that the dispersion in the unscaled data in Figure 2A reaches a minimum near the mid-point of the distribution, and also does so when the analysis is conducted with DESeq2 (Supplementary Figure 3). This shows more clearly that dispersion of many transcripts is  almost negligible in the absence of scale and makes the counter-intuitive suggestion that the variance in expression of the majority of genes with moderate expression is more predictable  than highly-expressed genes or of housekeeping genes [@Rocha:2020aa].  This is at odds with the known biology of cells where single cell counting of highly-expressed transcripts shows that they have little intrinsic variation [@Taniguchi:2010aa]. 
+
+
+Adding scale by setting \(\gamma=0.5\) , or \(\gamma = 1.0\), increases the minimum dispersion as shown in Figure 2A by the red and blue data points, and by the colored lines of fit through the centre of mass of the data.  Less obvious is that the scaled dispersion estimates are rotated. Figure 2B shows a plot of the difference between the \(\gamma= 0\) and \(\gamma= 1\) data to show this more clearly and here we can see that the scale is preferentially increasing the dispersion of the mid-expressed transcripts that formerly had negligible dispersion; examine the grey line of best fit (overlaid by the red line) for the trend. Panel B also shows the trend of the expression-dispersion relationship for transcripts that are classed as statistically significant. The red line shows the trendline with no added scale, and this trendline exactly overlays with the grey trendline of the bulk of transcripts. The orange trendline indicates those transcripts that are both statistically significant and that have a thresholded expression level of \( \pm 1.4\), and the dark blue and cyan lines show the statistically significant trendline for \(\gamma=0.5\) , or \(1.0\). Note that this has the effect of changing the distribution of parts identified as significant and that the substantially fewer significantly different genes are  in the very high abundance but low dispersion category.
+
+<!-- 
+Interestingly, the yeast transcriptome experiment has an unacknowledged difference in scale between conditions; yeast deficient for snf1 are smaller, grow more slowly and are sensitive to a variety of common agents that cause cell stress [@Yoshikawa:2011aa]. The CLR normalization assumes that the scale of the wild-type is exactly 98.4\% of the snf1 strain, and so is \( \theta = 0.016\). Given the per-generation time difference of about 15\%, this seems implausible.  Setting \(\gamma=0.5\) can be interpreted as acknowledging uncertainty in the difference in the underlaying scale between groups. Nixon et al. -@Nixon2024B showed that the 95\% bounds on the scale uncertainty for a given \(\gamma\) value, say 0.5, can be calculated as \(2^{-(2 \gamma + \theta)}, 2^{(2 \gamma + \theta)}\), or \(2^{-(2*0.5 + 0.016)}, 2^{(2*0.5 + 0.016)} = 0.494,2.022\).  Thus, by adding scale uncertainty, we are acknowledging that the data are uncertain and that any results are robust to that uncertainty, within the bounds of our model.
+-->   
 
 ## Housekeeping genes can be used to guide scale model choices.
 
-Macklaim and Gloor [-@Macklaim:2018aa] and Wu et al. [-@Wu2021] used a vaginal metatranscriptome dataset used to compare the gene expression in bacteria collected from healthy (H) and bacterial vaginosis (BV) affected women. In this environment, both the relative abundance of species between groups and the gene expression level within a species is different [@macklaim:2013]. Additionally, prior research suggests that the total number of bacteria is about 10 times more in the BV than in the H condition [@Zozaya:2010]. Thus, this is an extremely challenging environment in which to determine differential abundance as there are both compositional and scale changes between conditions. The accepted method to analyze vaginal metratranscriptome data is on a taxon-by-taxon basis [@macklaim:2013; @Denge00262-18; @Fettweis:2019aa] because the scale confounding can be ignored. The problem with a systemic analysis is that many housekeeping genes are returned as differentially abundant between groups, a result likely due to a disconnect between the scale assumptions of the normalization used [@Wu2021] and the actual change in scale between conditions.
+Dos Santos et al. -@dosSantos:2024  used a vaginal metatranscriptome dataset  to compare the gene expression in bacteria collected from healthy (H) and bacterial vaginosis (BV) affected women. In this environment, both the relative abundance of species between groups and the gene expression level within a species is different [@macklaim:2013]. Additionally, prior research suggests that the total number of bacteria is about 10 times more in the BV than in the H condition [@Zozaya:2010]. Thus, this is an extremely challenging environment in which to determine differential abundance as there are both compositional and scale changes between conditions. The usual method to analyze vaginal metratranscriptome data is on a taxon-by-taxon basis [@macklaim:2013; @Denge00262-18; @Fettweis:2019aa] because the scale confounding can be ignored. Attempts at system-wide analysis show that many housekeeping functions are returned as differentially abundant between groups; a result likely due to a disconnect between the scale assumptions of the normalization used [@Wu2021].
 
 
-In this example, we show how to specify the scale model explicitly and demonstrate that applying a user-defined scale model can account for some of these modeling difficulties. A user-defined scale model can control for both the mean difference of scale between groups (e.g., directly incorporate information on the differences in total number of bacteria between the BV and H conditions) as well as the uncertainty assumed in that difference. To specify a user-defined scale model, we can pass a matrix of scale values instead of a single estimate of gamma to \texttt{aldex.clr()}. This matrix should have the same number of rows as the of Monte-Carlo Dirichlet samples, and the same number of columns as the number of samples. While this matrix can be computed from scratch by the analyst, there is an \texttt{aldex.makeScaleModel()} function that can be used to simplify this step in most cases. 
+In this example, we show how to specify a user-defined, or \emph{informed}, scale model explicitly that can account for some of these modeling difficulties. An informed scale model can control for both the mean difference of scale between groups (e.g., directly incorporate information on the differences in total number of bacteria between the BV and H conditions) as well as the uncertainty assumed in that difference. To specify a user-defined scale model, we can pass a matrix of scale values instead of a single estimate of gamma to \texttt{aldex.clr()}. This matrix should have the same number of rows as the of Monte-Carlo Dirichlet samples, and the same number of columns as the number of samples. While this matrix can be computed from scratch by the analyst, there is an \texttt{aldex.makeScaleModel()} function that can be used to simplify this step in most cases. This encodes the scale model as
+ \(\Lambda \sim N(log2 \mu_n, \gamma^{2})\), where \(\mu_n\) represents the actual scale value for each sample. This can be a measured value (cell count, nucleic acid input, etc), or an imputed value.  Nixon et al. -@Nixon2024B showed that only the ratio between the scale values for each sample was important; see Supplementary Figures 4 and 5 for a demonstration of this point. 
 
-Figure 3A shows an effect plot [@gloor:effect] of the data where reads are grouped by function, corresponding approximately to grouping orthologous sequences regardless of the organism of origin. Each point represents one of the 3728 functions. There are many more functions represented in the BV group (bottom) than in the healthy group (top). This is because the \textit{Lactobacilli} that dominate a healthy vaginal microbiome have reduced genome content relative to the anaerobic organisms that dominate in BV, because	there is a greater diversity of organisms in BV than in H samples and because the BV condition has at least an order of magnitude more bacteria than does the H condition. 
+Figure 3A shows an effect plot of the data where reads are grouped by function, corresponding  to grouping homologous sequences regardless of the organism of origin. Each point represents one of  3728 KEGG  functions [@Okuda:2008]. There are many more functions represented in the BV group (bottom) than in the healthy group (top). This is because the \textit{Lactobacilli} that dominate a healthy vaginal microbiome have reduced genome content relative to the anaerobic organisms that dominate in BV, because	there is a greater diversity of organisms in BV than in H samples, and because the BV condition has at least an order of magnitude more bacteria than does the H condition. 
 
- We can	 see that there are a large number of core metabolic and information processing functions that are shared between the two groups (boxed area in Figure 3A), and inspection shows that these largely correspond to core metabolic functions that would not be expected	 to contribute to differences in ecosystem behaviour and so should not be differentially abundant. As a proxy for housekeeping functions the core ribosome functions (blue) shows that their mean location is not centred on 0. The major group of these housekeeping functions is located off the line of no difference (being approximately located at +1.5). Since they have very low dispersions, these functions are identified as differentially abundant (red) along with many others. While changes in the abundance of housekeeping functions is a useful proxy for relative abundance of species in the environment, they tell us nothing about the functional capacity of the two groups because these are functions in common to every organism. Of more interest is determining the functions that are different between groups because these are unique or over-expressed in one group relative to the other.  
+There are 101  functions with low dispersion that appear to be share by both groups (boxed area in Figure 3A, and colored in cyan). Inspection shows that these   largely correspond to core metabolic functions such as transcription, translation, ribosomal proteins, glycolysis, replication, chaperones, etc (Supplementary file housekeeping.txt). The transcripts of many of these are commonly used as invariant reference sequences [@Rocha:2020aa] and so would not be expected	 to contribute to differences in ecosystem behaviour and should be centred on 0 difference. These should not be scored as among the most differentially abundant. The major group of these housekeeping functions is located off the line of no difference (being approximately located at +1.5).  While changes in the abundance of housekeeping functions is a useful proxy for relative abundance of species in the environment, they tell us nothing about the functional capacity of the two groups as these are common to every organism. Of more interest is determining the functions that are different between groups because these are unique or over-expressed in one group relative to the other. 
 
 
 ```{r ribo, echo=F}
-ribo.v <- c("K02863","K02864","K02865","K02866","K02867","K02871","K02872","K02873","K02874","K02876","K02877","K02878","K02879","K02880","K02881","K02883","K02884","K02885","K02886","K02887","K02888","K02890","K02892","K02895","K02897","K02899","K02902","K02904","K02905","K02906","K02907","K02909","K02911","K02913","K02914","K02916","K02920","K02922","K02926","K02931","K02932","K02933","K02935","K02936","K02938","K02939","K02941","K02943","K02945","K02946","K02948","K02949","K02950","K02952","K02954","K02955","K02956","K02959","K02961","K02963","K02964","K02965","K02967","K02968","K02969","K02970","K02975","K02981","K02982","K02984","K02986","K02987","K02988","K02990","K02991","K02992","K02994","K02995","K02996","K02997","K02998","K07590")
+# list of ribosomal assocaited functions in the datset
+# TIL about complete.cases()
+ribo.v <- c("K02863","K02864","K02867","K02871","K02874","K02876","K02878","K02879","K02881","K02884","K02886","K02887","K02888","K02890","K02892","K02895","K02897","K02899","K02902","K02904","K02906","K02907","K02909","K02911","K02913","K02914","K02916","K02926","K02931","K02933","K02935","K02939","K02945","K02946","K02948","K02950","K02952","K02954","K02956","K02959","K02961","K02963","K02965","K02967","K02968","K02970","K02982","K02986","K02988","K02990","K02992","K02994","K02996")
 ```
 
 
-```{r meta, echo=F, warning=F, message=F,comment=F, result=F, fig.cap="Analysis of vaginal transcriptome data aggregated at the Kegg Orthology (KO) functional level. Panel A shows an effect plot for the default analysis where the functions that are elevated in  the  healthy individuals have positive values and functions that are elevated in BV have negative values. Highlighed in the box are highly abundant KOs that are almost exlusively housekeeping functions, with ribosomal KOs highlighted in blue,  statistically significant (FDR < 0.01) functions in red, and non-significant functions in black or orange. These housekeeping functions should be located on the midline of no difference. Panel B shows the same data scaled with `gamma = 0.5`, which increase the minimum dispersion approximatly by one unit. Here the housekeeping functions from Panel A are colored cyan or blue for reference. Panel C shows the same data scaled with `gamma = 0.5` and a 0.15 fold difference in dispersion applied to the BV samples relative to the H samples. The orange functions are now statistically significant. Note that this shifts the midpoint of the housekeeping functions towards the midline." }
+```{r meta, echo=F, warning=F, message=F,comment=F, result=F, fig.cap="Analysis of vaginal transcriptome data aggregated at the Kegg Orthology (KO) functional level. Panel A shows an effect plot for the default analysis where the functions that are elevated in  the  healthy individuals have positive values and functions that are elevated in BV have negative values. Highlighed in the box are KOs that are almost exlusively housekeeping functions and are  colored cyan. These housekeeping functions should be located on the midline of no difference.  Panel B shows the same data scaled with \\(\\gamma = 0.5\\), which increase the minimum dispersion as before.  Panel C shows the same data scaled with \\(\\gamma = 0.5\\) and a 0.15 fold difference in dispersion applied to the BV samples relative to the H samples. In these plots statistically significant (FDR < 0.01) functions in the informed model are  in red, false positive functions are in blue,  non-significant functions in black and false negative functions are in orange. " }
 
 # all code for ALDEx2 and DESeq is being moved to the code/directory
 # all variables recreated using the makefile
-
+# from code/meta_aldex.R
+load('analysis/xg.clr.Rda')
 load('analysis/xt.Rda')
 load('analysis/xg.Rda')
 load('analysis/xt.m.Rda')
 
-hk <- rownames(xt.all)[xt.all$diff.win < 2.5 & xt.all$diff.btw > 0 & xt.all$diff.btw < 3]
-hk.off <- xt.all$diff.win < 2.5 & xt.all$diff.btw > 0 & xt.all$diff.btw < 3
+hk <- rownames(xt.all)[xt.all$diff.win < 2.5 & xt.all$diff.btw > 1 & xt.all$diff.btw < 3]
+hk.off <- xt.all$diff.win < 2.5 & xt.all$diff.btw > 1 & xt.all$diff.btw < 3
 
-fn <- rownames(xt.m.all)[xt.m.all$we.eBH < 0.01 & xt.m.all$diff.btw < 1 & xg.all$we.eBH > 0.01 & xt.all$we.eBH > 0.01]
+fn <- rownames(xt.m.all)[xt.m.all$we.eBH < 0.01 & xt.m.all$diff.btw < 1 &  xt.all$we.eBH > 0.01]
+fp <- rownames(xt.all)[xt.all$we.eBH < 0.01 & xt.m.all$we.eBH > 0.01 & !xt.m.all$we.eBH < 0.01]
 
 #par(mfrow=c(1,1))
 #plot(density(xt.m.e$diff.btw[hk.off]))
@@ -231,51 +314,87 @@ fn <- rownames(xt.m.all)[xt.m.all$we.eBH < 0.01 & xt.m.all$diff.btw < 1 & xg.all
 
 par(mfrow=c(1,3))
 aldex.plot(xt.all, cutoff.pval=0.01)
-points(xt.all[ribo.v,'diff.win'], xt.all[ribo.v,'diff.btw'], col='blue', cex=0.5, pch=19)
-points(xt.all[fn,'diff.win'], xt.all[fn,'diff.btw'], col='orange', cex=0.5, pch=19)
-rect(0.5,0,3,5, col=rgb(0,0,0,0.1), lty=2, lwd=3)
+points(xt.all[fp,'diff.win'], xt.all[fp,'diff.btw'], col='blue', cex=0.4, pch=19)
+points(xt.all$diff.win[hk.off], xt.all$diff.btw[hk.off], pch=19, cex=0.4, col=rgb(0,1,1,0.5))
+points(xt.all[fn,'diff.win'], xt.all[fn,'diff.btw'], col='orange', cex=0.4, pch=19)
+rect(0.5,1,2.5,3, col=rgb(0,0,0,0.1), lty=2, lwd=3)
 title('A: ALDEx2 unscaled', adj=0, line= 0.8)
+legend(0,12, legend=c("HK", "TP", "FP", "FN"), pch=19, cex=0.5, col=c("cyan", "red", "orange", "blue"))
 
 aldex.plot(xg.all, xlim=c(0.3,9), cutoff.pval=0.01)
+points(xg.all[fp,'diff.win'], xg.all[fp,'diff.btw'], col='blue', cex=0.4, pch=19)
 points(xg.all$diff.win[hk.off], xg.all$diff.btw[hk.off], pch=19, cex=0.4, col=rgb(0,1,1,0.5))
-points(xg.all[ribo.v,'diff.win'], xg.all[ribo.v,'diff.btw'], col='blue', cex=0.5, pch=19)
-points(xg.all[fn,'diff.win'], xg.all[fn,'diff.btw'], col='orange', cex=0.5, pch=19)
+points(xg.all[fn,'diff.win'], xg.all[fn,'diff.btw'], col='orange', cex=0.4, pch=19)
 title('B: ALDEx2 gamma', adj=0, line= 0.8)
 
 
 aldex.plot(xt.m.all, xlim=c(0.3,9), cutoff.pval=0.01)
+points(xt.m.all[fp,'diff.win'], xt.m.all[fp,'diff.btw'], col='blue', cex=0.4, pch=19)
 points(xt.m.all$diff.win[hk.off], xt.m.all$diff.btw[hk.off], pch=19, cex=0.4, col=rgb(0,1,1,0.5))
-points(xt.m.all[ribo.v,'diff.win'], xt.m.all[ribo.v,'diff.btw'], col='blue', cex=0.5, pch=19)
-points(xt.m.all[fn,'diff.win'], xt.m.all[fn,'diff.btw'], col='orange', cex=0.5, pch=19)
+points(xt.m.all[fn,'diff.win'], xt.m.all[fn,'diff.btw'], col='orange', cex=0.4, pch=19)
 title('C: ALDEx2 both', adj=0, line= 0.8)
 
 
 ```
 
-Applying the default scale model of \texttt{gamma=0.5} increases the dispersion as expected but does little to move the large number of housekeeping functions toward the midline of no difference. This is as expected: the mean of the default scale model is based on the CLR normalization so no shift would be expected over the original ALDEx2 model. Nevertheless, about 50\% of the housekeeping functions are no longer statistically significantly different. Note that this change is simple to conduct, has no additional computational complexity and requires only a slight modification from the analyst. 
+Applying the default scale model of \(\gamma=0.5\) increases the dispersion as expected but does little to move the large number of housekeeping functions toward the midline of no difference. This is as expected; the mean of the default scale model is based on the CLR normalization so no shift in location would be expected over the original ALDEx2 model. Nevertheless, about 30\% of the housekeeping functions are no longer statistically significantly different. Note that this change is simple to conduct, has no additional computational complexity and requires only a slight modification from the analyst.  
 
-Up to this point, scale uncertainty has been applied as an extension of the CLR normalization via the default scale model, but a user-defined scale adjustment can be applied to each condition, or even each sample independently through a custom scale matrix. While not necessary in all datasets (e.g., the transcriptome example discussed in the previous section and see the Supplementary material), it can greatly improve modeling in certain cases, especially when the scale is highly asymmetric between conditions. In order to specify a scale model from scratch, we need to revisit the concept that all normalizations in widespread use are actually ratios with the denominator implied by the normalization. Therefore, we can easily deviate from a certain normalization (e.g., the geometric mean assumption implied by the CLR) by specifying a total model based on the mean difference between conditions. While knowing the mean difference between conditions may seem cumbersome in practice, it is the \emph{relationship} between the group scale values that is important, not their raw values (Nixon et al. 2023). This can be illustrated quite simply by starting with the mean ratio in \(G\) between groups for the yeast transcriptome dataset which are \(6.05\times 10^{-5}\) for snf2 and \(5.08\times 10^{-5}\) for WT; their ratio being 1.17, or a 0.17-fold difference. Using this information, we can recapitulate the differential abundance analysis in Figure 2B and 2C exactly by using setting the mean denominator of group 1 to 1, and group 2 to 1.17 with a gamma of 0.5 as shown in Supplemental Figure 2. This ratio can be adjusted to alter the mean assumption placed on the group scale values. 
+Up to this point, scale uncertainty has been applied as an extension of the CLR normalization via the default scale model, but a user-defined scale adjustment can be applied to each condition, or even each sample independently through a custom scale matrix. Our starting point for this is to identify the naive scale estimate from the data, and this can be done by calculating the mean scale value for each group. The scale estimate for samples can be accessed in the \texttt{@scaleSamps} slot from the \texttt{aldex.clr} output. In this datset the scale estimate for the healthy group is `r round(mean(rowMeans(xg@scaleSamps[c(1:8,37:44),])),2)` and for the BV group is  `r round(mean(rowMeans(xg@scaleSamps[c(9:36),])),2)` for a difference of `r round(mean(rowMeans(xg@scaleSamps[c(1:8,37:44),])) - mean(rowMeans(xg@scaleSamps[c(9:36),])),2)`. This is interpreted as the scale of the H group of samples being `r round(2^(mean(rowMeans(xg@scaleSamps[c(1:8,37:44),])) - mean(rowMeans(xg@scaleSamps[c(9:36),]))),2)` greater than the BV group and this precise but incorrect estimate places the location of the housekeeping genes off the midline of no difference. 
 
-
-With this background, we can understand how to apply a user-defined scale model to the metratranscriptome dataset. While a user-defined scale model can be quite flexible with relative scales that are distinct for each group (or even each sample) along with their uncertainties, here we focus on using the  \texttt{aldex.makeScaleMatrix()} function. This function uses a logNormal distribution to build a scale matrix given a user-specified mean difference between groups and uncertainty level.  Applying a per-group relative differential scale of 0.15 moves the housekeeping functions to the midline of no difference, and applying a gamma of 0.5 provides the same dispersion as using a gamma of 0.5 with the CLR (Figure 3C). Note that now a significant number of functions are differentially up in BV that were formerly classed as not different without scale, or when only a default scale was applied. These former false negatives are noted in orange in each panel. Inspection of the functions shows that these are largely missing from the Lactobacillus species and so should actually be captured as differentially abundant. Thus, applying a differential scale allows us to distinguish between both false positives (housekeeping functions in cyan) and false negatives (orange functions) even in a very difficult to analyze dataset. We suggest that the default scale model  is sufficient when the data are approximately  centred. However, when datasets are not well centred or when the investigator has prior information about the underlying biology, we advocate developing and using a user-specified scale model.
+We desire a scale model that approximately centres the housekeeping functions. We anticipate that housekeeping functions should be nearly invariant and so an appropriate scale in this dataset is likely closer to 0 than the naive estimate. While a user-defined scale model can be quite flexible with relative scales that are distinct for each group (or even each sample) along with their uncertainties, here we focus on using the  \texttt{aldex.makeScaleMatrix()} function. This function uses a logNormal distribution to build a scale matrix given a user-specified mean difference between groups and uncertainty level.  Applying a per-group relative differential scale of 0.15 moves the housekeeping functions to the midline of no difference (Figure 3C), and applying a gamma of 0.5 provides the same dispersion as in panel B). Note that now a significant number of functions are differentially up in BV that were formerly classed as not different without the full scale model (orange), or when only a default scale was applied. Inspection of the functions shows that these are largely missing from the \emph{Lactobacillus} species and so should actually be captured as differentially abundant in the BV group. Thus, applying a differential scale allows us to distinguish between both false positives (housekeeping functions in cyan, and others in blue) and false negatives (orange functions) even in a very difficult to analyze dataset. The remarkable improvements in biological interpretation afforded by this full scale model, and the transferrability of it between sample cohorts of the same condition is outlined elsewhere [@dosSantos:2024]. We suggest that the default scale model  is sufficient when the data are approximately  centred. However, an informed model is more appropriate with datasets are not well centred or when the investigator has prior information about the underlying biology.
 
 
 # Discussion
+\doublespacing
+\singlespacing
+Biological systems are both predictably variable and stochastic [@Taniguchi:2010aa] and current measurement methods that rely on high throughput sequencing fail to capture all of that variation, particularly variation due to scale [@nixon2023scale;@Nixon2024B].  In the absence of external information (such as spike-in probes [@Loven:2012aa], cell counting [@Vandeputte:2017aa], FISH [@yeast-absolute] etc) sequencing depth normalisation methods cannot recapture the scale information [@Loven:2012aa], and can only normalize for the technical variation due to sequencing depth.
+
+Many groups have conducted benchmarking studies on different tools and normalizations used for the analysis of datasets such as transcriptomes[@Bullard:2010;@Soneson:2013;@Schurch:2016aa;@Quinn:2018aa] and microbiomes [@McMurdie:2014a;@Thorsen:2016aa; @Weiss:2017aa; @hawinkel2017;@Yerke:2024aa]. Generically, it is observed that the actual agreement between analysis methods can be modest, and  no single method outperforms all others in every dataset or type of experiment.  That different tools appear to work more reliably in different datasets from different sources can be explained as different  normalizations being a better fit to the scale  a particular dataset by chance.
 
 
-Biological count data derived from HTS can be decomposed into two parts: the relative (compositional) and the absolute (scale), and the product of these generates a fully scaled biological system (Nixon et al. 2023). Biological systems are both predictably variable and stochastic, and current measurement methods that rely on high throughput sequencing fail to capture all of that variation, particularly variation due to scale. In the absence of information external to the sequencing run itself, no normalisation method can recapture any of the scale information (Lovén et al. 2012). Even so, many methods such as flow cytometry (Vandeputte et al. 2017), spike-in probes and fluorescent in-situ hybridization (Lovén et al. 2012; Marguerat et al. 2012) have been proposed as a means to do this. In the context of the updated ALDEx2 software suite, these methods can be useful if they contain information on the particular scale the researcher is interested in.
+From our perspective, the disagreement between tools can be explained by the partially identifiable nature of the data; that is,  the  observed data are consistent with multiple ways of estimating the parameters [@nixon2023scale]. Partially identifiable data exhibit multiple pathologies, chief among them being that that different analytic approaches can produce  different parameter estimates and that more data produces worse estimates because the additional data increases the precision of a flawed estimate [@gustafson2015bayesian].  In the analysis of HTS data it is often observed that larger datasets converge on the majority of parts being significantly different [@Schurch:2016aa;@nixon2023scale], and that different analytic approaches result in different parts being chosen as significantly different [@Soneson:2013;@Schurch:2016aa;@Quinn:2018aa].
 
-The ALDEx2 R package is readily amenable for incorporating scale uncertainty. Originally, this tool used the only the Dirichlet distribution to sample compositional uncertainty. Rather than applying the CLR normalization as in the original ALDEx2, scale uncertainty can be added through the use of a scale model with no additional computational complexity. Scale uncertainty can be sampled from any distribution depending on prior knowledge or preference. By default, ALDEx2 samples scale from a logNormal distribution inspired by the CLR normalization. However, there is the option to introduce a full scale model that  encapsulates both uncertainty and asymmetry in underlying scale.
+Scale simulation  is now build into ALDEx2 to address the issue of partially identifiability, and through this lens the two main root causes to common HTS data pathologies can be proposed. The first contributing factor is the observed very low dispersion estimate for many features that is a by-product of experimental design, sequencing and normalization. In the Schurch et al. @Schurch:2016aa dataset, the data were  from single colonies derived from a single culture. Thus, it is more accurate to describe the 96 samples as wet-lab technical replicates rather than independent samples. However, this type of replicate is standard in the molecular literature, and would be expected to result in the very low dispersion that is observed. 
 
-All normalizations attempt to make the samples in a dataset commensurate but do not explicitly address the scale of the underlying system. The two supplementary tables show that these normalizations can be interpreted as scale assumptions. However, the general lack of scale information has important consequences for the analysis of HTS datasets. One issue is that analysis tools seem over-powered with even moderate sample sizes, and different tools have different intrinsic power, Type 1 and Type 2 error rates (Schurch et al. 2016) and fail to account for false discovery rates properly [@hawinkel2017;@Li:2022aa]. Traditional recommendations would suggest that using small sample sizes in analysis leads to less reliability and reproducibility in analyses since surprisingly large sample sizes are needed to determine reproducible p-values (e.g., Halsey et al. [-@Halsey:2015aa]).  However, recommendations to use small sample sizes are widespread in multivariate datasets such as RNA-seq datasets. We argue that this is a hallmark of unacknowledged bias: since normalizations are typically assumed to be correct with no uncertainty, smaller samples offer an unintentional buffer against this misspecification. Another issue is that datasets are difficult to analyze when  they contain systematic asymmetry, with different tools exhibiting differing pathologies with these datasets [@Robinson:2010a;@Wu2021].
+In the yeast transcriptome dataset, applying the default scale model with \( \gamma=0.5 \) a large number of transcripts with near 0 dispersion have had their dispersion increased (Figure 1D), and this results in modest number of transcripts, `r length(sig.s.ald)`, being called significantly different as shown in the volcano plot in Figure 1D (red points). In addition, there was now a strong concordance between the difference and p-values (Figure 1D), this is not surprising. In hindsight, what is not obvious is why the unscaled volcano plot shows such poor correspondence. We suggest that this can be explained by random fluctuations in the many variance estimates with  very low values, and this is supported by the  plot shown in Figure 2B.  Furthermore, overplotting the significant transcripts identified after adding scale uncertainty on the un-scaled analysis shows that adding scale uncertainty removes the need for the dual cutoff.
+Indeed, adding scale uncertainty reduces the significant transcripts to a subset of those identified with the dual cutoff that have the largest effect size.
+Thus, incorporating scale uncertainty through the default scale model allows us to determine which variables are likely to be significant due to sequencing and normalization, and which are significantly different even with scale uncertainty included.
 
-Many groups have conducted benchmarking studies on different tools and normalizations used for the analysis of datasets such as transcriptomes [@Bullard:2010;@Soneson:2013;@Schurch:2016aa;@Quinn:2018aa] and microbiomes [@Thorsen:2016aa; @Weiss:2017aa; @hawinkel2017]. Generically, it is observed that the actual agreement between methods can be modest, and there is usually a recommendation that some methods are better suited for individual datasets or for specific types of analysis; e.g.,~`Normalization and microbial differential abundance strategies depend upon data characteristics' [@Weiss:2017aa].] However, another interpretation of such studies is that different normalizations can be better suited to different datasets by happenstance, but it is not obvious how the use of specific normalizations could be justified on a per dataset basis. There are now published examples of multiple large replication efforts in psychology [@Open-Science-Collaboration:2015aa], cancer biology [@Rodgers:2021aa], ecology and evolution [@evoRepr-pre]. In a nutshell, experiences from these studies indicate that published data typically have higher effect sizes and appear more significant than replication efforts with the same data, or with newly generated replication data [@Rodgers:2021aa]. Thus, most published data should be viewed with suspicion [@Ioannidis:2005aa] unless efforts have been made to ensure that the results are robust.
+While the actual scale of the underlying environment is inaccessible post-sequencing, we can study the sensitivity of the results to the choice of normalization and thus scale.
+To do this we incorporate scale models [@nixon2023scale] in lieu of normalizations through the default scale model that is now built into ALDEx2.
+Scale uncertainty is incorporated using the \texttt{gamma} parameter that controls the amount uncertainty added to the CLR mean assumption when we call either \texttt{aldex()}, or \texttt{aldex.clr()}.
+The ALDEx2 package  contains a sensitivity analysis function, \texttt{aldex.senAnalysis()}, that can be used to explore the effect of different amounts of scale uncertainty, and an example is shown in  Supplementary Figure 2 for the yeast transcriptome dataset. Here it is clear that even tiny amounts of scale preclude the majority of transcripts from being considered statistically significant.
+In practice, we suggest that a \texttt{gamma} parameter between 0.5 and 1 is realistic for most experimental designs, but further work is needed.
 
-In the case of overpowering, HTS analyses seem to be more robust when applying a dual cutoff of both p-value and difference between group means [@Schurch:2016aa]. Figure 2 shows one reason for this robustness could be that the dual cutoff is mimicking the effect of including scale uncertainty, since substantially similar transcripts are identified by the two approaches. We believe that adding scale uncertainty leads to a more transparent analysis compared to the cutoff as it is easy to describe the conditions under which certain conclusions hold. Furthermore, while using the post-hoc difference cutoff is useful for differential abundance analysis, it is not clear how this can be incorporated into other kinds of downstream analyses. Conversely, analyses that include scale uncertainty are fully compatible with existing downstream analyses.
 
-In the case of asymmetry, the use of a user-specified scale model can be very useful for otherwise difficult-to-analyze datasets such as meta-transcriptomes and in-vitro selection datasets where the majority of features can change. We showed one such example in Figure 3 where the dataset was highly asymmetrical, and the TMM and RLE normalizations cannot fully move all the housekeeping genes to the midline of no difference or exhibit other pathologies (Supplemental). Incorporating differential scale on a per-group basis moves the mass of the data towards the midline of no difference and so affects both Type I and Type II error rates. In this analysis, transcripts that were previously not classed as differentially abundant are now called as significantly different, and the housekeeping transcripts move from being significantly different to not being identified as such. While we acknowledge that some prior information on which housekeeping transcripts should not be classed as DA is needed, we suggest that this information is widely available and is already used when performing the gold-standard quantitative PCR test of differential abundance [@Thellin:1999aa;@SEQC/MAQC-III-Consortium:2014aa]. Furthermore, the assumption that housekeeping genes should not generally be included in differential abundance analysis is implicit in the dual p-value, fold-change cutoff approach in widespread use. Thus, the use of this prior knowledge is not unique to our approach.
+The second contributing factor is unacknowledged asymmetry in many datasets.
+In the case of asymmetry, the use of a user-specified scale model can be very useful for otherwise difficult-to-analyze datasets such as meta-transcriptomes and in-vitro selection datasets where the majority of features can change.
+We showed one such example for the metatranscriptome dataset in Figure 3. Here the dataset was highly asymmetrical, and the TMM and RLE normalizations could not fully move all the housekeeping genes to the midline of no difference or the tools exhibited other pathologies (Supplemental Figure 6).
+Incorporating differential scale on a per-group basis moves the mass of the housekeeping functions towards the midline of no difference and so affects both Type I and Type II error rates. It is also of note that in the case of true biological replicates (different individuals) that adding a modest amount of scale \(\gamma=0.5\) had little effect on the concordance between the difference between groups and the p-values as shown in Supplementary Figure 7. Thus, in this dataset the scale mis-specification was affecting mainly the location of the difference between groups.
 
-In summary, while the underlying scale of the system is generally inaccessible, the effect of scale on the analysis outcomes can be modelled and can help explain some of the underlying biology. Adding scale information to the analysis allows for more robust inference because the features that are sensitive to scale can be identified and their impact on the analysis weighted accordingly. Additionally, the use of user-defined  scale models permits difficult to analyze datasets to be examined in a robust and principled manner even when the majority of features are asymmetrically distributed or expressed (or both) in the groups. Thus, reporting scale uncertainty should become a standard practice in the analysis of HTS datasets as a way to identify which features are most robust to differences in the underlying system. Finally, we supply a toolkit that makes incorporating scale simple even for datasets that come from highly asymmetrical environments. 
+In the metatranscriptome analysis, transcripts that were previously not classed as differentially abundant were now called as significantly different, and the housekeeping transcripts move from being significantly different to not being identified as such.
+Note  the assumption that housekeeping genes should not generally be included in differential abundance analysis is implicit in the dual p-value:fold-change cutoff approach in widespread use.
+While we acknowledge that some prior information on which housekeeping transcripts should not be classed as differentially abundant is needed, we suggest that this information is widely available and is already used when performing the gold-standard quantitative PCR test of differential abundance [@Thellin:1999aa;@SEQC/MAQC-III-Consortium:2014aa].
+Thus, the use of this prior knowledge is not unique to our approach.
+
+ 
+Beyond concerns of fidelity and rigor, scale models also enhance the reproducibility and transparency of HTS analyses.
+An advantage of incorporating scale is that analyses can be made much more robust such that actual or potential differences in scale can be tested and accounted for explicitly.
+This occurs because rather than using an implicit assumption (e.g., \(\log \mathbf{W}^{\perp}=1/G_{n}\) for the CLR normalization), scale models can make this an explicit part of the model building process.
+While it is beyond the scope of the present article, we note that there are many ways of building scale models that enhance the interpretability of the parameters and assumptions and a detailed description of these points is describe elsewhere [@nixon2023scale].
+In this work, we simply use the parameter \(\gamma\) in the default scale model as a term that represents uncertainty in the CLR assumption and note that larger values of $\gamma$ correspond to more uncertainty in this assumption. In the metatranscriptome example and elsewhere [@Nixon2024B], we also show that the ratio of scales between conditions can be used to build a full scale model when the conditions have dramatically different underlying scales.
+
+The ALDEx2 R package is readily amenable for incorporating scale uncertainty.
+Originally, this tool used the only the Dirichlet distribution to sample compositional uncertainty, but scale uncertainty can be added through the use of a scale model with no additional computational complexity.
+By default, ALDEx2 samples scale from a logNormal distribution inspired by the CLR normalization. 
+However, scale uncertainty can be sampled from any distribution depending on prior knowledge or preference, using the option to introduce a full informed scale model that  encapsulates both uncertainty and asymmetry in underlying scale.
+
+In summary, we supply a toolkit that makes incorporating scale simple to incorporate for any type of HTS dataset. While the underlying scale of the system is generally inaccessible, the effect of scale on the analysis outcomes can be modelled and can help explain some of the underlying biology, and known issues with the analysis of HTS data.
+Adding scale information to the analysis allows for more robust inference because the features that are sensitive to scale can be identified and their impact on conclusions weighted accordingly.
+Additionally, the use of user-defined  scale models permits difficult to analyze datasets to be examined in a robust and principled manner even when the majority of features are asymmetrically distributed or expressed (or both) in the groups [@dosSantos:2024].
+Thus, reporting scale uncertainty should become a standard practice in the analysis of HTS datasets as a way to identify which features are most robust to differences in the underlying system. 
+
+
 
 # References
 

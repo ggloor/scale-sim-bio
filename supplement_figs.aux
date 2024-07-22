@@ -1,74 +1,61 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
-\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
-\global\let\oldcontentsline\contentsline
-\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
-\global\let\oldnewlabel\newlabel
-\gdef\newlabel#1#2{\newlabelxx{#1}#2}
-\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
-\AtEndDocument{\ifx\hyper@anchor\@undefined
-\let\contentsline\oldcontentsline
-\let\newlabel\oldnewlabel
-\fi}
-\fi}
-\global\let\hyper@last\relax 
-\gdef\HyperFirstAtBeginDocument#1{#1}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
-\bibstyle{/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/BiocStyle/resources/tex/unsrturl}
-\@writefile{toc}{\contentsline {section}{\numberline {1}GM is related to Information and Shannon's entropy in HTS datasets}{2}{section.1}}
-\newlabel{gm-is-related-to-information-and-shannons-entropy-in-hts-datasets}{{1}{2}{GM is related to Information and Shannon's entropy in HTS datasets}{section.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Shannon's entropy has a volume or size}{2}{subsection.1.1}}
-\newlabel{shannons-entropy-has-a-volume-or-size}{{1.1}{2}{Shannon's entropy has a volume or size}{subsection.1.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Association between entropy (H) and geometric mean (G) as a function of vector length. Twenty random vectors were constructed for each length between 2 and 1000 in increments of 2 for each of the random distributions in the legend; N = Normal, U = Uniform, B = Beta. The bottom right of each plot represents vectors of length 2, and the top left represents the vector of lenght 500. The maximum value of H increases as the vector length increases, and the maximum value of G decreases in lock-step. Each random distribution has an obviously distinct relationship between the two measures. For the purposes of high throughput sequencing the Beta distribution is most similar to that seen in the majority of instances.\relax }}{4}{figure.caption.1}}
-\@cons\caption@pkg@list{{ragged2e}}
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:unnamed-chunk-2}{{1}{4}{Association between entropy (H) and geometric mean (G) as a function of vector length. Twenty random vectors were constructed for each length between 2 and 1000 in increments of 2 for each of the random distributions in the legend; N = Normal, U = Uniform, B = Beta. The bottom right of each plot represents vectors of length 2, and the top left represents the vector of lenght 500. The maximum value of H increases as the vector length increases, and the maximum value of G decreases in lock-step. Each random distribution has an obviously distinct relationship between the two measures. For the purposes of high throughput sequencing the Beta distribution is most similar to that seen in the majority of instances.\relax }{figure.caption.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Plot of the association between H and G at a vector length of 30. The relationship between H and G is inverse, and the strength of that association depends on the distribution. The N distribution shows a very strong assocation, while the Beta distribution is less well defined. Associations are shown for a vector length of 30.\relax }}{5}{figure.caption.2}}
-\newlabel{fig:unnamed-chunk-3}{{2}{5}{Plot of the association between H and G at a vector length of 30. The relationship between H and G is inverse, and the strength of that association depends on the distribution. The N distribution shows a very strong assocation, while the Beta distribution is less well defined. Associations are shown for a vector length of 30.\relax }{figure.caption.2}{}}
+\providecommand\BKM@entry[2]{}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Effect and volcano plots for unscaled and scaled transcriptome analysis. DESeq2 was used to conduct a differential abundance (DA) analysis on the yeast transcriptome dataset. The results were plotted to show the relationship between difference and dispersion using effect plots or difference and the Benjamini-Hochberg corrected p-values (volcano plot). Each point represents the values for one transcript, with the color indicating if that transcript was significant in the ALDEx2 scaled analysis and the DESeq2 analysis (red) or in the DESeq2 unscaled analysis only (orange). Points in grey are not statistically signficantly different with any analysis. The horizontal dashed lines represent a log2(difference) of \(\pm 1.4\)}}{1}{figure.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces the aldex.senAnalysis() function was used to generate a dataset with \(\gamma \) values of 1e-3, 0.1, 0.2, 0.3, 0.4,0.5, 0.7 and 1. The plotGamma() function was used to plot the result. Transcripts that are statistically significant are shown in black, and if not significant are in grey. The \(\gamma \) values, standardized effect size and number of significant transcripts at each value are given on the axes. }}{2}{figure.2}\protected@file@percent }
+\newlabel{fig:unnamed-chunk-4}{{2}{2}{the aldex.senAnalysis() function was used to generate a dataset with \(\gamma \) values of 1e-3, 0.1, 0.2, 0.3, 0.4,0.5, 0.7 and 1. The plotGamma() function was used to plot the result. Transcripts that are statistically significant are shown in black, and if not significant are in grey. The \(\gamma \) values, standardized effect size and number of significant transcripts at each value are given on the axes}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Plot of abundance v dispersion for a typical transcriptome dataset as counts, as logarithms of counts, and as CLR values. Panel A shows that the data are over-dispersed relative to a Poisson distribution which is represented by the dashed line when plotted on a log-log scale. Panel B shows that the relationship between the mean and the dispersion calculated in DESeq2, here the standard error (SE) of the mean, is very different when the data are log-transformed first. Panel C shows the equivalent values calculated by ALDEx2 in which the expected CLR value for each transcipt are plotted vs.~the expected dispersion. Panel D shows the output for ALDEx2 with \(\gamma =0.5\). The red line in each panel shows the LOESS line of fit to the mid-point of the distributions. In panels B and C the amount of dispersion reaches a minimum at moderate values. The dashed orange line in panel A is the line of equivalence, and in panel B and C is the minimum y value. The values below the dashed grey line in panels B and C represent those below the first decile of dispersion.}}{3}{figure.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Plot of the offset of the mean differnece between groups as a function of scale ratio. For this, the default scale of 1:1 was altered in increments of 0.1 keeping the gamma parameter (dispersion) at 0.5. The filled circle shows the outcome when the calculation is done using the geometric mean and the same gamma parameter.}}{4}{figure.4}\protected@file@percent }
+\BKM@entry{id=1,dest={73656374696F6E2A2E31},srcline={309}}{5C3337365C3337375C303030485C3030306F5C303030775C3030305C3034305C303030735C303030635C303030615C3030306C5C303030695C3030306E5C303030675C3030305C3034305C303030615C303030665C303030665C303030655C303030635C303030745C303030735C3030305C3034305C303030645C303030695C303030735C303030705C303030655C303030725C303030735C303030695C3030306F5C3030306E}
+\BKM@entry{id=2,dest={73656374696F6E2A2E32},srcline={312}}{5C3337365C3337375C303030495C303030735C303030735C303030755C303030655C303030735C3030305C3034305C303030775C303030695C303030745C303030685C3030305C3034305C303030445C303030455C303030535C303030655C303030715C303030325C3030305C3034305C303030615C3030306E5C303030645C3030305C3034305C303030655C303030645C303030675C303030655C30303052}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Effect plots of the selex dataset with various gamma and scale parameters. All scales are calculated with a logNormal distribution to ensure symmetry for the user.}}{5}{figure.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{How scaling affects dispersion}{5}{section*.1}\protected@file@percent }
+\newlabel{how-scaling-affects-dispersion}{{}{5}{How scaling affects dispersion}{section*.1}{}}
+\@writefile{toc}{\contentsline {section}{Issues with DESeq2 and edgeR}{5}{section*.2}\protected@file@percent }
+\newlabel{issues-with-deseq2-and-edger}{{}{5}{Issues with DESeq2 and edgeR}{section*.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Shown here are the mean log2 fold change as a density plot, and a Volcano plot showing the location and adjusted p-value for each feature in the metatranscriptomic dataset. The DESeq2 approach does a good job of centring this data, while edgeR is less suitable. The volcano plots show dramatically different outcomes. The DESeq2 algorithm assigns very large fold changes to features that have only moderate change, and further identifies a very large proportion of features as significantly different. In contrast, edgeR exhibits a much smaller number of differentially abundant features. In both volcano plots, the housekeeping genes in the main Figure 3 are shown in orange. We can see that these are asymmetrically distributed in both plots. Additionally the location of the features that DESeq2 identified as having a very large difference are shown in the edgeR volcano plot as blue circles.}}{6}{figure.6}\protected@file@percent }
+\BKM@entry{id=3,dest={73656374696F6E2A2E33},srcline={390}}{5C3337365C3337375C303030435C303030685C303030655C303030635C3030306B5C303030695C3030306E5C303030675C3030305C3034305C303030745C303030685C303030655C3030305C3034305C303030735C303030635C303030615C3030306C5C303030655C3030305C3034305C303030615C303030735C303030735C303030755C3030306D5C303030705C303030745C303030695C3030306F5C3030306E5C303030735C3030305C3034305C3030306F5C303030665C3030305C3034305C303030745C303030685C303030655C3030305C3034305C303030525C3030304C5C303030455C3030305C3034305C303030615C3030306E5C303030645C3030305C3034305C303030545C3030304D5C3030304D5C3030305C3034305C3030306E5C3030306F5C303030725C3030306D5C303030615C3030306C5C303030695C3030307A5C303030615C303030745C303030695C3030306F5C3030306E5C30303073}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Shown here are two volcano plots that plot the mean log2 fold change plotted vs the log of the FDR for the yeast transcriptome dataset and for the metatranscriptome dataset. Data were generated in ALDEx2 with \(\gamma = [0, 0.5]\) in black or in red.}}{7}{figure.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Checking the scale assumptions of the RLE and TMM normalizations}{7}{section*.3}\protected@file@percent }
+\newlabel{checking-the-scale-assumptions-of-the-rle-and-tmm-normalizations}{{}{7}{Checking the scale assumptions of the RLE and TMM normalizations}{section*.3}{}}
 \gdef \LT@i {\LT@entry 
-    {1}{38.33282pt}\LT@entry 
-    {2}{44.77803pt}\LT@entry 
-    {2}{33.1111pt}\LT@entry 
-    {2}{29.77777pt}\LT@entry 
-    {2}{33.1111pt}\LT@entry 
-    {2}{28.77777pt}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Plot of Shannon's entropy (H) vs geometric mean (G) for each sample in different datasets. The groups that each sample belong to are highlighted as filled or open circles. Each group in each dataset has different entropy with the groups in the selex and metatranscriptome datasets being highly distinct.\relax }}{6}{figure.caption.3}}
-\newlabel{fig:info}{{3}{6}{Plot of Shannon's entropy (H) vs geometric mean (G) for each sample in different datasets. The groups that each sample belong to are highlighted as filled or open circles. Each group in each dataset has different entropy with the groups in the selex and metatranscriptome datasets being highly distinct.\relax }{figure.caption.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Plot of the offset of the mean differnece between groups as a function of scale ratio. For this, the default scale of 1:1 was altered in increments of 0.1 keeping the gamma parameter (dispersion) at 0.5. The filled circle shows the outcome when the calculation is done using the geometric mean and the same gamma parameter.\relax }}{6}{figure.caption.4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Effect plots of the selex dataset with various gamma and scale parameters. All scales are calculated with a logNormal distribution to ensure symmetry for the user. \relax }}{8}{figure.caption.5}}
-\newlabel{fig:selex}{{5}{8}{Effect plots of the selex dataset with various gamma and scale parameters. All scales are calculated with a logNormal distribution to ensure symmetry for the user. \relax }{figure.caption.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {2}How scaling affects dispersion}{8}{section.2}}
-\newlabel{how-scaling-affects-dispersion}{{2}{8}{How scaling affects dispersion}{section.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces jnk\relax }}{9}{figure.caption.6}}
-\newlabel{fig:disp}{{6}{9}{jnk\relax }{figure.caption.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Issues with DESeq2 and edgeR}{9}{section.3}}
-\newlabel{issues-with-deseq2-and-edger}{{3}{9}{Issues with DESeq2 and edgeR}{section.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Shown here are the mean log2 fold change as a density plot, and a Volcano plot showing the location and adjusted p-value for each feature in the metatranscriptomic dataset. The DESeq2 approach does a good job of centring this data, while edgeR is less suitable. The volcano plots show dramatically different outcomes. The DESeq2 algorithm assigns very large fold changes to features that have only moderate change, and further identifies a very large proportion of features as significantly different. In contrast, edgeR exhibits a much smaller number of differentially abundant features. In both volcano plots, the housekeeping genes in the main Figure 3 are shown in orange. We can see that these are asymmetrically distributed in both plots. Additionally the location of the features taht DESeq2 identified as having a very large difference are shown in the edgeR volcano plot as blue circles.\relax }}{10}{figure.caption.7}}
-\newlabel{fig:DESedg}{{7}{10}{Shown here are the mean log2 fold change as a density plot, and a Volcano plot showing the location and adjusted p-value for each feature in the metatranscriptomic dataset. The DESeq2 approach does a good job of centring this data, while edgeR is less suitable. The volcano plots show dramatically different outcomes. The DESeq2 algorithm assigns very large fold changes to features that have only moderate change, and further identifies a very large proportion of features as significantly different. In contrast, edgeR exhibits a much smaller number of differentially abundant features. In both volcano plots, the housekeeping genes in the main Figure 3 are shown in orange. We can see that these are asymmetrically distributed in both plots. Additionally the location of the features taht DESeq2 identified as having a very large difference are shown in the edgeR volcano plot as blue circles.\relax }{figure.caption.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Checking the scale assumptions of the RLE and TMM normalizations}{10}{section.4}}
-\newlabel{checking-the-scale-assumptions-of-the-rle-and-tmm-normalizations}{{4}{10}{Checking the scale assumptions of the RLE and TMM normalizations}{section.4}{}}
+    {4}{32.27768pt}\LT@entry 
+    {4}{58.1111pt}\LT@entry 
+    {4}{58.1111pt}\LT@entry 
+    {4}{58.1111pt}\LT@entry 
+    {1}{70.94464pt}\LT@entry 
+    {4}{58.1111pt}\LT@entry 
+    {4}{52.1111pt}}
 \gdef \LT@ii {\LT@entry 
-    {3}{29.62466pt}\LT@entry 
-    {3}{58.1111pt}\LT@entry 
-    {3}{58.1111pt}\LT@entry 
-    {3}{58.1111pt}\LT@entry 
-    {1}{66.75023pt}\LT@entry 
-    {3}{58.1111pt}\LT@entry 
-    {3}{52.1111pt}}
-\gdef \LT@iii {\LT@entry 
-    {3}{29.62466pt}\LT@entry 
-    {3}{58.1111pt}\LT@entry 
-    {3}{54.77777pt}\LT@entry 
-    {3}{58.1111pt}\LT@entry 
-    {1}{66.75023pt}\LT@entry 
-    {3}{58.1111pt}\LT@entry 
-    {3}{52.1111pt}}
-\newlabel{tab:getNorm}{{2}{11}{Checking the scale assumptions of the RLE and TMM normalizations}{table.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Log scale models}}{11}{table.2}}
-\newlabel{tab:getNormNL}{{3}{11}{Checking the scale assumptions of the RLE and TMM normalizations}{table.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Linear scale models}}{11}{table.3}}
-\newlabel{references}{{4}{11}{}{table.3}{}}
-\@writefile{toc}{\contentsline {section}{References}{11}{table.3}}
-\ttl@finishall
+    {4}{32.27768pt}\LT@entry 
+    {4}{58.1111pt}\LT@entry 
+    {4}{54.77777pt}\LT@entry 
+    {4}{58.1111pt}\LT@entry 
+    {1}{70.94464pt}\LT@entry 
+    {4}{58.1111pt}\LT@entry 
+    {4}{52.1111pt}}
+\BKM@entry{id=4,dest={73656374696F6E2A2E34},srcline={512}}{5C3337365C3337375C303030525C303030655C303030665C303030655C303030725C303030655C3030306E5C303030635C303030655C30303073}
+\bibcite{ref-Robinson:2010a}{\citeproctext }
+\bibcite{ref-Robinson:2010}{\citeproctext }
+\bibcite{ref-Love:2014aa}{\citeproctext }
+\bibcite{ref-Andrews:2019aa}{\citeproctext }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{Log scale models}}{8}{table.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{Linear scale models}}{8}{table.2}\protected@file@percent }
+\newlabel{references}{{}{8}{References}{section*.4}{}}
+\@writefile{toc}{\contentsline {section}{References}{8}{section*.4}\protected@file@percent }
+\newlabel{refs}{{}{8}{References}{section*.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Adding scale uncertainty changes the dispersion distribution. Panel A shows a plot of the expected value for relative abundance vs the expected value for the pooled dispersion as output by aldex.effect. The dashed horizontal lines show the median value for the features with a rAbundance between -0.5 and 0.5. Panel B plots the unscaled vs scaled dispersion, note the non-linear relationship. Panel C plots relative abundance vs the difference between dispersion with gamma set to 0 and to 1 to highlight the rotation that is evident in Panel A. The colored lines indicate the lowess line of fit through the centre of mass of the plot. Line colors represent different populations of points. The grey line is the total population, the red line is the population of significant transcripts with no scale, the orange line is the population of significant transcripts with a difference threshold of about 2.5-fold change, the blue line is the population of significant transcripts with gamma =0.5, and the cyan line is the significant population with gamma = 1.}}{9}{figure.8}\protected@file@percent }
+\bibcite{ref-fernandes:2013}{\citeproctext }
+\bibcite{ref-Taniguchi:2010aa}{\citeproctext }
+\bibcite{ref-maza2013}{\citeproctext }
+\bibcite{ref-Dillies:2013}{\citeproctext }
+\bibcite{ref-Weiss:2017aa}{\citeproctext }
+\bibcite{ref-nixon2023scale}{\citeproctext }
+\bibcite{ref-mcmurrough:2014}{\citeproctext }
+\bibcite{ref-gloorAJS:2016}{\citeproctext }
+\bibcite{ref-GloorAJS2023}{\citeproctext }
+\bibcite{ref-Anders:2010}{\citeproctext }
+\bibcite{ref-McMurdie:2014a}{\citeproctext }
+\gdef \@abspage@last{10}

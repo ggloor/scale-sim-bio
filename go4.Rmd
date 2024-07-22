@@ -1,0 +1,231 @@
+---
+title: "Controlling for false precision using Scale Simulation in ALDEx2
+"
+shorttitle: "Scale ALDEx2"
+author:
+  - name: Greg Gloor
+    affiliation: Department of Biochemistry, University of Western Ontario
+    email: ggloor@uwo.ca
+  - name: Michelle Pistner Nixon
+    affiliation: College of Information Sciences and Technology, Pennsylvania	 State University
+  - name: Justin Silverman
+    affiliation: College of Information Sciences and Technology and Department of Medicine, Pennsylvania	 State University
+bibliography: /Users/ggloor/Library/texmf/bibtex/bib/bibdesk_refs.bib
+output:
+  nucleic-acids-research.csl: pdf_document
+package: ALDEx2
+abstract: In  high-throughput sequencing (HTS) studies, sample-to-sample variation in sequencing depth is driven by technical factors, and not by variation in the scale (e.g., total size, microbial load, or total gene expression) of the underlying biological systems. Typically a statistical normalization is used  to remove unwanted technical variation in the data or the parameters of the model to enable analyses that are sensitive to scale; e.g., differential abundance and differential expression analyses. Recently we showed that all normalizations make implicit assumptions about the unmeasured system scale and that errors in these assumptions can lead to dramatic increases in false positive and false negative rates. Here we describe updates to the ALDEx2 R package that mitigate these problems by directly modeling uncertainty in the unmeasured system scale through the use of a \textit{scale model}. Scale models generalize the idea of normalizations and can be thought of as explicitly modeling the error in normalization by examining a distribution over all possible  normalizations.  Beyond enhancing the robustness of HTS analyses,  the use of scale models within ALDEx2 enhances the transparency and  reproducibility of analyses by making implicit normalizing assumptions an explicit part of the model building process.
+
+---
+
+
+# Results
+
+- HTS has a dispersion problem since the log(var(x)) \(\ne\) var(log(x)) (Fig 1)
+
+- this causes false positive inference and the double filtering approach is commonly used to weed out FP, or nuisance positives. However this causes specificity problems since BH corrections are useful only in the total dataset and not when subset
+
+- HTS has a location problem, and common normalizations are assumed to correct for this. However, there is no universal normalization and no standard way to identify when the assumptions of the normalization are broken
+
+```{r, echo=F, warning=F, message=F,comment=F, result=F} 
+library(DESeq2)
+library(ALDEx2)
+```
+```{r dispersion, echo=F, warning=F, message=F,comment=F, result=F, cache=T,fig.dim=c(7,3), fig.cap="Plot of abundance v dispersion for a typical transcriptome dataset as counts,	 as logarithms of counts, and as CLR values. Panel A shows that the data are over-dispersed relative to a Poisson distribution which is represented by the dashed line when plotted on a log-log scale. Panel B shows that the relationship between the mean and the dispersion calculated in DESeq2, here the standard error (SE) of the mean, is very different when the data are log-transformed first. Panel C shows the equivalent values calculated by ALDEx2	 in which the expected CLR value for each transcipt are plotted vs. the expected dispersion. Panel D shows the output for ALDEx2 with \\( \\gamma=0.5 \\). The red line in each panel shows the LOESS line of fit to the mid-point of the distributions. In panels B and C the amount of dispersion reaches a minimum at moderate	 values.  The dashed orange line in panel A is the line of equivalence, and in panel B and C is the minimum y value. The values below the dashed grey line in panels B and C represent those below the first decile of dispersion." }
+
+
+url <- "https://raw.githubusercontent.com/ggloor/datasets/main/transcriptome.tsv"
+yst <- read.table(url, header=T, row.names=1)
+# remove the one gene with 0 reads
+
+yst <- yst[rownames(yst) != "YOR072W-B",]
+
+# Gierlinski:2015aa
+yst[,c('SNF2.6', 'SNF2.13','SNF2.25','SNF2.35')] <- NULL 
+yst[,c('WT.21','WT.22','WT.25','WT.28','WT.34','WT.36')] <- NULL  
+
+conds <- c(rep('S', 44), rep('W', 42))
+coldata <- data.frame(conds)
+
+# DESeq2
+load('analysis/res.Rda')
+
+#ALDEx2
+load('analysis/x.all.Rda')
+load('analysis/x.s.all.Rda')
+
+# with gamma = 1
+load('analysis/x.s.all.Rda')
+sig.des <- which(res@listData$padj < 0.05)
+sig.ald <- which(x.all$we.eBH < 0.05)
+sig.s.ald <- which(x.s.all$we.eBH < 0.05)
+
+# get and plot mean/var or mean/SE for counts
+# and log counts
+yst.mn <- apply(yst, 1, mean)
+yst.mn.log <- apply(yst, 1, function(x) mean(log2(x)))
+yst.mn.log[is.infinite(yst.mn.log)] <- 0
+
+yst.v <- apply(yst, 1, var)
+
+par(mfrow=c(1,3))
+#plot(log2(yst.mn), log2(yst.v), pch=19, cex=0.5, col=rgb(0,0,0,0.2),
+#  xlab='Mean count', ylab='Variance')
+#points(log2(yst.mn[sig.des]), log2(yst.v[sig.des]), pch=19, cex=0.5, col='orange')
+#points(log2(yst.mn[sig.s.ald]), log2(yst.v[sig.s.ald]), pch=19, cex=0.5, col='red')
+#def <- data.frame(log2(yst.mn),log2(yst.v))
+#lines(lowess(def, f=0.1), col=2, lwd=2)
+#title('A', adj=0, line= 0.8)
+#abline(0,1, col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
+
+l.df <- data.frame(yst.mn.log, res@listData$lfcSE)
+
+plot(l.df, pch=19, cex=0.5, col=rgb(0,0,0,0.2),
+  xlab='Mean log2(count)', ylab='SE log2(count)',ylim=c(0,0.4))
+points(yst.mn.log[sig.des], res@listData$lfcSE[sig.des], pch=19, 
+  cex=0.5, col='orange')
+points(yst.mn.log[sig.s.ald], res@listData$lfcSE[sig.s.ald], pch=19, 
+  cex=0.5, col='red')
+lines(lowess(l.df, f=0.25), col=2, lwd=2)
+abline(h=min(lowess(l.df)$y), col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
+ abline(h=0.0275, col='grey', lty=2)
+title('B', adj=0, line= 0.8)
+
+l.df <- data.frame(x.all$rab.all, x.all$diff.win)
+plot(x.all$rab.all, x.all$diff.win, cex=0.5, col=rgb(0,0,0,0.2),
+  xlab='E(clr)', ylab='E(disp)')
+points(x.all$rab.all[sig.ald], x.all$diff.win[sig.ald], col='orange', cex=0.4)
+points(x.all$rab.all[sig.s.ald], x.all$diff.win[sig.s.ald], col='red', cex=0.4)
+lines(lowess(l.df, f=.1), col=2, lwd=2)
+abline(h=min(lowess(l.df)$y), col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
+ abline(h=0.208, col='grey', lty=2)
+title('C', adj=0, line= 0.8)
+
+l.s.df <- data.frame(x.s.all$rab.all, x.s.all$diff.win)
+plot(x.s.all$rab.all, x.s.all$diff.win, cex=0.5, col=rgb(0,0,0,0.2),
+  xlab='E(clr)', ylab='E(disp)', ylim=c(0,4.5))
+points(x.s.all$rab.all[sig.ald], x.s.all$diff.win[sig.ald], col='orange', cex=0.4)
+points(x.s.all$rab.all[sig.s.ald], x.s.all$diff.win[sig.s.ald], col='red', cex=0.4)
+lines(lowess(l.s.df, f=.1), col=2, lwd=2)
+abline(h=min(lowess(l.s.df)$y), col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
+ abline(h=0.208, col='grey', lty=2)
+title('D', adj=0, line= 0.8)
+```
+There is an anomaly in the dispersion curve, whereby mid-range parts are less dispersed than high-range parts [@Anders:2010, Fig 7].
+
+```{r }
+# flattening the dispersion anomaly curve
+par(mfrow=c(1,2))
+ plot(x.all$rab.all, x.all$diff.win)
+ points(x.s.all$rab.all,x.s.all$diff.win, col='red', pch=19, cex=0.5)
+
+ls.diff <- data.frame(x.s.all$rab.all, x.s.all$diff.win -  x.all$diff.win)
+
+ plot(x.s.all$rab.all, x.s.all$diff.win -  x.all$diff.win, pch=19, col=rgb(0,0,0,0.2), cex=0.5)
+lines(lowess(ls.diff, f=.1), col=2, lwd=2)
+
+```
+- scale is a universal way of dealing with both of these common problems.
+
+- all normalizations can be written as the denominator of a ratio, and all normalizations make an assumption about the scale of the system. 
+  - Proportions, and any other constant denominator normalisation implicitly assume that the scale is equal between every sample is constant. 
+  - The CLR or other log-ratios where the denominator is calculated from the data implicitly assume that the value of the denominator is related to the scale of the data
+  - by analogy, the TMM assumes that a subset of parts in one sample can be chosen as the scale reference
+  - by analogy, the RLE assumes that a different part in each sample can be chosen as the scale reference  
+
+```{r fig-filter}
+# code/yeast-aldex.R
+load("analysis/x.all.Rda") # gamma=1e-3
+load("analysis/x.s.all.Rda") # gamma=0.5
+
+sig.ald <- x.all$we.eBH < 0.05
+sig.s.ald <- x.s.all$we.eBH < 0.05
+
+par(mfrow=c(2,3))
+# effect plot
+plot(x.all$diff.win, x.all$diff.btw, pch=19, cex=0.2, col="grey30",
+  xlab="dispersion", ylab="log2FC", xlim=c(0, 4.5))
+points(x.all$diff.win[sig.ald], x.all$diff.btw[sig.ald], 
+  pch=19, cex=0.2, col="orange")
+points(x.all$diff.win[sig.s.ald], x.all$diff.btw[sig.s.ald], 
+  pch=19, cex=0.3, col="red")
+title(main="effect g=1e-3")
+abline(v=0, lty=2)
+abline(h=0, lty=2)
+
+# volcano plot
+plot(x.all$diff.btw, -log10(x.all$we.eBH+1e-80), pch=19, cex=0.2, col="grey30",
+  xlab="log2FC", ylab="-log10(q)")
+points(x.all$diff.btw[sig.ald], -log10(x.all$we.eBH+1e-80)[sig.ald], 
+  pch=19, cex=0.2, col="orange")
+points(x.all$diff.btw[sig.s.ald], -log10(x.all$we.eBH+1e-80)[sig.s.ald], 
+  pch=19, cex=0.3, col="red")
+title(main="VQ g=1e-3")
+abline(h=0, lty=3)
+
+
+# Dispersion (variance) Q plot
+plot(x.all$diff.win, -log10(x.all$we.eBH+1e-80), pch=19, cex=0.2, col="grey30",
+  xlab="dispersion", ylab="-log10(q)", xlim=c(0, 4.5))
+points(x.all$diff.win[sig.ald], -log10(x.all$we.eBH+1e-80)[sig.ald], 
+  pch=19, cex=0.2, col="orange")
+points(x.all$diff.win[sig.s.ald], -log10(x.all$we.eBH+1e-80)[sig.s.ald], 
+  pch=19, cex=0.3, col="red")
+title(main="VQ g=1e-3")
+abline(v=0, lty=2)
+abline(h=-log10(0.05), lty=3)
+
+## MA plot
+#plot(x.all$rab.all, x.all$diff.btw, pch=19, cex=0.2, col="grey30",
+#  xlab="log2rAB", ylab="log2FC")
+#points(x.all$rab.all[sig.ald], x.all$diff.btw[sig.ald], 
+#  pch=19, cex=0.2, col="orange")
+#points(x.all$rab.all[sig.s.ald], x.all$diff.btw[sig.s.ald], 
+#  pch=19, cex=0.3, col="red")
+#title(main="MA g=1e-3")
+#abline(h=0, lty=2)
+
+# effect plot
+plot(x.s.all$diff.win, x.s.all$diff.btw, pch=19, cex=0.2, col="grey30",
+  xlab="dispersion", ylab="log2FC", xlim=c(0, 4.5))
+points(x.s.all$diff.win[sig.ald], x.s.all$diff.btw[sig.ald], 
+  pch=19, cex=0.2, col="orange")
+points(x.s.all$diff.win[sig.s.ald], x.s.all$diff.btw[sig.s.ald], 
+  pch=19, cex=0.3, col="red")
+title(main="effect g=0.5")
+abline(v=0, lty=2)
+abline(h=0, lty=2)
+
+# volcano plot
+plot(x.s.all$diff.btw, -log10(x.s.all$we.eBH+1e-45), pch=19, cex=0.2, col="grey30",
+  xlab="log2FC", ylab="-log10(q)")
+points(x.s.all$diff.btw[sig.ald], -log10(x.s.all$we.eBH+1e-45)[sig.ald], 
+  pch=19, cex=0.2, col="orange")
+points(x.s.all$diff.btw[sig.s.ald], -log10(x.s.all$we.eBH+1e-45)[sig.s.ald], 
+  pch=19, cex=0.3, col="red")
+title(main="volcano g=0.5")
+abline(v=0, lty=2)
+abline(h=-log10(0.05), lty=3)
+
+# Dispersion (variance) Q plot
+plot(x.s.all$diff.win, -log10(x.s.all$we.eBH+1e-45), pch=19, cex=0.2, col="grey30",
+  xlab="dispersion", ylab="-log10(q)", xlim=c(0, 4.5))
+points(x.s.all$diff.win[sig.ald], -log10(x.s.all$we.eBH+1e-45)[sig.ald], 
+  pch=19, cex=0.2, col="orange")
+points(x.s.all$diff.win[sig.s.ald], -log10(x.s.all$we.eBH+1e-45)[sig.s.ald], 
+  pch=19, cex=0.3, col="red")
+title(main="VQ g=0.5")
+abline(v=0, lty=2)
+abline(h=-log10(0.05), lty=3)
+
+## MA plot
+#plot(x.s.all$rab.all, x.s.all$diff.btw, pch=19, cex=0.2, col="grey30",
+#  xlab="log2rAB", ylab="log2FC")
+#points(x.s.all$rab.all[sig.ald], x.s.all$diff.btw[sig.ald], 
+#  pch=19, cex=0.2, col="orange")
+#points(x.s.all$rab.all[sig.s.ald], x.s.all$diff.btw[sig.s.ald], 
+#  pch=19, cex=0.3, col="red")
+#title(main="MA g=0.5")
+#abline(h=0, lty=2)
+
+```

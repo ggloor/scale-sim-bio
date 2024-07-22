@@ -1,4 +1,4 @@
-devtools::load_all('~/Documents/0_git/ALDEx_bioc')
+library(ALDEx2)
 
 
 set.seed(2023)
@@ -19,6 +19,11 @@ xg <- aldex.clr(ko.both, conds.K0, gamma=0.5)
 xg.e <- aldex.effect(xg)
 xg.t <- aldex.ttest(xg)
 xg.all <- cbind(xg.e, xg.t)
+
+for(i in 1:length(xt@dirichletData)){xt@dirichletData[[1]] <- NULL}
+save(xt, file='analysis/xt.clr.Rda')
+for(i in 1:length(xg@dirichletData)){xg@dirichletData[[1]] <- NULL}
+save(xg, file='analysis/xg.clr.Rda')
 
 save(xg.all, file='analysis/xg.Rda')
 mu <- c(1,1.15) # 15% difference in 
