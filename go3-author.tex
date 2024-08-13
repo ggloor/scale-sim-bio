@@ -160,7 +160,8 @@ in scale remains an outstanding challenge.
 
 The analysis of HTS data suffers from several known problems that can be
 traced, in whole or in part, to misspecification of scale. The first
-issue is poor control of the false discovery rate (FDR) (3, 4),
+issue is poor control of the false discovery rate (FDR)
+{[}(3);(4);Nearing:\href{mailto:2022aa;@Li}{\nolinkurl{2022aa;@Li}}:2022aa{]},
 exhibited as dataset-dependent FDR control. The FDR problem is connected
 to the double-filtering approach that is often used, but which is known
 not to have appropriate FDR control (5, 6). The second issue is poor
@@ -170,24 +171,24 @@ in in-vitro selection experiments (SELEX), transcriptome analysis, and
 microbiome analysis (7). The third issue is that these problems become
 more pronounced as more samples are collected; that is, more information
 results in a worsening of the accuracy of the analysis (9). The final
-problem is that these data are relative data, i.e.~compositional, and
-substantial effort has been put into removing this constraint.
+problem is that these data are relative data, i.e.~compositional (10,
+11), and substantial effort has been put into removing this constraint.
 
 The first three problems were recently shown by Nixon and Silverman (8)
 to be a result of a mismatch between the underlying size or scale of the
 system and the assumptions of the normalizations used for the analysis
 of HTS. Biological variation in scale often represents an important
-unmeasured confounder in HTS analyses (10). For example, cells
+unmeasured confounder in HTS analyses (12). For example, cells
 transformed by the cMyc oncogene have about 3 times the amount of mRNA
-and about twice the rRNA content than non-transformed cells (11), and
-this dramatically skews transcriptome analysis (12). In addition,
+and about twice the rRNA content than non-transformed cells (13), and
+this dramatically skews transcriptome analysis (14). In addition,
 wild-type and mutant strains of cell lines, yeast or bacteria have
 different growth rates and RNA contents under different conditions,
 which affect our ability to identify truly differentially abundant genes
-(13--15). As another example, the total bacterial load of the vaginal
+(15--17). As another example, the total bacterial load of the vaginal
 microbiome differs by 1-2 orders of magnitude in absolute abundance
-between the healthy and bacterial vaginosis states (16), and the
-composition between these states is dramatically different (17, 18).
+between the healthy and bacterial vaginosis states (18), and the
+composition between these states is dramatically different (19, 20).
 Thus, a full description of any of these systems includes both relative
 change (composition) and absolute abundance (scale). Current methods
 access only the compositional information yet make implicit assumptions
@@ -198,24 +199,25 @@ variation in sequencing depth be viewed as a problem of
 partially-identified models. They showed that \emph{all} normalizations
 make some assumption about scale. These implicit assumptions are often
 difficult to interpret, and different normalizations provide different
-outputs when applied to the same dataset (3, 19--21). Intuitively,
+outputs when applied to the same dataset (3, 21--24). Intuitively,
 normalizations in widespread use assume that either all samples have the
-same scale, e.g.~proportions, rarefaction (22), RPKM (23, 24), etc; or
+same scale, e.g.~proportions, rarefaction (25), RPKM (26, 27), etc; or
 that a subset of features in one sample can be chosen as a reference to
-which the others are scaled e.g.~the TMM,(25), or LVHA (7); or that
-different sub-parts of each sample maintain a constant scale across
-samples e.g.~the RLE (26); or that the geometric mean of the parts is
-appropriate e.g the CLR (27) and its derivatives.
+which the others are scaled e.g.~the TMM (28), or LVHA (7) or the
+additive log-ratio (29); or that different sub-parts of each sample
+maintain a constant scale across samples e.g.~the RLE (30); or that the
+geometric mean of the parts is appropriate e.g the CLR and its
+derivatives.
 
-The original ALDEx2 (28) model made a strict assumption about scale
-through the CLR normalization (8). While this assumption could be useful
-in many cases it could never be exactly true, and others have shown that
-it is not always the best option (29). Nixon et al. (8) showed that
-better scale assumptions resulted in more reproducible data analysis
-including better control of both false positive and false negative
-results. In essence ALDEx2 has been modified to explicitly model the
-scale over a range of reasonable normalization parameters. Here, we
-briefly introduce these modifications and then show how scale
+The original ALDEx2 (31) model unwittingly made a strict assumption
+about scale through the CLR normalization (8). While this assumption
+could be useful in many cases it could never be exactly true, and others
+have shown that it is not always the best option (32). Nixon et al. (8)
+showed that better scale assumptions resulted in more reproducible data
+analysis including better control of both false positive and false
+negative results. In essence ALDEx2 has been modified to explicitly
+model the scale over a range of reasonable normalization parameters.
+Here, we briefly introduce these modifications and then show how scale
 uncertainty can greatly improve modeling in transcriptome and
 meta-transcriptome datasets to provide more robust and reproducible
 results.
@@ -242,9 +244,9 @@ element-wise combination of scale and composition:
 All the normalizations in current use are data transformations that can
 be stated as ratios of the form
 \(\hat{{\mathbf{W}}}_{dn}=\mathbf{Y}_{dn}/f(\mathbf{Y})\), where the
-denominator is determined by some function of the observation and the
-\(\hat{{\mathbf{W}}}\) notation indicates that the normalization is
-attempting to provide an estimate of the true value. The technical
+denominator is determined by some function of the observation. We use
+the \(\hat{{\mathbf{W}}}\) notation to indicate that the normalization
+is attempting to provide an estimate of the true value. The technical
 variation in sequencing depth
 (\(\mathbf{Y}^{\perp}_{n}=\sum_{d}\mathbf{Y}_{dn}\)) implies that
 observed data \(\mathbf{Y}\) provides us with information about the
@@ -255,7 +257,7 @@ al.~2011).
 \subsection{Adding Scale Uncertainty in
 ALDEx2}\label{adding-scale-uncertainty-in-aldex2}
 
-The ALDEx2 R package (28) is a general purpose toolbox for Bayesian
+The ALDEx2 R package (31, 33) is a general purpose toolbox for Bayesian
 modeling of HTS data. For brevity, we discuss ALDEx2 in its simplest
 form as a tool for estimating the magnitude and statistical significance
 of Log-Fold-Changes (LFC) (e.g., differential abundance or differential
@@ -266,7 +268,7 @@ given observations \(\mathbf{Y}\); 2) a normalization is used to
 estimate \(\mathbf{\hat{W}}\) given the estimate
 \(\mathbf{\hat{W}}^{\parallel}\); 3) the \(\mathbf{\hat{W}}\) estimates
 are used to estimate LFC as part of differential abundance (or
-expression) analyses. For more details on ALDEx2 see (8, 28).
+expression) analyses. For more details on ALDEx2 see (8, 31).
 
 By default, ALDEx2 uses the CLR normalization which can be written as
 \(\log \mathbf{\hat{W}}_{dn}=\log (\mathbf{\hat{W}}^{\parallel}_{dn}/G_{n})\)
@@ -281,7 +283,7 @@ which the ALDEx2 model, or any normalization-based model, could ever be
 calibrated (e.g., control Type-I Error rates) was if this assumption was
 exactly true. In support of this assertion it is known that false
 discovery rates vary widely by analysis, dataset, and normalization
-method (30, 31). To fix this, Nixon et al. (8) showed that models should
+method (34, 35). To fix this, Nixon et al. (8) showed that models should
 incorporate potential error in the assumptions implied by
 normalizations.
 
@@ -314,26 +316,26 @@ cutoffs.}\label{adding-scale-uncertainty-replaces-the-need-for-dual-significance
 
 It is standard practice in many fields of HTS, but especially
 transcriptomics, to use the dual cutoff approach graphically exemplified
-by volcano plots (32, 33) because not all statistically significant
+by volcano plots (36, 37) because not all statistically significant
 differences are biologically relevant. Paraphrasing this we can say that
 in in some types of datasets more samples leads to a majority of
 features being statistically significant. A detailed reasoning for this
 using modelled data is explained in two reports by Nixon et al. (8, 9),
 which shows that scaled models completely address this analytic issue.
 
-We use the data of Gierliński et al. (34) who conducted a highly
+We use the data of Gierliński et al. (38) who conducted a highly
 replicated yeast transcriptome experiment comparing a wild-type strain
 with a snf2 gene knockout, \(\Delta\)snf2. This dataset has been used to
 argue that a dual cutoff approach is appropriate to limit the number of
-significant parts and for purposes of reproducibility (33). However, in
+significant parts and for purposes of reproducibility (37). However, in
 this benchmarking study, the number of significantly different
 transcripts varied between 65\% to \textgreater80\% of all transcripts
 depending on the tool; in essence the desired behavior was that almost
 all transcripts were significantly different. The guidance on
 reproducibility runs counter to standard statistical practice where
 power is intrinsically linked to sample size and very large sample sizes
-are indeed desired (35). Furthermore, the dual-cutoff approach is known
-not to provide appropriate FDR control (5, 6). Schurch et al. (33)
+are indeed desired (39). Furthermore, the dual-cutoff approach is known
+not to provide appropriate FDR control (5, 6). Schurch et al. (37)
 further suggested that different tools might be better in some
 conditions or datasets than others because each tool has different
 intrinsic statistical power and Type 1 and Type 2 errors. Through the
@@ -345,7 +347,7 @@ actual experiment being investigated (9).
 
 Using either DESeq2 or ALDEx2, a majority of transcripts are
 statistically significantly different between groups with a
-Benjamini-Hochberg (36) false discovery rate (FDR) of 0.05; i.e.~4636
+Benjamini-Hochberg (40) false discovery rate (FDR) of 0.05; i.e.~4636
 (79\%, DESeq2) or 4172 (71\%, ALDEx2) of the 5891 transcripts. Such
 large numbers of significant transcripts seems biologically unrealistic
 and furthermore breaks the necessary assumption made by the
@@ -354,7 +356,7 @@ invariant. That 118 transcripts are identified by ALDEx2 and not DESeq2,
 while DESeq2 identifies 582 transcripts that ALDEx2 does not, suggests
 that the choice of normalization plays a role in which results are
 returned as significant and that some if not the majority are driven by
-technical differences in the analysis (20, 21, 33, 37, 38).
+technical differences in the analysis (22, 23, 37, 41, 42).
 
 \begin{figure}
 \centering
@@ -373,11 +375,11 @@ signficantly different with any analysis. The horizontal dashed lines
 represent a log2(difference) of \(\pm 1.4\).}
 \end{figure}
 
-The effect plots (39) in Figure 1A (ALDEx2) and Supplementary Figure 1
+The effect plots (43) in Figure 1A (ALDEx2) and Supplementary Figure 1
 (DESeq2) shows that the majority of significant transcripts (red,
 orange) have negligible differences between groups and very low
 dispersion and we suggest that this is driven by the experimental design
-(33). Scale uncertainty can be incorporated using the \texttt{gamma}
+(37). Scale uncertainty can be incorporated using the \texttt{gamma}
 parameter that controls the amount uncertainty added to the CLR mean
 assumption when we call either \texttt{aldex()}, or
 \texttt{aldex.clr()}. Figure 1B shows that setting \(\gamma=0.5\)
@@ -418,7 +420,7 @@ to ALDEx2 as Supplementary Figure 1 shows that the same phenomenon
 occurs in DESeq2 (and presumably other methods although the relevant
 parameters are not exposed). This issue is not unique to this dataset
 and it is common practice to use a dual-cutoff by choosing transcripts
-based on a thresholds for both corrected p-values and fold-changes (33)
+based on a thresholds for both corrected p-values and fold-changes (37)
 (here set at \(\pm 2^{1.4}\) for the latter), although considerable
 variation in cutoff values is observed. These limits are shown by the
 dashed grey lines. Here, applying a dual-cutoff using a heuristic of at
@@ -443,9 +445,9 @@ This shows more clearly that dispersion of many transcripts is almost
 negligible in the absence of scale and makes the counter-intuitive
 suggestion that the variance in expression of the majority of genes with
 moderate expression is more predictable than highly-expressed genes or
-of housekeeping genes (40). This is at odds with the known biology of
+of housekeeping genes (44). This is at odds with the known biology of
 cells where single cell counting of highly-expressed transcripts shows
-that they have little intrinsic variation (41).
+that they have little intrinsic variation (45).
 
 Adding scale by setting \(\gamma=0.5\) , or \(\gamma = 1.0\), increases
 the minimum dispersion as shown in Figure 2A by the red and blue data
@@ -472,17 +474,17 @@ category.
 \subsection{Housekeeping genes can be used to guide scale model
 choices.}\label{housekeeping-genes-can-be-used-to-guide-scale-model-choices.}
 
-Dos Santos et al. (42) used a vaginal metatranscriptome dataset to
+Dos Santos et al. (46) used a vaginal metatranscriptome dataset to
 compare the gene expression in bacteria collected from healthy (H) and
 bacterial vaginosis (BV) affected women. In this environment, both the
 relative abundance of species between groups and the gene expression
-level within a species is different (43). Additionally, prior research
+level within a species is different (47). Additionally, prior research
 suggests that the total number of bacteria is about 10 times more in the
-BV than in the H condition (16). Thus, this is an extremely challenging
+BV than in the H condition (18). Thus, this is an extremely challenging
 environment in which to determine differential abundance as there are
 both compositional and scale changes between conditions. The usual
 method to analyze vaginal metratranscriptome data is on a taxon-by-taxon
-basis (43--45) because the scale confounding can be ignored. Attempts at
+basis (47--49) because the scale confounding can be ignored. Attempts at
 system-wide analysis show that many housekeeping functions are returned
 as differentially abundant between groups; a result likely due to a
 disconnect between the scale assumptions of the normalization used (7).
@@ -510,7 +512,7 @@ for a demonstration of this point.
 Figure 3A shows an effect plot of the data where reads are grouped by
 function, corresponding to grouping homologous sequences regardless of
 the organism of origin. Each point represents one of 3728 KEGG functions
-(46). There are many more functions represented in the BV group (bottom)
+(50). There are many more functions represented in the BV group (bottom)
 than in the healthy group (top). This is because the
 \textit{Lactobacilli} that dominate a healthy vaginal microbiome have
 reduced genome content relative to the anaerobic organisms that dominate
@@ -523,7 +525,7 @@ both groups (boxed area in Figure 3A, and colored in cyan). Inspection
 shows that these largely correspond to core metabolic functions such as
 transcription, translation, ribosomal proteins, glycolysis, replication,
 chaperones, etc (Supplementary file housekeeping.txt). The transcripts
-of many of these are commonly used as invariant reference sequences (40)
+of many of these are commonly used as invariant reference sequences (44)
 and so would not be expected to contribute to differences in ecosystem
 behaviour and should be centred on 0 difference. These should not be
 scored as among the most differentially abundant. The major group of
@@ -603,7 +605,7 @@ cyan, and others in blue) and false negatives (orange functions) even in
 a very difficult to analyze dataset. The remarkable improvements in
 biological interpretation afforded by this full scale model, and the
 transferrability of it between sample cohorts of the same condition is
-outlined elsewhere (42). We suggest that the default scale model is
+outlined elsewhere (46). We suggest that the default scale model is
 sufficient when the data are approximately centred. However, an informed
 model is more appropriate with datasets are not well centred or when the
 investigator has prior information about the underlying biology.
@@ -613,47 +615,53 @@ investigator has prior information about the underlying biology.
 \doublespacing
 \singlespacing
 
-Biological systems are both predictably variable and stochastic (41) and
+Biological systems are both predictably variable and stochastic (45) and
 current measurement methods that rely on high throughput sequencing fail
 to capture all of that variation, particularly variation due to scale
 (8, 9). In the absence of external information (such as spike-in probes
-(12), cell counting (1), FISH (47) etc) sequencing depth normalisation
-methods cannot recapture the scale information (12), and can only
+(14), cell counting (1), FISH (51) etc) sequencing depth normalisation
+methods cannot recapture the scale information (14), and can only
 normalize for the technical variation due to sequencing depth.
 
 Many groups have conducted benchmarking studies on different tools and
 normalizations used for the analysis of datasets such as
-transcriptomes(4, 19, 33, 37) and microbiomes (3, 21, 29, 30, 48).
-Generically, it is observed that the actual agreement between analysis
-methods can be modest, and no single method outperforms all others in
-every dataset or type of experiment. That different tools appear to work
-more reliably in different datasets from different sources can be
-explained as different normalizations being a better fit to the scale a
-particular dataset by chance.
+transcriptomes(4, 21, 35, 37, 41) and microbiomes (3, 23, 24, 32, 34,
+52). Generically, it is observed that the actual agreement between
+analysis methods can be modest, and no single method outperforms all
+others in every dataset or type of experiment. That different tools
+appear to work more reliably in different datasets from different
+sources can be explained as different normalizations being a better fit
+to the scale of a particular dataset by chance.
 
-From our perspective, the disagreement between tools can be explained by
-the partially identifiable nature of the data; that is, the observed
-data are consistent with multiple ways of estimating the parameters (8).
-Partially identifiable data exhibit multiple pathologies, chief among
-them being that that different analytic approaches can produce different
-parameter estimates and that more data produces worse estimates because
-the additional data increases the precision of a flawed estimate (49).
 In the analysis of HTS data it is often observed that larger datasets
-converge on the majority of parts being significantly different (8, 33),
-and that different analytic approaches result in different parts being
-chosen as significantly different (4, 33, 37).
+converge on the majority of parts being significantly different (8, 35,
+37), and that different analytic approaches result in different parts
+being chosen as significantly different (4, 24, 37, 41). Li et al. (35)
+conducted a permutation-based benchmarking study and found that popular
+tools performed worse than simple Wilcoxon rank-sum tests in controlling
+the FDR when sample sizes became large. They suggested that the presence
+of outliers were one of the factors driving this observation. Brooks et
+al. (53) suggested that inappropriate choice of benchmarking methods are
+also a major contributing factor. From our perspective, the disagreement
+between tools can be explained by the partially identifiable nature of
+the data; that is, the observed data are consistent with multiple ways
+of estimating the parameters (8). Partially identifiable data exhibit
+multiple pathologies, chief among them being that that different
+analytic approaches can produce different parameter estimates and that
+more data produces worse estimates because the additional data increases
+the precision of a flawed estimate (54).
 
 Scale simulation is now build into ALDEx2 to address the issue of
 partially identifiability, and through this lens the two main root
 causes to common HTS data pathologies can be proposed. The first
 contributing factor is the observed very low dispersion estimate for
 many features that is a by-product of experimental design, sequencing
-and normalization. In the Schurch et al. (33) dataset, the data were
+and normalization. In the Schurch et al. (37) dataset, the data were
 from single colonies derived from a single culture. Thus, it is more
 accurate to describe the 96 samples as wet-lab technical replicates
-rather than independent samples. However, this type of replicate is
-standard in the molecular literature, and would be expected to result in
-the very low dispersion that is observed.
+rather than independent samples. However, this type of replication
+approach is standard in the molecular literature, and would be expected
+to result in the very low dispersion that is observed.
 
 In the yeast transcriptome dataset, applying the default scale model
 with \(\gamma=0.5\) a large number of transcripts with near 0 dispersion
@@ -677,17 +685,16 @@ which are significantly different even with scale uncertainty included.
 
 While the actual scale of the underlying environment is inaccessible
 post-sequencing, we can study the sensitivity of the results to the
-choice of normalization and thus scale. To do this we incorporate scale
-models (8) in lieu of normalizations through the default scale model
-that is now built into ALDEx2. Scale uncertainty is incorporated using
-the \texttt{gamma} parameter that controls the amount uncertainty added
-to the CLR mean assumption when we call either \texttt{aldex()}, or
-\texttt{aldex.clr()}. The ALDEx2 package contains a sensitivity analysis
-function, \texttt{aldex.senAnalysis()}, that can be used to explore the
-effect of different amounts of scale uncertainty, and an example is
-shown in Supplementary Figure 2 for the yeast transcriptome dataset.
-Here it is clear that even tiny amounts of scale preclude the majority
-of transcripts from being considered statistically significant. In
+choice of normalization and thus scale. Varying amounts of scale
+uncertainty is incorporated using the \texttt{gamma} parameter that
+controls the amount uncertainty added to the CLR mean assumption when we
+call either \texttt{aldex()}, or \texttt{aldex.clr()}. The ALDEx2
+package contains a sensitivity analysis function,
+\texttt{aldex.senAnalysis()}, that can be used to explore the effect of
+different amounts of scale uncertainty, and an example is shown in
+Supplementary Figure 2 for the yeast transcriptome dataset. Here it is
+clear that even tiny amounts of scale preclude the majority of
+transcripts from being considered statistically significant. In
 practice, we suggest that a \texttt{gamma} parameter between 0.5 and 1
 is realistic for most experimental designs, but further work is needed.
 
@@ -721,14 +728,17 @@ acknowledge that some prior information on which housekeeping
 transcripts should not be classed as differentially abundant is needed,
 we suggest that this information is widely available and is already used
 when performing the gold-standard quantitative PCR test of differential
-abundance (50, 51). Thus, the use of this prior knowledge is not unique
+abundance (55, 56). Thus, the use of this prior knowledge is not unique
 to our approach.
 
 Beyond concerns of fidelity and rigor, scale models also enhance the
-reproducibility and transparency of HTS analyses. An advantage of
-incorporating scale is that analyses can be made much more robust such
-that actual or potential differences in scale can be tested and
-accounted for explicitly. This occurs because rather than using an
+reproducibility and transparency of HTS analyses. The addition of scale
+uncertainty essentially tests the model over a range of normalizations
+(8) and so can replace the consensus approach that has been proposed by
+some groups (24, 57) with no additional computational overhead. Thus, an
+advantage of incorporating scale is that analyses can be made much more
+robust such that actual or potential differences in scale can be tested
+and accounted for explicitly. This occurs because rather than using an
 implicit assumption (e.g., \(\log \mathbf{W}^{\perp}=1/G_{n}\) for the
 CLR normalization), scale models can make this an explicit part of the
 model building process. While it is beyond the scope of the present
@@ -765,7 +775,7 @@ identified and their impact on conclusions weighted accordingly.
 Additionally, the use of user-defined scale models permits difficult to
 analyze datasets to be examined in a robust and principled manner even
 when the majority of features are asymmetrically distributed or
-expressed (or both) in the groups (42). Thus, reporting scale
+expressed (or both) in the groups (46). Thus, reporting scale
 uncertainty should become a standard practice in the analysis of HTS
 datasets as a way to identify which features are most robust to
 differences in the underlying system.
@@ -836,72 +846,85 @@ normalization: Incorporating scale uncertainty in microbiome and gene
 expression analysis. \emph{bioRxiv},
 \href{https://doi.org/10.1101/2024.04.01.587602}{10.1101/2024.04.01.587602}.
 
+\bibitem[\citeproctext]{ref-lovell:2011}
+10. Lovell,D., Müller,W., Taylor,J., Zwart,A. and Helliwell,C. (2011)
+Proportions, percentages, ppm: Do the molecular biosciences treat
+compositional data right? In Pawlowsky-Glahn,V., Buccianti,A. (eds),
+\emph{Compositional Data Analysis: Theory and Applications}. John Wiley;
+Sons New York, NY, London, pp. 193--207.
+
+\bibitem[\citeproctext]{ref-Quinn:2019aa}
+11. Quinn,T.P., Erb,I., Gloor,G., Notredame,C., Richardson,M.F. and
+Crowley,T.M. (2019) \href{https://doi.org/10.1093/gigascience/giz107}{A
+field guide for the compositional analysis of any-omics data}.
+\emph{Gigascience}, \textbf{8}.
+
 \bibitem[\citeproctext]{ref-Lovell:2015}
-10. Lovell,D., Pawlowsky-Glahn,V., Egozcue,J.J., Marguerat,S. and
+12. Lovell,D., Pawlowsky-Glahn,V., Egozcue,J.J., Marguerat,S. and
 Bähler,J. (2015)
 \href{https://doi.org/10.1371/journal.pcbi.1004075}{Proportionality: A
 valid alternative to correlation for relative data}. \emph{PLoS Comput
 Biol}, \textbf{11}, e1004075.
 
 \bibitem[\citeproctext]{ref-Nie:2012aa}
-11. Nie,Z., Hu,G., Wei,G., Cui,K., Yamane,A., Resch,W., Wang,R.,
+13. Nie,Z., Hu,G., Wei,G., Cui,K., Yamane,A., Resch,W., Wang,R.,
 Green,D.R., Tessarollo,L., Casellas,R., \emph{et al.} (2012)
 \href{https://doi.org/10.1016/j.cell.2012.08.033}{C-{M}yc is a universal
 amplifier of expressed genes in lymphocytes and embryonic stem cells}.
 \emph{Cell}, \textbf{151}, 68--79.
 
 \bibitem[\citeproctext]{ref-Loven:2012aa}
-12. Lovén,J., Orlando,D.A., Sigova,A.A., Lin,C.Y., Rahl,P.B.,
+14. Lovén,J., Orlando,D.A., Sigova,A.A., Lin,C.Y., Rahl,P.B.,
 Burge,C.B., Levens,D.L., Lee,T.I. and Young,R.A. (2012)
 \href{https://doi.org/10.1016/j.cell.2012.10.012}{Revisiting global gene
 expression analysis}. \emph{Cell}, \textbf{151}, 476--82.
 
 \bibitem[\citeproctext]{ref-Scott:2010}
-13. Scott,M., Gunderson,C.W., Mateescu,E.M., Zhang,Z. and Hwa,T. (2010)
+15. Scott,M., Gunderson,C.W., Mateescu,E.M., Zhang,Z. and Hwa,T. (2010)
 \href{https://doi.org/10.1126/science.1192588}{Interdependence of cell
 growth and gene expression: Origins and consequences}. \emph{Science},
 \textbf{330}, 1099--102.
 
 \bibitem[\citeproctext]{ref-Yoshikawa:2011aa}
-14. Yoshikawa,K., Tanaka,T., Ida,Y., Furusawa,C., Hirasawa,T. and
+16. Yoshikawa,K., Tanaka,T., Ida,Y., Furusawa,C., Hirasawa,T. and
 Shimizu,H. (2011) \href{https://doi.org/10.1002/yea.1843}{Comprehensive
 phenotypic analysis of single-gene deletion and overexpression strains
 of saccharomyces cerevisiae}. \emph{Yeast}, \textbf{28}, 349--61.
 
 \bibitem[\citeproctext]{ref-Lin:2018aa}
-15. Lin,J. and Amir,A. (2018)
+17. Lin,J. and Amir,A. (2018)
 \href{https://doi.org/10.1038/s41467-018-06714-z}{Homeostasis of protein
 and mRNA concentrations in growing cells}. \emph{Nat Commun},
 \textbf{9}, 4496.
 
 \bibitem[\citeproctext]{ref-Zozaya:2010}
-16. Zozaya-Hinchliffe,M., Lillis,R., Martin,D.H. and Ferris,M.J. (2010)
+18. Zozaya-Hinchliffe,M., Lillis,R., Martin,D.H. and Ferris,M.J. (2010)
 \href{https://doi.org/10.1128/JCM.00851-09}{Quantitative PCR assessments
 of bacterial species in women with and without bacterial vaginosis}.
 \emph{J Clin Microbiol}, \textbf{48}, 1812--9.
 
 \bibitem[\citeproctext]{ref-Ravel:2010}
-17. Ravel,J., Gajer,P., Abdo,Z., Schneider,G.M., Koenig,S.S.K.,
+19. Ravel,J., Gajer,P., Abdo,Z., Schneider,G.M., Koenig,S.S.K.,
 McCulle,S.L., Karlebach,S., Gorle,R., Russell,J., Tacket,C.O., \emph{et
 al.} (2011) Vaginal microbiome of reproductive-age women. \emph{Proc
 Natl Acad Sci U S A},
 \href{https://doi.org/doi/10.1073/pnas.100611107}{doi/10.1073/pnas.100611107}.
 
 \bibitem[\citeproctext]{ref-Hummelen:2010}
-18. Hummelen,R., Fernandes,A.D., Macklaim,J.M., Dickson,R.J.,
+20. Hummelen,R., Fernandes,A.D., Macklaim,J.M., Dickson,R.J.,
 Changalucha,J., Gloor,G.B. and Reid,G. (2010)
 \href{https://doi.org/10.1371/journal.pone.0012078}{Deep sequencing of
 the vaginal microbiota of women with {HIV}}. \emph{PLoS One},
 \textbf{5}, e12078.
 
 \bibitem[\citeproctext]{ref-Bullard:2010}
-19. Bullard,J.H., Purdom,E., Hansen,K.D. and Dudoit,S. (2010)
+21. Bullard,J.H., Purdom,E., Hansen,K.D. and Dudoit,S. (2010)
 \href{https://doi.org/10.1186/1471-2105-11-94}{Evaluation of statistical
 methods for normalization and differential expression in m{RNA-seq}
 experiments}. \emph{BMC Bioinformatics}, \textbf{11}, 94.
 
 \bibitem[\citeproctext]{ref-Dillies:2013}
-20. Dillies,M.-A., Rau,A., Aubert,J., Hennequet-Antier,C.,
+22. Dillies,M.-A., Rau,A., Aubert,J., Hennequet-Antier,C.,
 Jeanmougin,M., Servant,N., Keime,C., Marot,G., Castel,D., Estelle,J.,
 \emph{et al.} (2013) \href{https://doi.org/10.1093/bib/bbs046}{A
 comprehensive evaluation of normalization methods for {Illumina}
@@ -909,80 +932,96 @@ high-throughput {RNA} sequencing data analysis}. \emph{Brief Bioinform},
 \textbf{14}, 671--83.
 
 \bibitem[\citeproctext]{ref-Weiss:2017aa}
-21. Weiss,S., Xu,Z.Z., Peddada,S., Amir,A., Bittinger,K., Gonzalez,A.,
+23. Weiss,S., Xu,Z.Z., Peddada,S., Amir,A., Bittinger,K., Gonzalez,A.,
 Lozupone,C., Zaneveld,J.R., Vázquez-Baeza,Y., Birmingham,A., \emph{et
 al.} (2017)
 \href{https://doi.org/10.1186/s40168-017-0237-y}{Normalization and
 microbial differential abundance strategies depend upon data
 characteristics}. \emph{Microbiome}, \textbf{5}, 27.
 
+\bibitem[\citeproctext]{ref-Nearing:2022aa}
+24. Nearing,J.T., Douglas,G.M., Hayes,M.G., MacDonald,J., Desai,D.K.,
+Allward,N., Jones,C.M.A., Wright,R.J., Dhanani,A.S., Comeau,A.M.,
+\emph{et al.} (2022)
+\href{https://doi.org/10.1038/s41467-022-28034-z}{Microbiome
+differential abundance methods produce different results across 38
+datasets}. \emph{Nat Commun}, \textbf{13}, 342.
+
 \bibitem[\citeproctext]{ref-Hughes:2005tu}
-22. Hughes,J.B. and Hellmann,J.J. (2005)
+25. Hughes,J.B. and Hellmann,J.J. (2005)
 \href{https://doi.org/10.1016/S0076-6879(05)97017-1}{The application of
 rarefaction techniques to molecular inventories of microbial diversity}.
 \emph{Methods Enzymol}, \textbf{397}, 292--308.
 
 \bibitem[\citeproctext]{ref-Mortazavi:2008}
-23. Mortazavi,A., Williams,B.A., McCue,K., Schaeffer,L. and Wold,B.
+26. Mortazavi,A., Williams,B.A., McCue,K., Schaeffer,L. and Wold,B.
 (2008) \href{https://doi.org/10.1038/nmeth.1226}{Mapping and quantifying
 mammalian transcriptomes by {RNA-seq}}. \emph{Nat Methods}, \textbf{5},
 621--8.
 
 \bibitem[\citeproctext]{ref-wagner:tpm}
-24. Wagner,G.P., Kin,K. and Lynch,V.J. (2012)
+27. Wagner,G.P., Kin,K. and Lynch,V.J. (2012)
 \href{https://doi.org/10.1007/s12064-012-0162-3}{Measurement of mRNA
 abundance using RNA-seq data: RPKM measure is inconsistent among
 samples}. \emph{Theory Biosci}, \textbf{131}, 281--5.
 
 \bibitem[\citeproctext]{ref-Robinson:2010a}
-25. Robinson,M.D. and Oshlack,A. (2010)
+28. Robinson,M.D. and Oshlack,A. (2010)
 \href{https://doi.org/10.1186/gb-2010-11-3-r25}{A scaling normalization
 method for differential expression analysis of {RNA-seq} data}.
 \emph{Genome Biol}, \textbf{11}, R25.1--R25.9.
 
+\bibitem[\citeproctext]{ref-aitchison1982}
+29. Aitchison,J. (1982) The statistical analysis of compositional data.
+\emph{Journal of the Royal Statistical Society: Series B
+(Methodological)}, \textbf{44}, 139--160.
+
 \bibitem[\citeproctext]{ref-Anders:2010}
-26. Anders,S. and Huber,W. (2010)
+30. Anders,S. and Huber,W. (2010)
 \href{https://doi.org/10.1186/gb-2010-11-10-r106}{Differential
 expression analysis for sequence count data}. \emph{Genome Biol},
 \textbf{11}, R106.
 
-\bibitem[\citeproctext]{ref-aitchison1982}
-27. Aitchison,J. (1982) The statistical analysis of compositional data.
-\emph{Journal of the Royal Statistical Society: Series B
-(Methodological)}, \textbf{44}, 139--160.
-
 \bibitem[\citeproctext]{ref-fernandes:2013}
-28. Fernandes,A.D., Macklaim,J.M., Linn,T.G., Reid,G. and Gloor,G.B.
+31. Fernandes,A.D., Macklaim,J.M., Linn,T.G., Reid,G. and Gloor,G.B.
 (2013) \href{https://doi.org/10.1371/journal.pone.0067019}{ANOVA-like
 differential expression (ALDEx) analysis for mixed population RNA-seq}.
 \emph{PLoS One}, \textbf{8}, e67019.
 
 \bibitem[\citeproctext]{ref-Yerke:2024aa}
-29. Yerke,A., Fry Brumit,D. and Fodor,A.A. (2024)
+32. Yerke,A., Fry Brumit,D. and Fodor,A.A. (2024)
 \href{https://doi.org/10.1186/s40168-023-01747-z}{Proportion-based
 normalizations outperform compositional data transformations in machine
 learning applications}. \emph{Microbiome}, \textbf{12}, 45.
 
+\bibitem[\citeproctext]{ref-fernandes:2014}
+33. Fernandes,A.D., Reid,J.N., Macklaim,J.M., McMurrough,T.A.,
+Edgell,D.R. and Gloor,G.B. (2014)
+\href{https://doi.org/10.1186/2049-2618-2-15}{Unifying the analysis of
+high-throughput sequencing datasets: Characterizing {RNA}-seq, 16{S}
+r{RNA} gene sequencing and selective growth experiments by compositional
+data analysis}. \emph{Microbiome}, \textbf{2}, 15.1--15.13.
+
 \bibitem[\citeproctext]{ref-hawinkel2017}
-30. Hawinkel,S., Mattiello,F., Bijnens,L. and Thas,O. (2018)
+34. Hawinkel,S., Mattiello,F., Bijnens,L. and Thas,O. (2018)
 \href{http://dx.doi.org/10.1093/bib/bbx104}{A broken promise :
 Microbiome differential abundance methods do not control the false
 discovery rate}. \emph{BRIEFINGS IN BIOINFORMATICS}.
 
 \bibitem[\citeproctext]{ref-Li:2022aa}
-31. Li,Y., Ge,X., Peng,F., Li,W. and Li,J.J. (2022)
+35. Li,Y., Ge,X., Peng,F., Li,W. and Li,J.J. (2022)
 \href{https://doi.org/10.1186/s13059-022-02648-4}{Exaggerated false
 positives by popular differential expression methods when analyzing
 human population samples}. \emph{Genome Biol}, \textbf{23}, 79.
 
 \bibitem[\citeproctext]{ref-Cui:2003aa}
-32. Cui,X. and Churchill,G.A. (2003)
+36. Cui,X. and Churchill,G.A. (2003)
 \href{https://www.ncbi.nlm.nih.gov/pubmed/12702200}{Statistical tests
 for differential expression in cDNA microarray experiments}.
 \emph{Genome Biol}, \textbf{4}, 210.1--210.10.
 
 \bibitem[\citeproctext]{ref-Schurch:2016aa}
-33. Schurch,N.J., Schofield,P., Gierliński,M., Cole,C., Sherstnev,A.,
+37. Schurch,N.J., Schofield,P., Gierliński,M., Cole,C., Sherstnev,A.,
 Singh,V., Wrobel,N., Gharbi,K., Simpson,G.G., Owen-Hughes,T., \emph{et
 al.} (2016) \href{https://doi.org/10.1261/rna.053959.115}{How many
 biological replicates are needed in an RNA-seq experiment and which
@@ -990,7 +1029,7 @@ differential expression tool should you use?} \emph{RNA}, \textbf{22},
 839--51.
 
 \bibitem[\citeproctext]{ref-Gierlinski:2015aa}
-34. Gierliński,M., Cole,C., Schofield,P., Schurch,N.J., Sherstnev,A.,
+38. Gierliński,M., Cole,C., Schofield,P., Schurch,N.J., Sherstnev,A.,
 Singh,V., Wrobel,N., Gharbi,K., Simpson,G., Owen-Hughes,T., \emph{et
 al.} (2015)
 \href{https://doi.org/10.1093/bioinformatics/btv425}{Statistical models
@@ -998,65 +1037,65 @@ for RNA-seq data derived from a two-condition 48-replicate experiment}.
 \emph{Bioinformatics}, \textbf{31}, 3625--3630.
 
 \bibitem[\citeproctext]{ref-Halsey:2015aa}
-35. Halsey,L.G., Curran-Everett,D., Vowler,S.L. and Drummond,G.B. (2015)
+39. Halsey,L.G., Curran-Everett,D., Vowler,S.L. and Drummond,G.B. (2015)
 \href{https://doi.org/10.1038/nmeth.3288}{The fickle p value generates
 irreproducible results}. \emph{Nat Methods}, \textbf{12}, 179--85.
 
 \bibitem[\citeproctext]{ref-benjamini:1995}
-36. Benjamini,Y. and Hochberg,Y. (1995) Controlling the false discovery
+40. Benjamini,Y. and Hochberg,Y. (1995) Controlling the false discovery
 rate: A practical and powerful approach to multiple testing.
 \emph{Journal of the Royal Statistical Society. Series B
 (Methodological)}, \textbf{57}, 289--300.
 
 \bibitem[\citeproctext]{ref-Soneson:2013}
-37. Soneson,C. and Delorenzi,M. (2013)
+41. Soneson,C. and Delorenzi,M. (2013)
 \href{https://doi.org/10.1186/1471-2105-14-91}{A comparison of methods
 for differential expression analysis of {RNA-seq} data}. \emph{BMC
 Bioinformatics}, \textbf{14}, 91.
 
 \bibitem[\citeproctext]{ref-maza2013}
-38. Maza,E., Frasse,P., Senin,P., Bouzayen,M. and Zouine,M. (2013)
+42. Maza,E., Frasse,P., Senin,P., Bouzayen,M. and Zouine,M. (2013)
 \href{https://doi.org/10.4161/cib.25849}{Comparison of normalization
 methods for differential gene expression analysis in RNA-seq
 experiments: A matter of relative size of studied transcriptomes}.
 \emph{Commun Integr Biol}, \textbf{6}, e25849.
 
 \bibitem[\citeproctext]{ref-gloor:effect}
-39. Gloor,G., Macklaim,J. and Fernandes,A. (2016)
+43. Gloor,G., Macklaim,J. and Fernandes,A. (2016)
 \href{https://doi.org/10.1080/10618600.2015.1131161}{Displaying
 variation in large datasets: Plotting a visual summary of effect sizes}.
 \emph{Journal of Computational and Graphical Statistics}, \textbf{25},
 971--979.
 
 \bibitem[\citeproctext]{ref-Rocha:2020aa}
-40. Rocha,D.J.P.G., Castro,T.L.P., Aguiar,E.R.G.R. and Pacheco,L.G.C.
+44. Rocha,D.J.P.G., Castro,T.L.P., Aguiar,E.R.G.R. and Pacheco,L.G.C.
 (2020) \href{https://doi.org/10.1007/978-1-4939-9833-3_10}{Gene
 expression analysis in bacteria by RT-qPCR}. \emph{Methods Mol Biol},
 \textbf{2065}, 119--137.
 
 \bibitem[\citeproctext]{ref-Taniguchi:2010aa}
-41. Taniguchi,Y., Choi,P.J., Li,G.-W., Chen,H., Babu,M., Hearn,J.,
+45. Taniguchi,Y., Choi,P.J., Li,G.-W., Chen,H., Babu,M., Hearn,J.,
 Emili,A. and Xie,X.S. (2010)
 \href{https://doi.org/10.1126/science.1188308}{Quantifying e. Coli
 proteome and transcriptome with single-molecule sensitivity in single
 cells}. \emph{Science}, \textbf{329}, 533--8.
 
 \bibitem[\citeproctext]{ref-dosSantos:2024}
-42. Dos Dos Santos,S.J., Copeland,C., Macklaim,J.M., Reid,G. and
+46. Dos Dos Santos,S.J., Copeland,C., Macklaim,J.M., Reid,G. and
 Gloor,G.B. (2024) Vaginal metatranscriptome meta-analysis reveals
 functional BV subgroups and novel colonisation strategies.
 \emph{bioRxiv},
 \href{https://doi.org/10.1101/2024.04.24.590967}{10.1101/2024.04.24.590967}.
 
 \bibitem[\citeproctext]{ref-macklaim:2013}
-43. Macklaim,J.M., Fernandes,A.D., Di Bella,J.M., Hammond,J.-A., Reid,G.
+47. Macklaim,J.M., Fernandes,A.D., Di Bella,J.M., Hammond,J.-A., Reid,G.
 and Gloor,G.B. (2013)
 \href{https://doi.org/10.1186/2049-2618-1-12}{Comparative meta-{RNA}-seq
 of the vaginal microbiota and differential expression by lactobacillus
 iners in health and dysbiosis}. \emph{Microbiome}, \textbf{1}, 12.
 
 \bibitem[\citeproctext]{ref-Denge00262-18}
-44. Deng,Z.-L., Gottschick,C., Bhuju,S., Masur,C., Abels,C. and
+48. Deng,Z.-L., Gottschick,C., Bhuju,S., Masur,C., Abels,C. and
 Wagner-Döbler,I. (2018)
 \href{https://doi.org/10.1128/mSphereDirect.00262-18}{Metatranscriptome
 analysis of the vaginal microbiota reveals potential mechanisms for
@@ -1064,49 +1103,62 @@ protection against metronidazole in bacterial vaginosis}.
 \emph{mSphere}, \textbf{3}.
 
 \bibitem[\citeproctext]{ref-Fettweis:2019aa}
-45. Fettweis,J.M., Serrano,M.G., Brooks,J.P., Edwards,D.J., Girerd,P.H.,
+49. Fettweis,J.M., Serrano,M.G., Brooks,J.P., Edwards,D.J., Girerd,P.H.,
 Parikh,H.I., Huang,B., Arodz,T.J., Edupuganti,L., Glascock,A.L.,
 \emph{et al.} (2019)
 \href{https://doi.org/10.1038/s41591-019-0450-2}{The vaginal microbiome
 and preterm birth}. \emph{Nat Med}, \textbf{25}, 1012--1021.
 
 \bibitem[\citeproctext]{ref-Okuda:2008}
-46. Okuda,S., Yamada,T., Hamajima,M., Itoh,M., Katayama,T., Bork,P.,
+50. Okuda,S., Yamada,T., Hamajima,M., Itoh,M., Katayama,T., Bork,P.,
 Goto,S. and Kanehisa,M. (2008)
 \href{https://doi.org/10.1093/nar/gkn282}{KEGG atlas mapping for global
 analysis of metabolic pathways}. \emph{Nucleic Acids Res}, \textbf{36},
 W423--6.
 
 \bibitem[\citeproctext]{ref-yeast-absolute}
-47. Marguerat,S., Schmidt,A., Codlin,S., Chen,W., Aebersold,R. and
+51. Marguerat,S., Schmidt,A., Codlin,S., Chen,W., Aebersold,R. and
 Bähler,J. (2012)
 \href{https://doi.org/10.1016/j.cell.2012.09.019}{Quantitative analysis
 of fission yeast transcriptomes and proteomes in proliferating and
 quiescent cells}. \emph{Cell}, \textbf{151}, 671--83.
 
 \bibitem[\citeproctext]{ref-McMurdie:2014a}
-48. McMurdie,P.J. and Holmes,S. (2014)
+52. McMurdie,P.J. and Holmes,S. (2014)
 \href{https://doi.org/10.1371/journal.pcbi.1003531}{Waste not, want not:
 Why rarefying microbiome data is inadmissible}. \emph{PLoS Comput Biol},
 \textbf{10}, e1003531.
 
+\bibitem[\citeproctext]{ref-Brooks:2024aa}
+53. Brooks,T.G., Lahens,N.F., Mrčela,A. and Grant,G.R. (2024)
+\href{https://doi.org/10.1038/s41576-023-00679-6}{Challenges and best
+practices in omics benchmarking}. \emph{Nat Rev Genet}, \textbf{25},
+326--339.
+
 \bibitem[\citeproctext]{ref-gustafson2015bayesian}
-49. Gustafson,P. (2015) Bayesian inference for partially identified
+54. Gustafson,P. (2015) Bayesian inference for partially identified
 models: Exploring the limits of limited data CRC Press.
 
 \bibitem[\citeproctext]{ref-Thellin:1999aa}
-50. Thellin,O., Zorzi,W., Lakaye,B., De Borman,B., Coumans,B.,
+55. Thellin,O., Zorzi,W., Lakaye,B., De Borman,B., Coumans,B.,
 Hennen,G., Grisar,T., Igout,A. and Heinen,E. (1999)
 \href{https://www.ncbi.nlm.nih.gov/pubmed/10617337}{Housekeeping genes
 as internal standards: Use and limits}. \emph{J Biotechnol},
 \textbf{75}, 291--5.
 
 \bibitem[\citeproctext]{ref-SEQCux2fMAQC-III-Consortium:2014aa}
-51. SEQC/MAQC-III Consortium (2014)
+56. SEQC/MAQC-III Consortium (2014)
 \href{https://doi.org/10.1038/nbt.2957}{A comprehensive assessment of
 RNA-seq accuracy, reproducibility and information content by the
 sequencing quality control consortium}. \emph{Nat Biotechnol},
 \textbf{32}, 903--14.
+
+\bibitem[\citeproctext]{ref-Song:2023aa}
+57. Song,H., Ling,W., Zhao,N., Plantinga,A.M., Broedlow,C.A.,
+Klatt,N.R., Hensley-McBain,T. and Wu,M.C. (2023)
+\href{https://doi.org/10.1186/s12859-023-05147-w}{Accommodating multiple
+potential normalizations in microbiome associations studies}. \emph{BMC
+Bioinformatics}, \textbf{24}, 22.
 
 \end{CSLReferences}
 

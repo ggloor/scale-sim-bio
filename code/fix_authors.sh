@@ -18,7 +18,6 @@ rm go3.aux
 rm go3.out
 rm go3.toc
 rm go3.log
-rm go3.tex
 rm go3-author.aux
 rm go3-author.log
 rm go3-author.blg
