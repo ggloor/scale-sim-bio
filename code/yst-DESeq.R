@@ -18,4 +18,3 @@ dds <- DESeqDataSetFromMatrix(countData = yst,
 dds <- DESeq(dds)
 res <- results(dds, name="conds_W_vs_S")
 save(res, file='analysis/res.Rda')
-

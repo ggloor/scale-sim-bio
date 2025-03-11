@@ -1,6 +1,6 @@
 # Makefile
 
-all : go3-author.pdf go3.tex supplement_figs.pdf information-supplement.pdf
+all : go3-author.pdf supplement_figs.pdf information-supplement.pdf
 
 go3-author.pdf : go3.tex
 	code/fix_authors.sh
@@ -11,7 +11,7 @@ go3.tex : go3.Rmd analysis/xt.Rda analysis/xg.Rda\
     analysis/x.all.Rda analysis/x.s.all.Rda\
     analysis/normalizations.Rda\
     analysis/normalizations.nl.Rda\
-    analysis/yst.sens.Rda
+#    analysis/yst.sens.Rda
 	Rscript code/markdown.R
 
 analysis/xt.Rda : code/meta-aldex.R
@@ -61,8 +61,8 @@ supplement_figs.pdf : supplement_figs.Rmd analysis/x.s.mu.all.Rda\
 
 	Rscript -e "rmarkdown::render('supplement_figs.Rmd')"
 
-analysis/FP.df.Rda : code/yst-FP.R
-	Rscript code/yst-FP.R
+#analysis/FP.df.Rda : code/yst-FP.R
+#	Rscript code/yst-FP.R
 	
 analysis/sel.2.all.Rda : code/selex.aldex.mu.R
 	Rscript code/selex.aldex.mu.R

@@ -1,0 +1,148 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;\f1\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0\cname textColor;\cssrgb\c0\c0\c0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs28 \cf2 From: NAR Genomics and Bioinformatics <onbehalfof@manuscriptcentral.com>\
+Subject: NAR Genomics and Bioinformatics - Decision on Manuscript ID NARGAB-2024-349\
+Date: February 21, 2025 at 11:49:06\uc0\u8239 AM EST\
+To: ggloor@uwo.ca\
+Cc: ionas.erb@crg.eu\
+Reply-To: cedric.notredame@gmail.com\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf2 \
+\pard\pardeftab720\partightenfactor0
+
+\fs28 \cf3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 21-Feb-2025\
+\
+NARGAB-2024-349\
+Explicit Scale Simulation for analysis of RNA-sequencing with ALDEx2\
+\
+Dear Dr Gloor,\
+\
+Thank you for giving us the opportunity to consider your manuscript.\
+\
+The reviewers have raised substantial criticisms, which are detailed below. We will consider publishing your manuscript only if you can accommodate their suggestions into a revised version.\
+\
+The reviewers' reports are confidential and should not be published without the express permission of the Editors.\
+\
+To revise your manuscript, log into https://mc.manuscriptcentral.com/nargab and enter your Author Centre, where you will find your manuscript listed under "Manuscripts with Decisions." \'a0Under "Actions," click on "Create a Revision." \'a0Your manuscript number has been appended to denote a revision.\
+\
+You may also click the below link to start the revision process (or continue the process if you have already started your revision) for your manuscript. If you use the below link you will not be required to login to ScholarOne Manuscripts.\
+\
+*** PLEASE NOTE: This is a two-step process. After clicking on the link, you will be directed to a webpage to confirm. ***\
+\
+https://mc.manuscriptcentral.com/nargab?URL_MASK=7c603645488e46c0a69d0f54b9de0566\
+\
+When you submit your revised manuscript, you should provide a concise point-by-point response to the reviewers' comments. In order to expedite the processing of the revised manuscript, please be as specific as possible in your response. Any text in the manuscript that you change or add should be marked in red.\
+\
+IMPORTANT: \'a0Your original files are available to you when you upload your revised manuscript. \'a0Please delete any redundant files before completing the submission.\
+\
+Because we are trying to facilitate timely publication of manuscripts submitted to NAR Genomics and Bioinformatics, your revised manuscript should be uploaded as soon as possible. \'a0If it is not possible for you to submit your revision in a reasonable amount of time, we may have to consider your paper as a new submission.\
+\
+Once again, thank you for submitting your manuscript to NAR Genomics and Bioinformatics and I look forward to receiving your revision.\
+\
+Sincerely,\
+##########################################\
+Dr Cedric Notredame, PhD\
+Group Leader\
+Notredame's lab - Comparative Bioinformatics Group Bioinformatics and Genomics Programme Room 440.03\
+\
+Centre de Regulaci\'f3 Gen\'f2mica (CRG)\
+Dr. Aiguader, 88\
+08003 Barcelona\
+Spain\
+\
+Ph# \'a0 \'a0 + 34 93 316 02 71\
+Fax# \'a0 \'a0+ 34 93 316 00 99\
+Mobile# + 34 66 250 47 82\
+\
+email \'a0 cedric.notredame@crg.eu\
+url \'a0 \'a0 www.tcoffee.org\
+blog \'a0 \'a0cedricnotredame.blogspot.com\
+ORC-ID: 0000-0003-1461-0988\
+###########################################\
+\
+\
+Reviewer: 1\
+\
+Comments to the Author\
+Gloor, Nixon, and Silverman provide a clear and concisely written manuscript that describes a significant improvement of the ALDEx2 package to incorporate scale uncertainty in analyses of differential expression and abundance. These scale models relieve the reliance on commonly used but difficult to rationalize cutoffs of q-values and log-fold change thresholds, and facilitate adoption through the ALDEx2 R package. This work represents a valuable addition to an already impactful and versatile tool for the community. I have several minor comments that I am confident can be easily addressed by the authors.\
+\
+1. The authors focus here on the application of scale-informed ALDEx2 to transcriptomic analysis. Can the authors further discuss whether applications to other types of measurements is equally appropriate? If so, there may be an opportunity to generalize the title to use \'93counts\'94 instead of \'93RNA-sequencing\'94, as that broadens applicability to other data types (e.g. proteomics, single cell epigenome data, etc).\
+\
+2. Relevant to statements like this: \'93The original naive ALDEx2 (39) model unwittingly made a strict assumption about scale through the CLR normalization (3).\'94\
+- Can \'93scale-na\'efve\'94 be used instead to more precisely indicate the distinction between the previous and current defaults in ALDEx2?\
+\
+3. Why this threshold in Figure 1? \'93The horizontal dashed lines represent a log2 difference of \'b11.4\'94\
+The text goes on to say the following: (line 41-44, pg 6): \'93Note that there is considerable variation in recommended cutoff values(14). Here, applying a dual-cutoff using a heuristic of at least a 2^1.4 fold change reduces the number of significant outputs to 193 for DESeq2 and to 186 for ALDEx2. This cutoff was chosen for convenience and is in-line with the recommendations of (14) with the fold change limits shown by the dashed grey lines in Figure 1.\'94\
+- Please add a rationale for selection of this cutoff, and briefly state the guideline used here, especially given the variation in recommendations in ref 14.\
+\
+4. Supplementary Fig 1 is an excellent demonstration of how scale uncertainty affects the number of DE genes \'96 the recommendation in that section that this is be used a diagnostic plot should be emphasized in the main text as well, possibly on line 50-51, or in the discussion.\
+\
+5. This dataset (ref 44) included many technical replicates. \'a0How do these conclusions port to datasets that have biological replicates instead?\
+\
+6. Figure 2B, and pg 9 lines 11-14: \'93Figure 2B shows a plot of the difference between the \uc0\u947  = 0 and \u947  = 1 data and here we can see that scale uncertainty is preferentially increasing the dispersion of the mid-expressed transcripts that formerly had negligible dispersion; examine the grey line of best fit (overlaid by the red line) for the trend.\'94\
+- Can the 5 lines be separately shown on 5 panels, rather than overlaid? They are difficult to visually distinguish as presented.\
+\
+7. Is the conclusion from the first part of the results that by adding scale uncertainty (\uc0\u947 \
+=1), one can do without setting a change threshold (T=1.4 in this case). \'a0This should be emphasized in the discussion.\
+\
+8. The examples outlined in the results would benefit from a more explicit description of key experimental features \'96 e.g. the number of technical replicates in the ref 44 dataset (mentioned in discussion, but would be useful in results); same for the ref 50 data, so the reader can easily contextualize the results, and draw parallels to their datasets of interest to which ALDEx2 may be applicable.\
+\
+Some typos:\
+\
+Line 25, pg 10, typo: \'93functions tp be nearly invariant\'94\
+\
+Grammatical error: This assumption was often close enough to the true value to be useful, but was not always the a good estimate and could be outperformed by other normalizations (40).\
+\
+\
+Reviewer: 2\
+\
+Comments to the Author\
+Summary:\
+In this manuscript Gloor et al. highlight the application of ALDEx2 and the recent addition of scale models to help improve differential expression analysis in RNA seq experiments. This manuscript builds upon previous work that introduced scale models to ALDEx2 and highlights that differential analysis in high throughput sequencing often suffers from scale assumptions introduced during commonly applied normalization techniques. In this manuscript they used both a transcriptomic and metatranscriptomic experiment to highlight the improvements that can be achieved by using the scale models incorporated in ALDEx2. The manuscript is well written and highlights an important problem within the field, however, there are some major comments that should be addressed by the authors.\
+\
+Major comments:\
+1. Throughout the manuscript a clear definition of what the \'93truth\'94 is for each experimental set up is needed (i.e., is it transcripts relative to species abundance or bulk absolute transcripts or something else?). This is critically important in the metatranscriptomics section where high levels of differing biomass could result in higher levels of absolute transcripts across the board but not higher levels of transcripts relative to the underlying species abundance. The attempt to center the data on housekeeping genes suggests the latter is the objective but this is not clear throughout the manuscript. In addition to this if the authors are interested in identifying the transcript levels relative to species abundance, they may be interested in comparing their tests against a method that normalizes transcript levels against underlying DNA abundances(https://pubmed.ncbi.nlm.nih.gov/34465175/).\
+\
+2. The claims in Figure1 should be further validated through simulated data and or a dataset where the true underlying number of differentially expressed transcripts is known. While the reduction in transcripts that the scale model achieves is likely inline with the biology it is unclear if the model is being overconservative.\
+\
+3. In the metatranscriptomics section it is claimed that biomass differs by 20 fold between the groups that are being compared, however, the scaled model only includes a difference of 14%. Please address this discrepancy. Furthermore, based on Figure 3B, the gamma model by itself was ineffective in this setting, so the manuscript should clarify when only the gamma parameter versus the gamma and mu parameters must be informed.\
+\
+4. Due to the limited number of datasets shown in this manuscript the robustness of the model for various biological and technical conditions is difficult to assess.\
+\
+5. Data availability: Scripts used to run the analysis (beyond just the model itself) should be provided in a well-documented GitHub (or equivalent).\
+\
+Minor comments:\
+1. Without external information, the Lambda distribution appears entirely determined by the prior. It is unclear how robust the choice of Lambda is across differing HTS experiments. Fig. 3 seems to provide a case in which lambda alone is not enough.\
+\
+2. \'93The computational methods developed for microbiome analysis have low correlation with the actual scale but are useful (8).\'94\
+Well this may be true it has been shown that in general coefficients from the relative scale correlate strongly with those from the absolute scale. Especially in cases where biomass is not significantly changing between groups. This should be addressed.\
+\
+3. The authors claim that \'93the dispersion in the unscaled analysis in Figure 2A reaches a minimum near the mid-point of the distribution\'94 which \'93makes the counterintuitive suggestion that the variance in expression of the majority of genes with moderate expression is more predictable than highly-expressed genes or of housekeeping genes.\'94 However, the dispersion seems essentially constant beyond the midpoint, with potentially a small difference in the tail. Whether or not that is biologically important and to what degree that impacts traditional differential expression analysis is unclear and not presented in a convincing manner. I wouldn\'92t say this small change in the tail is inconsistent with the notation that \'a0sufficiently expressed genes all have equally predictable expression.\
+\
+4. In the third paragraph of the discussion the authors claim that their method can control type 1 and 2 errors robustly. However, the authors never directly present any evidence that the \'93hits\'94 their tools are finding are better at controlling these errors than others when a known ground truth is present (they only show that they have reduced numbers of hits and that they may be more reasonable with the underlying biology). The authors may want to benchmark their work on previous simulated data from ref. 18 if they want to make this claim.\
+\
+5. The clause \'93wet-lab protocols only provide information on the size of the data downstream of the step in the sample preparation protocol where the intervention was made\'94 should be reviewed as previous works have shown that these methods can give relatively accurate log fold changes under real experimental conditions.\
+\
+6. The authors should make it clear that their works are referring to the absolute and not compositional scale as some researchers may be interested in the composition of transcripts within their sample rather than attempting to infer absolute changes from that composition (which is what is highlighted within this works).\
+\
+7. In Fig. 2, what is rAbundance referring to? Is it log2(percent abundance)?\
+\
+8. The Fig. 3 caption is inconsistent with the legend in the top of 3A. The text caption seems to be correct, but this should be fixed.\
+\
+8. I\'92m not entirely convinced that low dispersion is to blame for issues presenting in HTS data. The example given was of technical replicates which will naturally have lower dispersion rates than true biological replicates. I would suggest that the authors include some evidence that low dispersion is present across biological replicates if they want to make the claim that it is one of the largest sources of HTS data pathologies.\
+\
+9. In the metatranscriptomic\'92s example it is not entirely clear why housekeeping genes would have a non-zero log fold change between the groups in the first place. Well the authors suggest that misidentification of these genes is due to inappropriate scale assumptions, it would help to identify what assumptions made by the normalization result in this potential pathology to begin with.\
+\
+10. Could the authors comment on whether they believe their scale model implementation will work well under other normalization conditions other than CLR.\
+\
+Associate Editor: Erb, Ionas\
+Comments to the Author:\
+Dear authors,\
+\
+Please focus your revision on the following aspects: State what the true scale of the data should describe, i.e., number of transcripts relative to species abundance or similar. Does this change between data sets? Include a comparison with other approaches, e.g., comparing with an approach that uses DNA abundance as described in the paper in Annual Reviews (see reviewer 2). A comparison with the use of a moderated statistic (see, e.g., \'a0the classical Smyth 2004 paper) which also addresses the low dispersion problem in data with low sample size would add considerable value, even if only as a discussion. Additionally, the inclusion of a simulated or otherwise known ground truth (as pointed out by reviewer 2) would validate the claims in Figure 1. Discuss effect of biological replicates vs. technical replicates (see both reviewers). Please indicate if the preprints referenced in (3) and (20) are submitted / currently under review. }

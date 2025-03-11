@@ -1,11 +1,7 @@
 ---
-title: "Supplement: Beyond compositionally in high throughput sequencing; estimating the importance of scale in data analysis with ALDEx2
+title: "Supplement: Explicit Scale Simulation for analysis of RNA-sequencing with ALDEx2
 "
 shorttitle: "Scale ALDEx2 Supp"
-author:
-- name: Greg Gloor, Michelle Pistner Nixon, Justin Silverman
-  affiliation: Dep't of Biochemistry, University of Western Ontario, Penn State
-  email: ggloor@uwo.ca
 citeproc: TRUE
 cite-method: citeproc
 bibliography: /Users/ggloor/Library/texmf/bibtex/bib/bibdesk_refs.bib
@@ -19,65 +15,11 @@ output:
 library(ALDEx2)
 data(selex)
 ```
-
-One root cause of the large number of significant parts is the very low dispersion when the data are normalized and log-transformed. The raw data counts derived from sequencing are overdispersed with the mean value being less than the variance [@Robinson:2010a;@Robinson:2010] as seen in Panel A of Figure 1. However, the actual analysis of differential abundance is performed on the logarithm of the normalized counts [@Robinson:2010;@Love:2014aa;@Andrews:2019aa] which has a very different abundance-dispersion relationship. Similar relationships are found in both DESeq2 (Panel B) and ALDEx2 (Panel C), and have been  noted before [@fernandes:2013;@Love:2014aa].
-
- 
-```{r, echo=F, warning=F, message=F,comment=F, result=F} 
-library(DESeq2)
-library(ALDEx2)
-```
-
-```{r echo=F, warning=F, message=F,comment=F,, fig.cap="Effect and volcano plots for unscaled and scaled transcriptome analysis. DESeq2 was used to conduct a differential abundance (DA) analysis on the yeast transcriptome dataset. The results were plotted to show the relationship between difference and dispersion using effect plots or difference and the Benjamini-Hochberg corrected p-values (volcano plot).  Each point represents the values for one transcript, with the color indicating if that transcript was significant in the ALDEx2 scaled analysis and the DESeq2 analysis (red) or in the DESeq2 unscaled analysis only (orange). Points in grey are not statistically signficantly different with any analysis. The horizontal dashed lines represent a log2(difference) of \\(\\pm 1.4\\)"}
-# DESeq2
-load('analysis/res.Rda')
-
-#ALDEx2
-load(file="analysis/yst.all.Rda")
-load(file="analysis/yst.s.all.Rda")
-load(file="analysis/yst.1.all.Rda")
-# with gamma = 0.5
-load('analysis/x.s.all.Rda')
-
-sig.des <- which(res@listData$padj < 0.05)
-sig.ald <- which(yst.all$we.eBH < 0.05)
-sig.s.ald <- which(yst.s.all$we.eBH < 0.05)
-
-sig.all <- yst.all$we.eBH < 0.05
-sig.t <- yst.all$we.eBH < 0.05 & abs(yst.all$diff.btw) > 1.4
-sig.s <- yst.s.all$we.eBH < 0.05
-sig.1 <- yst.1.all$we.eBH < 0.05
-
-par(mfrow=c(1,2))
-plot(res@listData$lfcSE, res@listData$log2FoldChange, xlim=c(0,1), 
-  col=rgb(0,0,0,0.1), xlab='LFC SD', ylab='log2 Difference')
-title('A: DESeq2 effect', adj=0, line= 0.8)
-points(res@listData$lfcSE[sig.des],
-  res@listData$log2FoldChange[sig.des], col=rgb(1,.66,0,0.5), 
-  pch=19, cex=0.5)
-points(res@listData$lfcSE[sig.s.ald],
-  res@listData$log2FoldChange[sig.s.ald], col=rgb(1,0,0,0.5), 
-  pch=19, cex=0.5)
-abline(h=c(-1.4,1.4), lty=2,lwd=2, col='grey')
-
-# volcano
-plot(res@listData$log2FoldChange,-1*log10(res@listData$padj + 1e-300), 
-  col=rgb(0,0,0,0.1), xlab='log2 Difference', ylab='-1 log10(p.adjust)')
-title('B: DESeq2 volcano', adj=0, line= 0.8)
-points(res@listData$log2FoldChange[sig.des],-1*log10(res@listData$padj[sig.des] + 1e-300), col=rgb(1,.66,0,0.3), 
-  pch=19, cex=0.5)
-points(res@listData$log2FoldChange[sig.s.ald],-1*log10(res@listData$padj[sig.s.ald] + 1e-300), col=rgb(1,0,0,1), 
-  pch=19, cex=0.5)
-  abline(v=c(-1.4,1.4), lty=2,lwd=2, col='grey')
-
-```
-
-```{r echo=FALSE, include=TRUE, out.width="0.8\\linewidth",  fig.align="center", fig.cap=c("the aldex.senAnalysis() function was used to generate a dataset with \\(\\gamma\\) values of 1e-3, 0.1, 0.2, 0.3, 0.4,0.5, 0.7 and 1. The plotGamma() function was used to plot the result. Transcripts that are statistically significant are shown in black, and if not significant are in grey. The \\(\\gamma\\) values, standardized effect size and number of significant transcripts at each value are given on the axes.  ")}
+```{r echo=FALSE, include=TRUE, out.width="0.8\\linewidth",  fig.align="center", fig.cap=c("The aldex.senAnalysis() function was used to generate a dataset with \\(\\gamma\\) values of 1e-3, 0.1, 0.2, 0.3, 0.4,0.5, 0.7 and 1. The plotGamma() function was used to plot the result. Transcripts that are statistically significant are shown in black, and if not significant are in grey. The \\(\\gamma\\) values, standardized effect size and number of significant transcripts at each value are given on the axes.  ")}
 knitr::include_graphics("analysis/scaleSim-yeast.pdf")
 ## plotGamma needs to be cleaned up for production
 ## so this figure was done by hand with the example
 ## snippet below - ugly sorry
-#load('analysis/yst.sens.Rda')
 #plotGamma(x.sens, blackWhite=T)
 #text(6.2,345, label=length(which(x.sens[[8]]$we.eBH < 0.05)))
 #text(-2,345, label=length(which(x.sens[[7]]$we.eBH < 0.05)))
@@ -87,9 +29,52 @@ knitr::include_graphics("analysis/scaleSim-yeast.pdf")
 #text(-14.8,345, label=length(which(x.sens[[3]]$we.eBH < 0.05)))
 #text(-17.4,345, label=length(which(x.sens[[2]]$we.eBH < 0.05)))
 #text(-20,345, label=length(which(x.sens[[1]]$we.eBH < 0.05)))
-#text(-6.9,355, label="N significant")```
+#text(-6.9,355, label="N significant")
+```
 
-```{r dispersion, echo=F, warning=F, message=F,comment=F, result=F, cache=T,fig.dim=c(7,3), fig.cap="Plot of abundance v dispersion for a typical transcriptome dataset as counts,	 as logarithms of counts, and as CLR values. Panel A shows that the data are over-dispersed relative to a Poisson distribution which is represented by the dashed line when plotted on a log-log scale. Panel B shows that the relationship between the mean and the dispersion calculated in DESeq2, here the standard error (SE) of the mean, is very different when the data are log-transformed first. Panel C shows the equivalent values calculated by ALDEx2	 in which the expected CLR value for each transcipt are plotted vs. the expected dispersion. Panel D shows the output for ALDEx2 with \\( \\gamma=0.5 \\). The red line in each panel shows the LOESS line of fit to the mid-point of the distributions. In panels B and C the amount of dispersion reaches a minimum at moderate	 values.  The dashed orange line in panel A is the line of equivalence, and in panel B and C is the minimum y value. The values below the dashed grey line in panels B and C represent those below the first decile of dispersion." }
+ One root cause of the large number of significant parts is the very low dispersion of transcripts. Figure 1 shows a graphical output from the texttt{aldex.scaleSim()} function with the yeast transcriptome dataset described in the text [@Gierlinski:2015aa;@Schurch:2016aa]. This allows us to examine which transcripts are sensitive to even minimal amounts of scale uncertainty using \(\gamma = (1e-3, 0.1, 0.2, 0.3, 0.4,0.5, 0.7, 1) \). Here it is obvious that even a negligible amount of scale uncertainty removes over half of the transcripts that were formerly significantly different, and all of these had very small effect sizes. 
+
+We recommend a minimum scale uncertainty of 0.5, and suggest that the texttt{aldex.senAnalysis()} function be run on all analyses. The individual \texttt{aldex()} outputs can be accessed as sequential entries in the list output, or the analysis as a whole can be plotted with the \texttt{plotGamma} function.
+
+```{r, echo=F, warning=F, message=F,comment=F, result=F} 
+library(DESeq2)
+library(ALDEx2)
+#ALDEx2
+load(file="analysis/yst.all.Rda")
+load(file="analysis/yst.s.all.Rda")
+load(file="analysis/yst.1.all.Rda")
+# with gamma = 0.5
+load('analysis/x.s.all.Rda')
+load('analysis/yst.sens.Rda')
+nsig <- x.sens[[2]]$we.eBH > 0.05 & x.sens[[1]]$we.eBH < 0.05
+
+# data to compare different scale means
+load(file='analysis/xt.lv.Rda')
+load(file='analysis/xt.m.Rda')
+load(file='analysis/xg.Rda')
+```
+
+Figure 2 compares the significant transcripts using effect and volcano plots for the first two \(\gamma\) parameters. We can see that the `r length(nsig)` transcripts are excluded by even the smallest setting of \(\gamma=0.1\). All of these have very low difference between and include the majority of the transcripts with very low dispersion.
+
+
+
+
+```{r echo=FALSE, include=TRUE, out.width="0.8\\linewidth",  fig.align="center", fig.cap=c('Effect and volcano plots showing the significant transcripts for the first two \\(\\gamma\\) values of 1e-3 and 0.1. Transcripts that are significantly different with a q-value <= 0.5 with both \\(\\gamma\\) values are in red, those significant with \\(\\gamma = 0.1 \\) are in orange. Those that are not significant are in dark grey.')}
+
+
+par(mfrow=c(1,2))
+aldex.plot(x.sens[[1]])
+points(x.sens[[1]]$diff.win[nsig], x.sens[[1]]$diff.btw[nsig], pch=19, cex=0.5, col='orange')
+
+aldex.plot(x.sens[[1]], type='volcano')
+points(x.sens[[1]]$diff.btw[nsig], -log10(x.sens[[1]]$we.eBH[nsig]), , pch=19, cex=0.5, col='orange')
+```
+\newpage
+
+Figure 3 shows how dispersion behaves in linear and log space. The variance or dispersion always increases with increasing raw (or normalized) read count but decreases when measured on the log-ratio transformed data [@fernandes:2013;@Love:2014aa], reaching a minimum at some mid-point of the distribution. This makes the counter-intuitive suggestion that genes with moderate expression have more predictable expression than genes with very high expression such as housekeeping genes. This is at odds with the known biology of cells where single cell counting of housekeeping transcripts shows that they are both highly expressed and have little intrinsic variation [@Taniguchi:2010aa]. Furthermore, the dispersion is exceeding small being, for many transcripts, almost negligible. To show this point more clearly, the majority of the transcripts in the lowest decile of dispersion indicated below the dashed grey line are statistically significantly different (75\% with DESeq2, 69\% with ALDEx2), suggesting that low dispersion estimates lead to many false positives.  Indeed, benchmarking and comparison studies  repeatedly show that the choice of normalization plays a role in which results are returned as significant [@maza2013;@Dillies:2013;@Weiss:2017aa]. From the perspective of Nixon et al. [-@nixon2023scale], it is reasonable to conclude that some of these results may be due to the choice of normalization.
+
+
+```{r dispersion, echo=F, warning=F, message=F,comment=F, result=F, cache=T,fig.dim=c(7,3), fig.cap="Plot of abundance v dispersion for the yeast  transcriptome dataset as counts,	 as logarithms of counts, and as CLR values. Panel A shows that the data are over-dispersed relative to a Poisson distribution which is represented by the dashed line when plotted on a log-log scale. Panel B shows that the relationship between the mean and the dispersion calculated in DESeq2, here the standard error (SE) of the mean, is very different when the data are log-transformed first. Panel C shows the equivalent values calculated by ALDEx2	 in which the expected CLR value for each transcipt are plotted vs. the expected dispersion. Panel D shows the output for ALDEx2 with \\( \\gamma=0.5 \\). The red line in each panel shows the LOESS line of fit to the mid-point of the distributions. In panels B and C the amount of dispersion reaches a minimum at moderate	 values.  The dashed orange line in panel A is the line of equivalence, and in panel B and C is the minimum y value. The values below the dashed grey line in panels B and C represent those below the first decile of dispersion." }
 
 
 url <- "https://raw.githubusercontent.com/ggloor/datasets/main/transcriptome.tsv"
@@ -162,229 +147,30 @@ abline(h=min(lowess(l.s.df)$y), col=rgb(1,0.6,0,0.5), lwd=2, lty=2)
 title('D', adj=0, line= 0.8)
 ```
 
-The variance or dispersion always increases with increasing raw (or normalized) read count but decreases when measured on the log-ratio transformed data [@fernandes:2013;@Love:2014aa], reaching a minimum at some mid-point of the distribution. This makes the counter-intuitive suggestion that genes with moderate expression have more predictable expression than genes with very high expression such as housekeeping genes. This is at odds with the known biology of cells where single cell counting of housekeeping transcripts shows that they are both highly expressed and have little intrinsic variation [@Taniguchi:2010aa]. Furthermore, the dispersion is exceeding small being, for many transcripts, almost negligible. To show this point more clearly, the majority of the transcripts in the lowest decile of dispersion indicated below the dashed grey line are statistically significantly different (75\% with DESeq2, 69\% with ALDEx2), suggesting that low dispersion estimates lead to many false positives.  Indeed, benchmarking and comparison studies  repeatedly show that the choice of normalization plays a role in which results are returned as significant [@maza2013;@Dillies:2013;@Weiss:2017aa]. From the perspective of Nixon et al. [-@nixon2023scale], it is reasonable to conclude that some of these results may be due to the choice of normalization.
+\newpage
 
-While not necessary in all datasets (e.g., the transcriptome example discussed in the previous section and see the Supplementary material), it can greatly improve modeling in certain cases, especially when the scale is highly asymmetric between conditions. In order to specify a scale model from scratch, we need to revisit the concept that all normalizations in widespread use are actually ratios with the denominator implied by the normalization. Therefore, we can easily deviate from a certain normalization (e.g., the geometric mean assumption implied by the CLR) by specifying a total model based on the mean difference between conditions. While knowing the mean difference between conditions may seem cumbersome in practice, it is the \emph{relationship} between the group scale values that is important, not their raw values (Nixon et al. 2023). This can be illustrated quite simply by starting with the mean ratio in \(G\) between groups for the yeast transcriptome dataset which are \(6.05\times 10^{-5}\) for snf2 and \(5.08\times 10^{-5}\) for WT; their ratio being 1.17, or a 0.17-fold difference. Using this information, we can recapitulate the differential abundance analysis in Figure 2B and 2C exactly by using setting the mean denominator of group 1 to 1, and group 2 to 1.17 with a gamma of 0.5 as shown in Supplemental Figure 2. This ratio can be adjusted to alter the mean assumption placed on the group scale values. 
+Figure 4 shows that the informed models with 5% or 14% difference in location between groups and \(\gamma=0.5\) provide nearly the same output for q-values, effect sizes and difference between groups (black). The line of identity is given as the grey diagonal. However, using the default CLR values to specify location are very different. In the q-value and effect plots, there is multiple populations of points that indicate the Type 1 and 2 errors that occur when the location is not specified properly. In the difference between groups plot, we see only a shift in the location that corresponds to moving the mass of the data points down by about 2.2 units (See Figure 3 in the main text)
 
-We can see that for most datasets the difference between the \(\overline{G}\) in each group is relatively small. Most significantly, the selex dataset has a very large difference of about 100-fold, and both the 16S and the metatranscriptome dataset have about a 1.5 fold difference. These three datasets are candidates for a full scale model correction.
+```{r echo=FALSE, include=TRUE, fig.dim=c(7,3),  fig.align="center", fig.cap=c("Plots showing the similarity of outputs with different scale parameters. The black points show that using either a an informed model with 5% or 14% difference in location has a minimal effect on either the q-values, the effect size or difference between groups. In red, the same values  are plotted with the default model that uses a naive estimate of the location derived from the CLR.")}
 
-```{r full.scale, echo=F, fig.cap="Plot of the offset of the mean differnece between groups as a function of scale ratio. For this, the default scale of 1:1 was altered in increments of 0.1 keeping the gamma parameter (dispersion) at 0.5. The filled circle shows the outcome when the calculation is done using the geometric mean and the same gamma parameter."}
-
-load('analysis/data.out.Rda' )
-
-plot(data.out[,6],data.out[,1], pch=c(rep(1,19),19), ylim=c(-11, 4),
-  xlab='full scale offset', ylab='mean difference between groups')
-points(data.out[,6],data.out[,2], pch=c(rep(1,19),19), col='red')
-points(data.out[,6],data.out[,3], pch=c(rep(1,19),19), col='orange')
-points(data.out[,6],data.out[,4], pch=c(rep(1,19),19), col='cyan')
-points(data.out[,6],data.out[,5], pch=c(rep(1,19),19), col='blue')
-abline(h=0, col='grey', lty=2)
-abline(v=0, col='grey', lty=2)
-legend(0.7, 0, legend=c('16S','selex','tscome','metatscome','ss'),
-  pch=19, col=c('black','red','orange','cyan','blue'))
-
-```
-
-Nixon et al. [-@nixon2023scale] showed that many operations on HTS datasets relied on both the proportion and scale components of the data. Moreover, all normalizations impose a scale model on the data, but the appropriateness of these models has never been explicitly acknowledged or tested. Thus, the full scale model option allows the investigator to set both the offset between the geometric means of the features and their dispersion and observe how this affects the analysis outcome. 
-
-In the offset plot above we can see the cause and the effect of the full model with a fixed gamma of 0.5 and a base scale of 1 in each group. We see that the mean location of well centred datasets (yeast transcriptome, single-cell transcriptome) are close to 0, but could be centred better with small changes in scale ranging from 0 (single cell) to 1:1.1 for the yeast transcriptome dataset. In contrast, centring the 16S dataset requires about a 1:1.3 fold change. The metatranscriptome dataset would require about a 0.5:1 change in relative scale between groups, but as shown in the main text, centring the housekeeping genes is more apt. 
-
-The in vitro selection dataset is clearly an outlier in both the difference between the average group geometric mean, and in the offset plot.  However, this dataset can  be used to illustrate the power of the full scale model and the relationship between \( G_n \) and scale. In Figure 3 we can see that the default output of ALDEx2 has a centered output. This occurs largely by chance, as the high sparsity of the selected (S) group is balanced almost exactly by the arbitrarily chosen sequencing depth so the non-selected group (NS) appears to have a similar location as the S group. The difference in entropy between the two groups and the differences in geometric mean are very large, with the difference in \(\log_2{\overline{G}(S)}\) and \(log_2{\overline{G}(NS)}\) being about \(2^{6.6}\). Setting the scale of both the S and NS groups to 1 we find that the difference in location is approximately \(2^{7.7}\) in close agreement with the difference the geometric means. For this dataset to be centered we need to have a scale ratio \( \approx \) 1:50 or more. Note that the scale ratio is inverse to the ratio of geometric means as described above.  In fact, in this dataset the relative abundances of the majority of features are nearly invariant, but this is masked by the large absolute changes in a small number of features [@mcmurrough:2014], thus changing the scale of the data. Neither DESeq nor edgeR are able to provide a reasonable analysis of this dataset because the normalizations used assume equivalent scales [@gloorAJS:2016]. 
-
-Figure 3 shows an effect plot of various scale models with this dataset. The full scale model, where the strong assumption that the mean \(G\) is assumed to be 1:1 between the two groups, dramatically skews the output and the large number of relatively invariant features are now identified as significantly different. While not wrong as long as the assumption that the scales are identical is stated, this is not a useful analysis outcome. Modifying the mean scale difference between the NS:S groups to be \( \approx \) 1:50 different moves the centre of the large number of relatively invariant features to the centreline of no difference, and recapitulates the default result obtained using \(G_n\) as the scale estimate where the ratio is \( \sim 100:1 \). Note that we get exactly the same answer (within random sampling error) with a scale of .02 for group NS and a scale of 1 for group S, or using a scale of 1 for group NS and a scale of 50 for group S. This shows that it is the relative difference between scales that is important in this dataset, not the absolute values. From this result we can conclude that, on average, the difference in underlying scale in the system is about \(\approx 50\)-fold, and this is congruent with the circa 100-fold difference in  \(\overline{G}\) between groups; the discrepancy being explained because the default scale model is applied uniformly to all samples, whereas the different values of the within-group geometric means ranging over a \{ > 2.5 \) fold range.  Thus, an advantage of a full scale model is that we have gained both information and understanding about the drivers of asymmetry underlying system.
-
-
-```{r selex, eval=T, echo=F, warning=F, message=F,comment=F, fig.cap="Effect plots of the selex dataset with various gamma and scale parameters. All scales are calculated with a logNormal distribution to ensure symmetry for the user. "}
-
-# from selex.aldex.mu.R
-load(file="analysis/sel.2.all.Rda")
-load(file="analysis/sel.5.all.Rda")
-load(file="analysis/sel.1.all.Rda")
-load(file="analysis/sel.all.Rda")
-
-par(mfrow=c(1,4))
-aldex.plot(sel.all, main=('gamma=0.5\nmu=G'))
-aldex.plot(sel.1.all, main=('gamma=0.5\nmu=1,1'))
-aldex.plot(sel.5.all, main=('gamma=0.5\nmu=1,50'))
-aldex.plot(sel.2.all, main=('gamma=0.5\nmu=0.02, 1'))
-```
-
-# How scaling affects dispersion
-
-```{r, echo=F}
-load(file="analysis/yst.all.Rda")
-load(file="analysis/yst.s.all.Rda")
-load(file="analysis/yst.1.all.Rda")
-```
-
-
-
-# Issues with DESeq2 and edgeR
-
-DESeq2 and edgeR are two of the most commonly used tools for differential abundance analysis of bule RNA sequencing datasets. They both operate by finding a scaling factor that makes all the samples commesurate. DESeq2 does this by finding a midpoint feature that can be used as a reference in each sample; this can be different for different samples. The edgeR reference finds the midpoint of the 'typical' sample instead. In both cases the data are then scaled by dividing by a small factor that makes the read counts commesurate. Differential abundance analysis is then performed on the scaled values after taking their logarithm to base 2. In some ways this is similar to the log-ratio approach used by ALDEx2, but is more prone to dataset and sample effects than is the log-ratio method [@GloorAJS2023] 
-
-```{r DESedg, eval=T, echo=F, fig.cap="Shown here are the mean log2 fold change as a density plot, and a Volcano plot showing the location and adjusted p-value for each feature in the metatranscriptomic dataset. The DESeq2 approach does a good job of centring this data, while edgeR is less suitable. The volcano plots show dramatically different outcomes. The DESeq2 algorithm assigns very large fold changes to features that have only moderate change, and further identifies a very large proportion of features as significantly different. In contrast, edgeR exhibits a much smaller number of differentially abundant features. In both volcano plots, the housekeeping genes in the main Figure 3 are shown in orange. We can see that these are asymmetrically distributed in both plots. Additionally the location of the features that DESeq2 identified as having a very large difference are shown in the edgeR volcano plot as blue circles."}
-
-# find housekeeping from ALDEx2
-
-load('analysis/xt.m.Rda')
-load('analysis/xt.Rda')
-load('analysis/xg.Rda')
-hk <- rownames(xt.all)[xt.all$diff.win < 2.5 & xt.all$diff.btw > 1 & xt.all$diff.btw < 3]
-hk.off <- xt.all$diff.win < 2.5 & xt.all$diff.btw > 1 & xt.all$diff.btw < 3
-
-load('analysis/meta.DES.res.Rda')
-load('analysis/meta.edge.qlf.Rda')
-
-# these are all very rare K0s
-zero.var <-  which(meta.DES.res@listData$lfcSE*sqrt(44) == 0)
-
-weird.des <- which(meta.DES.res@listData$log2FoldChange < -20 )
-
-# housekeeping genes centred with DESeq2 - nice
-
-sig.des <- which(meta.DES.res@listData$padj < 0.01)
-sig.edge <- which(p.adjust(meta.edg.qlf$PValue) < 0.01)
-sig.ald <- which(xt.m.all$we.eBH < 0.01)
-
-par(mfrow=c(2,3))
-
-plot(density(xt.all$diff.btw), xlim=c(-5,5), ylim=c(0,1), main='ALDEx2 FC')
-points(density(xt.all$diff.btw[hk.off]), type='l', col='orange')
-abline(v=0, col='orange', lty=2)
-
-plot(density(meta.DES.res@listData$log2FoldChange), xlim=c(-5,5), ylim=c(0,0.8), main='DESeq2 FC')
-points(density(meta.DES.res@listData$log2FoldChange[hk.off]), type='l', col='orange')
-abline(v=0, col='orange', lty=2)
-
-plot(density(meta.edg.qlf$logFC), xlim=c(-5,5), ylim=c(0,0.5), main='edgeR FC')
-points(density(meta.edg.qlf$logFC[hk.off]), type='l', col='orange')
-abline(v=0, col='red', lty=2)
-
-
-plot(xt.m.all$diff.btw, -1*log10(xt.m.all$we.eBH), 
-  col=rgb(0,0,0,0.1), xlab='log2 Difference', ylab='-1 log10(p.adjust)', main='ALDEx2 volcano')
-points(xt.m.all$diff.btw[sig.ald],-1*log10(xt.m.all$we.eBH)[sig.ald] + 1e-8, col='red')
-points(xt.m.all$diff.btw[hk.off],-1*log10(xt.m.all$we.eBH)[hk.off] + 1e-8, col='orange', cex=0.6)
-
-
-plot(meta.DES.res@listData$log2FoldChange, -1*log10(meta.DES.res@listData$padj), 
-  col=rgb(0,0,0,0.1), xlab='log2 Difference', ylab='-1 log10(p.adjust)', main='DESeq2 volcano')
-points(meta.DES.res@listData$log2FoldChange[sig.des],-1*log10(meta.DES.res@listData$padj[sig.des] + 1e-70), col='red')
-points(meta.DES.res@listData$log2FoldChange[hk.off],-1*log10(meta.DES.res@listData$padj[hk.off] + 1e-70), col='orange', cex=0.6)
-
-plot(meta.edg.qlf$logFC, -1*log10(p.adjust(meta.edg.qlf$PValue)), 
-  col=rgb(0,0,0,0.1), xlab='LFC', ylab='-1log10(p)', main='edgeR volcano')
-points(meta.edg.qlf$logFC[sig.edge], -1*log10(p.adjust(meta.edg.qlf$PValue)[sig.edge]), 
-  col='red')
-points(meta.edg.qlf$logFC[hk.off], -1*log10(p.adjust(meta.edg.qlf$PValue)[hk.off]), 
-  col='orange', cex=0.6)
-  points(meta.edg.qlf$logFC[weird.des], -1*log10(p.adjust(meta.edg.qlf$PValue)[weird.des]), 
-  col='blue', cex=0.6)
-
-```
-
-
-Examining the plots, edge R clearly not centred with the median housekeeping functions offset by `r median(meta.edg.qlf$logFC[hk.off==T])` and minimum FDR value  is `r min(p.adjust(meta.edg.qlf$PValue)[hk.off==T])`. Additionally, as shown in Figure 4there is little range in the p-values relative to those seen for DESeq2, and the values are more in line with the range seen with ALDEx2.
-
-DESeq2 is better centred with median housekeeping functions offset by `r median(meta.DES.res@listData$log2FoldChange[hk.off==T])` but the minimum FDR value  is `r min(meta.DES.res@listData$padj[hk.off==T])`. In addition there are a large number of functions with 0 variance, these are very low count functions with very high sparsity in the dataset. These are not differential in the DESeq2 analysis. However, there are a number of functions in the DESeq2 analysis that are very differentially abundant, with a log2 fold change of < -20. Examination of the raw counts shows that these are uniformly 0 or 1 in the H dataset, and present at high counts in some, but not all of the BV dataset. That these stand out is odd, since inspection of the count table shows that there are many other functions that are missing from the H dataset, and have higher and more uniform counts in the BV dataset. Thus, the importance of the outlier functions seen in the DESeq2 volcano plot should be viewed with suspicion and may be an artefact of the normalization used. When overplotted on the edgeR volcano plot (blue), it is clear that these functions have non-signficant p-values.
-
-```{r eval=T, echo=F, fig.cap="Shown here are two volcano plots that plot the mean log2 fold change plotted vs the log of the FDR for the yeast transcriptome dataset and for the metatranscriptome dataset. Data were generated in ALDEx2 with \\(\\gamma = [0, 0.5] \\) in black or in red."}
-
-par(mfrow=c(1,2))
-plot(yst.all$diff.btw, -log10(yst.all$we.eBH +1e-70), pch=19, cex=0.5, col=rgb(0,0,0,0.3), 
-  ylab='-log10(FDR)', xlab="log2(diff)", main='yeast')
-points(yst.s.all$diff.btw, -log10(yst.s.all$we.eBH + 1e-20), pch=19, cex=0.5, col=rgb(1,0,0,0.3))
-legend(4,60, legend=c("gamma=0", "gamma=0.5"), pch=19, cex=0.5, col=c("black", "red"))
-
-plot(xt.all$diff.btw, -log10(xt.all$we.eBH), pch=19, cex=0.5, col=rgb(0,0,0,0.3),
-  ylab='-log10(FDR)', xlab="log2(diff)", main='meta')
-points(xg.all$diff.btw, -log10(xg.all$we.eBH), pch=19, cex=0.5, col=rgb(1,0,0,0.3))
-
-```
-
-Adding a small amount of scale, \(\gamma=0.5\), has a major effect on the volcano plot for the yeast transcriptome dataset, but mimimal effect on the vaginal metatranscriptome dataset.  In both datasets the FDR values are raised, but no effect is observed on the difference between values. However, the concordance between the FDR values and the difference between become very tight for the yeast transcriptome dataset, but the concordance is not visibly unchanged for the other dataset. This is likely because both the difference between and the dispersion were both very small in the former and substantially larger in the latter.
-
-
-# Checking the scale assumptions of the RLE and TMM normalizations
-
-We can show that the normalizations built into the edgeR Bioconductor package (RLE, TMM, TMMwsp, upperquantile) are scale assumptions by using the normalization factor as an input to `aldex.makeScaleMatrix()` and then measure the mean location of the data as above. The ideal behavior of a normalization is that the mean location of the data should be close to 0 or unchanged. This behavior will ensure that Type 1 and Type 2 errors due to scale assumptions are minimized. 
-
-The results, shown in the tables below compare these normalizations to the no scale assumption (iso) and the geometric mean normalization (GM) assuming that the normalizations are either on a log scale or a linear scale. That these affect scale can be observed by their effect on the mean location of the data. For the most part assuming no scale differences between groups centres the date less well than does the geometric mean. In most cases the other normalizations perform poorer than assuming no scale at all for the rRNA dataset and about as well as the no scale assumption in the metatranscriptome datasets and the single-cell transcriptome dataset. All normalizations perform poorly in the selex dataset. Overall, these results may not be surprising because the TMM and RLE (and related normalizations) were developed specifically to scale and normalize transcriptome datasets [@Robinson:2010a;@Anders:2010], but have become widely used in the analysis of other data modalities; e.g. [@McMurdie:2014a]. 
-
-```{r getNorm, echo=F}
-# output from code/scale_norms.R
-
-load('analysis/normalizations.Rda')
-knitr::kable(norm.data.out, 'simple', caption='Log scale models')
-```
-
-```{r getNormNL, echo=F}
-# output from code/scale_norms.R
-
-load('analysis/normalizations.nl.Rda')
-knitr::kable(norm.nl.data.out, 'simple', caption='Linear scale models')
-```
-
-Thus far we have observed that adding scale uncertainty has a negligible effect on either the differences between groups or the relative abundance measure with a correlation of `r round(cor(yst.all$diff.btw, yst.1.all$diff.btw), 3)` and `r round(cor(yst.all$rab.all, yst.1.all$rab.all), 3)`. The effect is entirely restricted to the dispersion estimats as shown below.  Panel A shows the change in dispersion relative to the rAbundance of the features. Here we can see that the minimum dispersion is increased as gamma increases. The horizontal lines show the median value for the features with a rAbundance between -0.5 and 0.5. Panel B shows that this increase is non-linear, being more pronounced among those features that had minimal dispersion when gamma=0. Panel C shows that increasing gamma rotates the dispersion estimates at high relative abundances, such that housekeeping genes no longer have larger mean dispersions (rAB > 5) than do regulated genes (rAB >0, < 5). Overplotted are the lowess lines of fit through the densities of transcripts that are judged as significantly different using either scaled or unscaled data, and with or without thresholding. Statistical significance was determined with a FDR < 0.05.
-
-Thus, adding scale uncertainty has two effects both on dispersion. The first is to increase the dispersion estimate for each part and this has its primary effect to reduce the  p-values and standardized effect sizes returned by ALDEx2. The second is to reduce the range of dispersions, and rotate them such that the parts with the lowest dispersions have the greatest increase. This increase in dispersion comes about because the underlying distributions are widened with the inclusion of scale uncertainty.
-
-```{r disp, eval=T, echo=F, warning=F, message=F,comment=F, fig.cap="Adding scale uncertainty changes the dispersion distribution. Panel A shows a plot of the expected value for relative abundance vs the expected value for the pooled dispersion as output by aldex.effect. The dashed  horizontal lines show the median value for the features with a rAbundance between -0.5 and 0.5. Panel B plots the unscaled vs scaled dispersion, note the non-linear relationship. Panel C plots relative abundance vs the  difference between dispersion with gamma set to 0 and to 1 to highlight the rotation that is evident in Panel A. The colored lines indicate the lowess line of fit through the centre of mass of the plot. Line colors represent different populations of points. The grey line is the total population, the red line is the population of significant transcripts with no scale, the orange line is the population of significant transcripts with a difference threshold of about 2.5-fold change, the blue line is the population of significant transcripts with gamma =0.5, and the cyan line is the significant population with gamma = 1.  "}
-
-cuts <- yst.all$rab.all > -0.5 & yst.all$rab.all < 5
 par(mfrow=c(1,3))
-mn.mid <- median(yst.all$diff.win[cuts])
-mn.mid.s <- median(yst.s.all$diff.win[cuts])
-mn.mid.1 <- median(yst.1.all$diff.win[cuts])
+plot(xt.m.all$we.eBH,xt.lv.all$we.eBH, pch=19, cex=0.5, col=rgb(0,0,0,0.3),
+  main="q-value", log='xy', ylab="5% diff", xlab="14% diff")
+points(xt.m.all$we.eBH, xg.all$we.eBH, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
+abline(0,1, lty=2, lwd=2, col='grey')
+plot(xt.m.all$effect,xt.lv.all$effect, pch=19, cex=0.5, col=rgb(0,0,0,0.3),
+  main="effect", ylab="5% diff", xlab="14% diff")
+points(xt.m.all$effect, xg.all$effect, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
+abline(0,1, lty=2, lwd=2, col='grey')
 
-# we change dispersion a lot for the bulk of the features
-plot(yst.all$rab.all, yst.all$diff.win, pch=19, cex=0.5, col=rgb(0,0,0,0.3),
-  xlab='rAbundance', ylab='dispersion')
-points(yst.s.all$rab.all, yst.s.all$diff.win, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
-points(yst.1.all$rab.all, yst.1.all$diff.win, pch=19, cex=0.5, col=rgb(0,0,1,0.3))
-abline(h=mn.mid, lty=2)
-abline(h=mn.mid.s, lty=2, col='red')
-abline(h=mn.mid.1, lty=2, col='blue')
-title(main='A', line=-1.2, adj=0.5)
-legend(0,4, legend=c("0", "0.5", "1"), 
-  pch=19, col=c("black", "red", "blue"))
+plot(xt.m.all$diff.btw,xt.lv.all$diff.btw, pch=19, cex=0.5, col=rgb(0,0,0,0.3),
+  main="diff.btw", ylab="5% diff", xlab="14% diff")
+points(xt.m.all$diff.btw, xg.all$diff.btw, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
 
-plot(yst.all$diff.win, yst.1.all$diff.win, pch=19, cex=0.5, col=rgb(0,0,1,0.3), ylim=c(0,4.5), 
-  xlab='g=0 dispersion', ylab='g=0.5 | g=1 dispersion')
-points(yst.all$diff.win, yst.s.all$diff.win, pch=19, cex=0.5, col=rgb(1,0,0,0.3))
-abline(0,1, lty=2)
-title(main='B', line=-1.2, adj=0.5)
-legend(0,4, legend=c( "0.5", "1"), 
-  pch=19, col=c("red", "blue"))
+abline(0,1, lty=2, lwd=2, col='grey')
 
-sig.all <- yst.all$we.eBH < 0.05
-sig.t <- yst.all$we.eBH < 0.05 & abs(yst.all$diff.btw) > 1.4
-sig.s <- yst.s.all$we.eBH < 0.05
-sig.1 <- yst.1.all$we.eBH < 0.05
-
-diff.df <- data.frame(yst.all$rab.all, 
-  yst.1.all$diff.win- yst.all$diff.win)
-sig.df <- data.frame(yst.all$rab.all[sig.all],
-   yst.1.all$diff.win[sig.all]- yst.all$diff.win[sig.all])
-sig.t.df <- data.frame(yst.all$rab.al[sig.t], 
-  yst.1.all$diff.win[sig.t] - yst.all$diff.win[sig.t])
-sig.s.df <- data.frame(yst.all$rab.all[sig.s], 
-  yst.1.all$diff.win[sig.s] - yst.all$diff.win[sig.s])
-sig.1.df <- data.frame(yst.all$rab.all[sig.1], 
-  yst.1.all$diff.win[sig.1]- yst.all$diff.win[sig.1])
-
-plot(yst.all$rab.all, yst.1.all$diff.win- yst.all$diff.win, xlab='rAbundance', ylab="disp:1 - disp:0", pch=19, cex=0.5)
-title(main='C', line=-1.2, adj=0.5)
-lines(lowess(diff.df, f=0.1), col='grey60', lwd=3)
-lines(lowess(sig.df, f=0.1), col='red', lwd=3)
-lines(lowess(sig.t.df, f=0.5), col='orange', lwd=3)
-lines(lowess(sig.s.df, f=0.5), col='royalblue', lwd=3)
-lines(lowess(sig.1.df, f=0.7), col='cyan', lwd=3)
-
-legend(-10,1.3, legend=c( "diff", "sig diff", "t + sig","0.5 sig", "1 sig"), 
-  pch="-", col=c("grey", "red", "orange", "royalblue", "cyan"))
 
 ```
+\newpage
 
 # References

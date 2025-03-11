@@ -1,6 +1,13 @@
 library(ALDEx2)
 data(selex)
 
+# this is pretty counter-intuitive but here we go
+# we start by getting our prior values from the point clr
+# we need to do this to log(e)  because the rlnorm function
+# uses this base.  
+# tldr: the makeScaleMatrix function is messed up and needs fixing
+
+
 conds <- c(rep('NS',7), rep('S',7))
 
 sel.all <- aldex(selex, conditions=conds, CI=T, gamma=0.5)

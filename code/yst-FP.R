@@ -1,6 +1,6 @@
 #devtools::load_all('~/Documents/0_git/ALDEx_bioc')
 library(ALDEx2)
-
+### permutations below se li Li:2022aa
 url <- "https://raw.githubusercontent.com/ggloor/datasets/main/transcriptome.tsv"
 yst <- read.table(url, header=T, row.names=1)
 # remove the one gene with 0 reads
@@ -108,4 +108,34 @@ save(x.sub, file="analysis/x.sub.Rda")
 save(x.ref, file="analysis/x.ref.Rda")
 save(xs.sub, file="analysis/xs.sub.Rda")
 save(xs.ref, file="analysis/xs.ref.Rda")
+
+
+#### Try some permutations
+#### neither ALDEx2 nor DESeq2 returned FP on permutation
+nperms <- 25
+tally.BH <- vector(mode='numeric', length=nperms)
+tally.p <- vector(mode='numeric', length=nperms)
+tally.DES <- vector(mode='numeric', length=nperms)
+
+for(i in 1:nperms){
+yst.perm <- yst[,sample(colnames(yst))]
+x.p <- aldex.clr(yst.perm, conds, gamma=1e-3)
+x.pt <- aldex.ttest(x.p)
+aldex.plot(x.pall)
+tally.BH[i] <- sum(x.pt$we.eBH < 0.05)
+tally.p[i] <- sum(x.pt$we.ep < 0.05)
+
+dds <- DESeqDataSetFromMatrix(countData = yst.perm,
+          colData = coldata, design= ~ conds)
+dds <- DESeq(dds)
+meta.DES.res <- results(dds, name="conds_W_vs_S")
+tally.DES[i] <- sum(meta.DES.res@listData$p.adj < 0.05)
+}
+
+
+dds <- DESeqDataSetFromMatrix(countData = sample(yst),
+          colData = coldata, design= ~ conds)
+dds <- DESeq(dds)
+meta.DES.res <- results(dds, name="conds.W_vs_S")
+sum(meta.DES.res@listData$p.adj < 0.05)
 

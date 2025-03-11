@@ -4,7 +4,7 @@ load(url('https://raw.githubusercontent.com/ggloor/datasets/main/ko.both.Rda'))
 
 conds.K0 <- c(rep('H',8), rep('B',14), rep('B',14), rep('H', 8)) 
 
-# DESeq2
+# DESeq2 
 library(DESeq2)
 
 # make a vector of conditions
