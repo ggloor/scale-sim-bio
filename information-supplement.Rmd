@@ -277,7 +277,7 @@ stripchart(list(p.out[,5], p.out[,6]), method="jitter", vertical=TRUE, main="non
 #TSCOME
 prior <- c(0:10) / 10
 t.out <- matrix(data=NA, nrow=12, ncol=7)
-colnames(t.out) <- c("h1", "h2", "H1",H2","mh", 'mH','prior')
+colnames(t.out) <- c("h1", "h2", "H1", "H2", "mh",'mH','prior')
 prior[1] <- 0.001
 for(i in 1:length(prior)){
 t.out[i,1] <- -G(tsc[,1]+prior[i])

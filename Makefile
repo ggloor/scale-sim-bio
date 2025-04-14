@@ -1,6 +1,11 @@
 # Makefile
 
-all : go3-author.pdf supplement_figs.pdf information-supplement.pdf
+all : go3-author.pdf supplement_figs.pdf information-supplement.pdf response.pdf
+
+response.pdf : response.tex
+
+response.tex : response.Rmd
+	Rscript -e "rmarkdown::render('response.Rmd')"
 
 go3-author.pdf : go3.tex
 	code/fix_authors.sh
@@ -52,9 +57,9 @@ analysis/normalizations.Rda : code/scale_norms.R
 
 # Rule for supplement
 supplement_figs.pdf : supplement_figs.Rmd analysis/x.s.mu.all.Rda\
-	analysis/meta.DES.res.Rda\
-	analysis/data.out.Rda\
-	analysis/out.mat.raw.Rda\
+    analysis/meta.DES.res.Rda\
+    analysis/data.out.Rda\
+    analysis/out.mat.raw.Rda\
     analysis/out.mat.scale.Rda\
     analysis/sel.2.all.Rda\
     analysis/FP.df.Rda

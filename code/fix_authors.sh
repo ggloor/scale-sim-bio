@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-awk '{sub(/true \\and true \\and true/,"Gregory B. Gloor$^1$ \\and Michelle Pistner Nixon$^2$ \\and Justin D. Silverman$^{2,3,4,5}$")};1' go3.tex > jnk.tex
+awk '{sub(/true \\and true \\and true/,"Gregory B. Gloor$^1$ \\and Michelle Pistner Nixon$^2$ \\and Justin D. Silverman$^{3,4,5}$")};1' go3.tex > jnk.tex
 
 awk '{sub(/\\date{}/,"\\date{\\today}")};1' jnk.tex > jnk2.tex
 
@@ -13,10 +13,11 @@ pdflatex go3-author.tex -o go3-author.pdf
 rm jnk.tex
 rm jnk2.tex
 rm go3.pdf
-rm go3.aux
-rm go3.out
-rm go3.toc
-rm go3.log
+rm go3.syncte*
+#rm go3.aux
+#rm go3.out
+#rm go3.toc
+#rm go3.log
 rm go3-author.aux
 rm go3-author.log
 rm go3-author.blg
