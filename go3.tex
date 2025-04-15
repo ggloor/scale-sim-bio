@@ -106,29 +106,6 @@ data with ALDEx2}
 
 \begin{document}
 \maketitle
-\begin{abstract}
-In high-throughput sequencing (HTS) studies, sample-to-sample variation
-in sequencing depth is driven by technical factors, and not by variation
-in the scale (size) of the biological system. Typically a statistical
-normalization removes unwanted technical variation in the data or the
-parameters of the model to enable differential abundance analyses. We
-recently showed that all normalizations make implicit assumptions about
-the unmeasured system scale and that errors in these assumptions can
-dramatically increase false positive and false negative rates. We
-demonstrated that these errors can be mitigated by accounting for
-uncertainty using a \emph{scale model}, which we integrated into the
-ALDEx2 R package. This article provides new insights focusing on the
-application to transcriptomic analysis. We provide transcriptomic case
-studies demonstrating how scale models, rather than traditional
-normalizations, can reduce false positive and false negative rates in
-practice while enhancing the transparency and reproducibility of
-analyses. These scale models replace the need for dual cutoff approaches
-often used to address the disconnect between practical and statistical
-significance. We demonstrate the utility of scale models built based on
-known housekeeping genes in complex metatranscriptomic datasets. Thus
-this work provides guidance on how to incorporate scale into
-transcriptomic data sets.
-\end{abstract}
 
 \section{Introduction}\label{introduction}
 
@@ -260,7 +237,7 @@ scale uncertainty can greatly improve modeling in transcriptome and
 meta-transcriptome datasets to provide substantially more robust and
 reproducible results.
 
-\section{Implementation}\label{implementation}
+\section{Methods}\label{methods}
 
 Formal and expanded descriptions of the concepts that follow are given
 in (3, 22). To be concrete, we let \(\mathbf{Y}\) denote the
@@ -908,7 +885,17 @@ expressed (or both) in the groups (55). Thus, using and reporting scale
 uncertainty should become a standard practice in the analysis of HTS
 datasets.
 
-\singlespacing
+Acknowledgements: JDS and MPN were supported in part by NIH
+1R01GM148972-01. Some aspects of this was supported by an NSERC grant to
+GBG.
+
+Availability of Code: All code is available at
+\url{https://github.com/ggloor/scale-sim-bio}
+
+Author Contributions: Conceptualization, Methodology, Investigation,
+Formal Analysis, Software GBG, MPN, JDS; Visualization GBG, MPN; Writing
+Original Draft GBG; Writing Review and Editing GBG, MPN, JDS;
+Supervision, Funding JDS. \singlespacing
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}

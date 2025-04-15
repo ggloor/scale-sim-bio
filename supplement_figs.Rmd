@@ -9,6 +9,8 @@ csl: /Users/ggloor/Documents/0_git/csl_styles/nucleic-acids-research.csl
 pdf-engine: latex
 output:
   pdf_document
+header-includes:
+  \renewcommand{\figurename}{Supplementary Figure}
 ---
 
 ```{r echo=F, warning=F, message=F}

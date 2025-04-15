@@ -105,6 +105,37 @@
 \begin{document}
 \maketitle
 
+Dear Editor and reviewers
+
+Thank you all for thoughtful and helpful comments. In response to your
+queries we have added a new Figure 1 that more clearly articulates (we
+hope) the need for scale uncertainty. Secondly, we added in new analyses
+using semi-synthetic datasets to add in a standard of truth. We did this
+using some of the datasets of, but in a way that was independent of Li
+et al (1) and observed essentially the same result. In doing this
+analysis it became clear that the addition of scale uncertainty was much
+better at controlling FP than fold-change cutoffs and we came to
+understand why this is so and have included this in the revision.
+
+We have also tried to clean up language and clarify sources of data, etc
+as requested.
+
+We have included line numbers in many of the responses and have included
+line numbers in our resubmission for cross-reference.
+
+Finally, we have included a file with the differences (diff.pdf) marked
+up in the package so that the changes can be identified.
+
+We believe that this revised document is now much stronger because of
+the reviews and hope it meets approval
+
+The repository for this version is at:
+\url{https://github.com/ggloor/scale-sim-bio/} and is now public
+
+Best regards
+
+Greg Gloor, on behalf of the authors
+
 Reviewer: 1
 
 Comments to the Author
@@ -138,8 +169,8 @@ comments that I am confident can be easily addressed by the authors.
     However, the focus of this report is intended to be squarely on
     transcriptome and metatranscriptome data in an attempt to more
     tightly target that analytic audience. Companion articles by by
-    McGovern et al. (1) discussing the use in gene set enrichment and by
-    Nixon et al. (2) targeting the microbiome community are published in
+    McGovern et al. (2) discussing the use in gene set enrichment and by
+    Nixon et al. (3) targeting the microbiome community are published in
     PLoS Comp. Bio. and under second revision at Genome Biol.
     respectively.
   \end{itemize}
@@ -322,7 +353,7 @@ Major comments:
     species levels are relative abundances). However, such a
     normalization is discussed with reference to species-level
     metatranscriptomics rather than systems-level metatranscriptomics as
-    shown in our report and in (3). We would need to redo all of the
+    shown in our report and in (4). We would need to redo all of the
     analysis in the cited paper in order to make this comparison.
     Indeed, the scale approach advocated in this report can use any
     measure of absolute abundance as an anchor and we have been explicit
@@ -339,7 +370,7 @@ Major comments:
   \tightlist
   \item
     We thank the reviewer for this suggestion while the original paper
-    by Nixon et al. (4) included extensive simulation and theoretic
+    by Nixon et al. (5) included extensive simulation and theoretic
     justification we recognize that this is not yet published and a
     clear demonstration of the utility in transcriptome datasets would
     be helpful. We have now included two simulated datasets from a
@@ -367,7 +398,7 @@ Major comments:
     4) and the discussion around when to use an informed vs a simple
     scale model. In essence, the centre of mass of the difference
     between groups should be close to 0 (no difference) to avoid FP and
-    FN (5). (lines 358-365, 398-410)
+    FN (6). (lines 358-365, 398-410)
   \end{itemize}
 \item
   Due to the limited number of datasets shown in this manuscript the
@@ -596,7 +627,7 @@ Reviews (see reviewer 2).
 \item
   we have added a paragraph in the discussion about this. Fundamentally,
   while the scale approach is generalizable and could be applied to the
-  types of data given in the review paper (the actual method is in (6)),
+  types of data given in the review paper (the actual method is in (7)),
   but that approach is designed to ask a different type of question than
   is addressed by scale. (Lines 374-380 and above)
 \end{itemize}
@@ -647,42 +678,48 @@ submitted / currently under review.
 \begin{itemize}
 \tightlist
 \item
-  The companion articles by by McGovern et al. (1) discussing the use in
-  gene set enrichment and by Nixon et al. (2) targeting the microbiome
+  The companion articles by by McGovern et al. (2) discussing the use in
+  gene set enrichment and by Nixon et al. (3) targeting the microbiome
   community are published in PLoS Comp. Bio. and under second revision
   at Genome Biol. respectively. The companion article introducing the
-  theory and the initial modeling by Nixon et al. (4) is still under
+  theory and the initial modeling by Nixon et al. (5) is still under
   review at Annals of applied Statistics which is a frustration for the
   authors as much as the reviewers
 \end{itemize}
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{1}
+\bibitem[\citeproctext]{ref-Li:2022aa}
+1. Li,Y., Ge,X., Peng,F., Li,W. and Li,J.J. (2022)
+\href{https://doi.org/10.1186/s13059-022-02648-4}{Exaggerated false
+positives by popular differential expression methods when analyzing
+human population samples}. \emph{Genome Biol}, \textbf{23}, 79.
+
 \bibitem[\citeproctext]{ref-McGovern:2023}
-1. McGovern,K.C., Nixon,M.P. and Silverman,J.D. (2023)
+2. McGovern,K.C., Nixon,M.P. and Silverman,J.D. (2023)
 \href{https://doi.org/10.1371/journal.pcbi.1011659}{Addressing erroneous
 scale assumptions in microbe and gene set enrichment analysis}.
 \emph{PLoS Comput Biol}, \textbf{19}, e1011659.
 
 \bibitem[\citeproctext]{ref-Nixon2024B}
-2. Nixon,M.P., Gloor,G.B. and Silverman,J.D. (2024) Beyond
+3. Nixon,M.P., Gloor,G.B. and Silverman,J.D. (2024) Beyond
 normalization: Incorporating scale uncertainty in microbiome and gene
 expression analysis. \emph{bioRxiv},
 \href{https://doi.org/10.1101/2024.04.01.587602}{10.1101/2024.04.01.587602}.
 
 \bibitem[\citeproctext]{ref-Dos-Santos:2024aa}
-3. Dos Santos,S.J., Copeland,C., Macklaim,J.M., Reid,G. and Gloor,G.B.
+4. Dos Santos,S.J., Copeland,C., Macklaim,J.M., Reid,G. and Gloor,G.B.
 (2024) \href{https://doi.org/10.1186/s40168-024-01992-w}{Vaginal
 metatranscriptome meta-analysis reveals functional {BV} subgroups and
 novel colonisation strategies}. \emph{Microbiome}, \textbf{12}, 271.
 
 \bibitem[\citeproctext]{ref-nixon2024scale}
-4. Nixon,M.P., McGovern,K.C., Letourneau,J., David,L.A., Lazar,N.A.,
+5. Nixon,M.P., McGovern,K.C., Letourneau,J., David,L.A., Lazar,N.A.,
 Mukherjee,S. and Silverman,J.D. (2024)
 \href{https://arxiv.org/abs/2201.03616}{Scale reliant inference}.
 
 \bibitem[\citeproctext]{ref-Wu2021}
-5. Wu,J.R., Macklaim,J.M., Genge,B.L. and Gloor,G.B. (2021)
+6. Wu,J.R., Macklaim,J.M., Genge,B.L. and Gloor,G.B. (2021)
 \href{https://doi.org/10.1007/978-3-030-71175-7_17}{Finding the centre:
 Compositional asymmetry in high-throughput sequencing datasets}. In
 Filzmoser,P., Hron,K., Martìn-Fernàndez,J.A., Palarea-Albaladejo,J.
@@ -691,7 +728,7 @@ honour of vera pawlowsky-glahn}. Springer International Publishing,
 Cham, pp. 329--346.
 
 \bibitem[\citeproctext]{ref-Zhang:2021ab}
-6. Zhang,Y., Thompson,K.N., Huttenhower,C. and Franzosa,E.A. (2021)
+7. Zhang,Y., Thompson,K.N., Huttenhower,C. and Franzosa,E.A. (2021)
 \href{https://doi.org/10.1093/bioinformatics/btab327}{Statistical
 approaches for differential expression analysis in metatranscriptomics}.
 \emph{Bioinformatics}, \textbf{37}, i34--i41.

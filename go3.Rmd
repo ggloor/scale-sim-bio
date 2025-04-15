@@ -8,7 +8,9 @@ author:
   - name: Michelle Pistner Nixon 
     affiliation: Department of Population Health Sciences, Geisinger, Danville, PA 
   - name: Justin Silverman 
-    affiliation: College of Information Sciences and Technology and Department of Medicine, Pennsylvania State University, Department of Medicine, Pennsylvania State University, Institute for Computational and Data Science, Pennsylvania State University, Department of Statistics, Pennsylvania State University 
+    affiliation: College of Information Sciences and Technology and Department of Medicine, Pennsylvania State University, Department of Medicine, Pennsylvania State University, Institute for Computational and Data Science, Pennsylvania State University, Department of Statistics, Pennsylvania State University
+ 
+
 cite-method: citeproc 
 citeproc: TRUE 
 bibliography: /Users/ggloor/Library/texmf/bibtex/bib/bibdesk_refs.bib 
@@ -22,7 +24,7 @@ header-includes:
 
 package: ALDEx2
 
-abstract: In high-throughput sequencing (HTS) studies, sample-to-sample variation in sequencing depth is driven by technical factors, and not by variation in the scale (size) of the biological system. Typically a statistical normalization removes unwanted technical variation in the data or the parameters of the model to enable differential abundance analyses. We recently showed that all normalizations make implicit assumptions about the unmeasured system scale and that errors in these assumptions can dramatically increase false positive and false negative rates. We demonstrated that these errors can be mitigated by accounting for uncertainty using a *scale model*, which we integrated into the ALDEx2 R package. This article provides new insights focusing on the application to transcriptomic analysis. We provide transcriptomic case studies demonstrating how scale models, rather than traditional normalizations, can reduce false positive and false negative rates in practice while enhancing the transparency and reproducibility of analyses. These scale models replace the need for dual cutoff approaches often used to address the disconnect between practical and statistical significance. We demonstrate the utility of scale models built based on known housekeeping genes in complex metatranscriptomic datasets. Thus this work provides guidance on how to incorporate scale into transcriptomic data sets.
+Abstract: In high-throughput sequencing (HTS) studies, sample-to-sample variation in sequencing depth is driven by technical factors, and not by variation in the scale (size) of the biological system. Typically a statistical normalization removes unwanted technical variation in the data or the parameters of the model to enable differential abundance analyses. We recently showed that all normalizations make implicit assumptions about the unmeasured system scale and that errors in these assumptions can dramatically increase false positive and false negative rates. We demonstrated that these errors can be mitigated by accounting for uncertainty using a *scale model*, which we integrated into the ALDEx2 R package. This article provides new insights focusing on the application to transcriptomic analysis. We provide transcriptomic case studies demonstrating how scale models, rather than traditional normalizations, can reduce false positive and false negative rates in practice while enhancing the transparency and reproducibility of analyses. These scale models replace the need for dual cutoff approaches often used to address the disconnect between practical and statistical significance. We demonstrate the utility of scale models built based on known housekeeping genes in complex metatranscriptomic datasets. Thus this work provides guidance on how to incorporate scale into transcriptomic data sets.
 
 ---
 
@@ -45,7 +47,7 @@ knitr::include_graphics("./go3_files/figure-latex/scale-explained.pdf")
 
 The original scale-naive ALDEx2 [@fernandes:2013] model unwittingly made a strict assumption about scale through the CLR normalization and we found that the CLR was very sensitive to violations of the assumption of scale identity between groups [@Wu2021]. Moreover, when the assumption of identity was not true the CLR used by ALDEx2 could be outperformed by other normalizations in simulation studies [@Yerke:2024aa]. As illustrated graphically in Figure 1, Nixon et al. [@nixon2024scale] showed through simulation that introducing uncertainty in the scale assumptions, and in extreme cases altering the location of the scale assumption, resulted in more reproducible data analysis including better control of both false positive and false negative results. We  modified ALDEx2  to explicitly model uncertainty in scale over a range of reasonable normalization parameters, and showed significant improvements in performance in microbiome and in-vitro selection experiments [@Nixon2024B] and in a vaginal metatranscriptome analysis [@Dos-Santos:2024aa]. Here, we briefly  review these modifications and show how adding scale uncertainty can greatly improve modeling in transcriptome and meta-transcriptome datasets to provide substantially more robust and reproducible results.
 
-# Implementation
+# Methods
 
 Formal and expanded descriptions of the concepts that follow are given in [@nixon2024scale;@Nixon2024B].   To be  concrete, we let \(\mathbf{Y}\) denote the \emph{measured} \(D \times N\) matrix of sequence counts with elements \(\mathbf{Y}_{dn}\) indicating the number of measured DNA molecules mapping to feature \(d\) (e.g., a taxon, transcript or gene) in sample \(n\).  Likewise, we can denote \(\mathbf{W}_{dn}\) as the \emph{true}  amount of class \(d\) in the biological system from which sample \(n\) was obtained. We can think of \(\mathbf{W}\) as consisting of two parts, the scale \(\mathbf{W}^{Tot}\) (e.g., totals) and the composition \(\mathbf{W}^{Comp}\) (i.e., proportions). That is, \(\mathbf{W}^{Tot}\) is a \(N\)-vector with elements \(\mathbf{W}^{Tot}_{n}=\sum_{d}\mathbf{W}_{dn}\) while \(\mathbf{W}^{Comp}\) is a \(D \times N\) matrix with elements \(\mathbf{W}^{Comp}_{dn}=\mathbf{W}_{dn}/\mathbf{W}^{Tot}_{n}\). Note that with these definitions \(\mathbf{W}\) can be written as the element-wise combination of scale and composition: \(\mathbf{W}_{dn}=\mathbf{W}^{Comp}_{dn}\mathbf{W}^{Tot}_{n}\), or as the logarithm \(\log \mathbf{W}_{dn}= \log \mathbf{W}^{Comp}_{dn} + \log \mathbf{W}^{Tot}_{n}\).
 
@@ -361,6 +363,11 @@ Beyond concerns of fidelity and rigor, scale models also enhance the reproducibi
 
 In summary, we supply a toolkit that makes incorporating scale uncertainty and location information simple to incorporate for transcriptomes or indeed any type of HTS dataset. While the underlying scale of the system is generally inaccessible, the effect of scale uncertainty on the analysis outcomes can be modelled and can help explain some of the underlying biology. Adding scale information to the analysis allows for more robust inference because the features that are sensitive to scale can be identified and their impact on conclusions weighted accordingly. The use of informed  scale models permits difficult to analyze datasets to be examined in a robust and principled manner even when the majority of features are asymmetrically distributed or expressed (or both) in the groups [@dosSantos:2024]. Thus, using and reporting scale uncertainty should become a standard practice in the analysis of HTS datasets.
 
+Acknowledgements: JDS and MPN were supported in part by NIH 1R01GM148972-01. Some aspects of this was supported by an NSERC grant to GBG.
+
+Availability of Code: All code is available at https://github.com/ggloor/scale-sim-bio
+
+Author Contributions: Conceptualization, Methodology, Investigation, Formal Analysis, Software GBG, MPN, JDS; Visualization GBG, MPN; Writing Original Draft GBG; Writing Review and Editing GBG, MPN, JDS; Supervision, Funding JDS.
 \singlespacing
 
 # References

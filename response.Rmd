@@ -14,6 +14,23 @@ header-includes:
   - \usepackage{setspace}
 ---
 
+Dear Editor and reviewers
+
+Thank you all for thoughtful and helpful comments. In response to your queries we have added a new Figure 1 that more clearly articulates (we hope) the need for scale uncertainty. Secondly, we  added in new analyses using semi-synthetic datasets to add in a standard of truth. We did this using some of the datasets of, but in a way that was independent of Li et al [@Li:2022aa] and observed essentially the same result. In doing this analysis it became clear that the addition of scale uncertainty was much better at controlling FP than  fold-change cutoffs and we came to understand why this is so and have included this in the revision. 
+
+We have also tried to clean up language and clarify sources of data, etc as requested. 
+
+We have included line numbers in many of the responses and have included line numbers in our resubmission for cross-reference.
+
+Finally, we have included a file with the differences (diff.pdf) marked up in the package so that the changes can be identified.
+
+We believe  that this revised document is now much stronger because of the reviews and hope it meets approval
+
+The repository for this version is at: https://github.com/ggloor/scale-sim-bio/ and is now public
+
+Best regards
+
+Greg Gloor, on behalf of the authors
 
 Reviewer: 1
 

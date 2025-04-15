@@ -1,0 +1,328 @@
+ko00001 KEGG Orthology (KO) (101)
+
+  ko:K04072 adhE; acetaldehyde dehydrogenase / alcohol dehydrogenase [EC:1.2.1.10 1.1.1.1]
+  ko:K01784 galE; UDP-glucose 4-epimerase [EC:5.1.3.2]
+  ko:K00925 ackA; acetate kinase [EC:2.7.2.1]
+  ko:K00625 pta; phosphate acetyltransferase [EC:2.3.1.8]
+  ko:K02111 ATPF1A; F-type H+/Na+-transporting ATPase subunit alpha [EC:7.1.2.2 7.2.2.1]
+  ko:K02108 ATPF0A; F-type H+-transporting ATPase subunit a
+  ko:K02109 ATPF0B; F-type H+-transporting ATPase subunit b
+  ko:K01507 ppa; inorganic pyrophosphatase [EC:3.6.1.1]
+  ko:K00088 IMPDH; IMP dehydrogenase [EC:1.1.1.205]
+  ko:K01939 purA; adenylosuccinate synthase [EC:6.3.4.4]
+  ko:K09903 pyrH; uridylate kinase [EC:2.7.4.22]
+  ko:K01937 pyrG; CTP synthase [EC:6.3.4.2]
+  ko:K00761 upp; uracil phosphoribosyltransferase [EC:2.4.2.9]
+  ko:K01752 E4.3.1.17; L-serine dehydratase [EC:4.3.1.17]
+  ko:K00789 metK; S-adenosylmethionine synthetase [EC:2.5.1.6]
+  ko:K00384 trxB; thioredoxin reductase (NADPH) [EC:1.8.1.9]
+  ko:K01775 alr; alanine racemase [EC:5.1.1.1]
+  ko:K01000 mraY; phospho-N-acetylmuramoyl-pentapeptide-transferase [EC:2.7.8.13]
+  ko:K05366 mrcA; penicillin-binding protein 1A [EC:2.4.99.28 3.4.16.4]
+  ko:K03043 rpoB; DNA-directed RNA polymerase subunit beta [EC:2.7.7.6]
+  ko:K03046 rpoC; DNA-directed RNA polymerase subunit beta' [EC:2.7.7.6]
+  ko:K02945 RP-S1; small subunit ribosomal protein S1
+  ko:K02967 RP-S2; small subunit ribosomal protein S2
+  ko:K02986 RP-S4; small subunit ribosomal protein S4
+  ko:K02988 RP-S5; small subunit ribosomal protein S5
+  ko:K02992 RP-S7; small subunit ribosomal protein S7
+  ko:K02994 RP-S8; small subunit ribosomal protein S8
+  ko:K02948 RP-S11; small subunit ribosomal protein S11
+  ko:K02950 RP-S12; small subunit ribosomal protein S12
+  ko:K02952 RP-S13; small subunit ribosomal protein S13
+  ko:K02954 RP-S14; small subunit ribosomal protein S14
+  ko:K02863 RP-L1; large subunit ribosomal protein L1
+  ko:K02906 RP-L3; large subunit ribosomal protein L3
+  ko:K02933 RP-L6; large subunit ribosomal protein L6
+  ko:K02939 RP-L9; large subunit ribosomal protein L9
+  ko:K02864 RP-L10; large subunit ribosomal protein L10
+  ko:K02876 RP-L15; large subunit ribosomal protein L15
+  ko:K02878 RP-L16; large subunit ribosomal protein L16
+  ko:K02879 RP-L17; large subunit ribosomal protein L17
+  ko:K02881 RP-L18; large subunit ribosomal protein L18
+  ko:K02884 RP-L19; large subunit ribosomal protein L19
+  ko:K02887 RP-L20; large subunit ribosomal protein L20
+  ko:K02890 RP-L22; large subunit ribosomal protein L22
+  ko:K02899 RP-L27; large subunit ribosomal protein L27
+  ko:K02916 RP-L35; large subunit ribosomal protein L35
+  ko:K01872 AARS; alanyl-tRNA synthetase [EC:6.1.1.7]
+  ko:K01876 DARS2; aspartyl-tRNA synthetase [EC:6.1.1.12]
+  ko:K01868 TARS; threonyl-tRNA synthetase [EC:6.1.1.3]
+  ko:K01875 SARS; seryl-tRNA synthetase [EC:6.1.1.11]
+  ko:K01883 CARS; cysteinyl-tRNA synthetase [EC:6.1.1.16]
+  ko:K01869 LARS; leucyl-tRNA synthetase [EC:6.1.1.4]
+  ko:K01887 RARS; arginyl-tRNA synthetase [EC:6.1.1.19]
+  ko:K01892 HARS; histidyl-tRNA synthetase [EC:6.1.1.21]
+  ko:K01889 FARSA; phenylalanyl-tRNA synthetase alpha chain [EC:6.1.1.20]
+  ko:K01890 FARSB; phenylalanyl-tRNA synthetase beta chain [EC:6.1.1.20]
+  ko:K01866 YARS; tyrosyl-tRNA synthetase [EC:6.1.1.1]
+  ko:K01867 WARS; tryptophanyl-tRNA synthetase [EC:6.1.1.2]
+  ko:K03210 yajC; preprotein translocase subunit YajC
+  ko:K03070 secA; preprotein translocase subunit SecA [EC:7.4.2.8]
+  ko:K03106 SRP54; signal recognition particle subunit SRP54 [EC:3.6.5.4]
+  ko:K12574 rnj; ribonuclease J [EC:3.1.-.-]
+  ko:K04043 dnaK; molecular chaperone DnaK
+  ko:K04077 groEL; chaperonin GroEL [EC:5.6.1.7]
+  ko:K02338 dnaN; DNA polymerase III subunit beta [EC:2.7.7.7]
+  ko:K03111 ssb; single-strand DNA-binding protein
+  ko:K10108 malE; maltose/maltodextrin transport system substrate-binding protein
+  ko:K03531 ftsZ; cell division protein FtsZ
+  ko:K03588 ftsW; cell division protein FtsW
+  ko:K01358 clpP; ATP-dependent Clp protease, protease subunit [EC:3.4.21.92]
+  ko:K02035 ABC.PE.S; peptide/nickel transport system substrate-binding protein
+  ko:K02033 ABC.PE.P; peptide/nickel transport system permease protein
+  ko:K02034 ABC.PE.P1; peptide/nickel transport system permease protein
+  ko:K02032 ddpF; peptide/nickel transport system ATP-binding protein
+  ko:K03086 rpoD; RNA polymerase primary sigma factor
+  ko:K08884 serine/threonine protein kinase
+  ko:K01372 BLMH; bleomycin hydrolase [EC:3.4.22.40]
+  ko:K01262 pepP; Xaa-Pro aminopeptidase [EC:3.4.11.9]
+  ko:K01362 OVCH; ovochymase [EC:3.4.21.-]
+  ko:K02529 galR; LacI family transcriptional regulator, galactose operon repressor
+  ko:K02600 nusA; transcription termination/antitermination protein NusA
+  ko:K03625 nusB; transcription antitermination protein NusB
+  ko:K05808 hpf; ribosome hibernation promoting factor
+  ko:K07040 yceD; DUF177 domain-containing protein
+  ko:K02519 infB; translation initiation factor IF-2
+  ko:K02357 tsf; elongation factor Ts
+  ko:K02355 fusA; elongation factor G
+  ko:K02518 infA; translation initiation factor IF-1
+  ko:K02836 prfB; peptide chain release factor 2
+  ko:K03696 clpC; ATP-dependent Clp protease ATP-binding subunit ClpC
+  ko:K03686 dnaJ; molecular chaperone DnaJ
+  ko:K03687 GRPE; molecular chaperone GrpE
+  ko:K04078 groES; chaperonin GroES
+  ko:K02470 gyrB; DNA gyrase subunit B [EC:5.6.2.2]
+  ko:K03168 topA; DNA topoisomerase I [EC:5.6.2.1]
+  ko:K06147 ABCB-BAC; ATP-binding cassette, subfamily B, bacterial
+  ko:K02026 ABC.MS.P1; multiple sugar transport system permease protein
+  ko:K02030 ABC.PA.S; polar amino acid transport system substrate-binding protein
+  ko:K09013 sufC; Fe-S cluster assembly ATP-binding protein
+  ko:K03545 tig; trigger factor
+  ko:K09014 sufB; Fe-S cluster assembly protein SufB
+  ko:K06890 uncharacterized protein
+
+ko01000 Enzymes (41)
+
+  ko:K04072 adhE; acetaldehyde dehydrogenase / alcohol dehydrogenase [EC:1.2.1.10 1.1.1.1]
+  ko:K00088 IMPDH; IMP dehydrogenase [EC:1.1.1.205]
+  ko:K00384 trxB; thioredoxin reductase (NADPH) [EC:1.8.1.9]
+  ko:K00625 pta; phosphate acetyltransferase [EC:2.3.1.8]
+  ko:K00761 upp; uracil phosphoribosyltransferase [EC:2.4.2.9]
+  ko:K05366 mrcA; penicillin-binding protein 1A [EC:2.4.99.28 3.4.16.4]
+  ko:K00789 metK; S-adenosylmethionine synthetase [EC:2.5.1.6]
+  ko:K00925 ackA; acetate kinase [EC:2.7.2.1]
+  ko:K09903 pyrH; uridylate kinase [EC:2.7.4.22]
+  ko:K03043 rpoB; DNA-directed RNA polymerase subunit beta [EC:2.7.7.6]
+  ko:K03046 rpoC; DNA-directed RNA polymerase subunit beta' [EC:2.7.7.6]
+  ko:K02338 dnaN; DNA polymerase III subunit beta [EC:2.7.7.7]
+  ko:K01000 mraY; phospho-N-acetylmuramoyl-pentapeptide-transferase [EC:2.7.8.13]
+  ko:K08884 serine/threonine protein kinase
+  ko:K01262 pepP; Xaa-Pro aminopeptidase [EC:3.4.11.9]
+  ko:K01358 clpP; ATP-dependent Clp protease, protease subunit [EC:3.4.21.92]
+  ko:K01372 BLMH; bleomycin hydrolase [EC:3.4.22.40]
+  ko:K01507 ppa; inorganic pyrophosphatase [EC:3.6.1.1]
+  ko:K03106 SRP54; signal recognition particle subunit SRP54 [EC:3.6.5.4]
+  ko:K01752 E4.3.1.17; L-serine dehydratase [EC:4.3.1.17]
+  ko:K01775 alr; alanine racemase [EC:5.1.1.1]
+  ko:K01784 galE; UDP-glucose 4-epimerase [EC:5.1.3.2]
+  ko:K04077 groEL; chaperonin GroEL [EC:5.6.1.7]
+  ko:K03168 topA; DNA topoisomerase I [EC:5.6.2.1]
+  ko:K02470 gyrB; DNA gyrase subunit B [EC:5.6.2.2]
+  ko:K01866 YARS; tyrosyl-tRNA synthetase [EC:6.1.1.1]
+  ko:K01867 WARS; tryptophanyl-tRNA synthetase [EC:6.1.1.2]
+  ko:K01868 TARS; threonyl-tRNA synthetase [EC:6.1.1.3]
+  ko:K01869 LARS; leucyl-tRNA synthetase [EC:6.1.1.4]
+  ko:K01872 AARS; alanyl-tRNA synthetase [EC:6.1.1.7]
+  ko:K01875 SARS; seryl-tRNA synthetase [EC:6.1.1.11]
+  ko:K01876 DARS2; aspartyl-tRNA synthetase [EC:6.1.1.12]
+  ko:K01883 CARS; cysteinyl-tRNA synthetase [EC:6.1.1.16]
+  ko:K01887 RARS; arginyl-tRNA synthetase [EC:6.1.1.19]
+  ko:K01889 FARSA; phenylalanyl-tRNA synthetase alpha chain [EC:6.1.1.20]
+  ko:K01890 FARSB; phenylalanyl-tRNA synthetase beta chain [EC:6.1.1.20]
+  ko:K01892 HARS; histidyl-tRNA synthetase [EC:6.1.1.21]
+  ko:K01937 pyrG; CTP synthase [EC:6.3.4.2]
+  ko:K01939 purA; adenylosuccinate synthase [EC:6.3.4.4]
+  ko:K02111 ATPF1A; F-type H+/Na+-transporting ATPase subunit alpha [EC:7.1.2.2 7.2.2.1]
+  ko:K03070 secA; preprotein translocase subunit SecA [EC:7.4.2.8]
+
+ko03011 Ribosome (24)
+
+  ko:K02945 RP-S1; small subunit ribosomal protein S1
+  ko:K02967 RP-S2; small subunit ribosomal protein S2
+  ko:K02986 RP-S4; small subunit ribosomal protein S4
+  ko:K02988 RP-S5; small subunit ribosomal protein S5
+  ko:K02992 RP-S7; small subunit ribosomal protein S7
+  ko:K02994 RP-S8; small subunit ribosomal protein S8
+  ko:K02948 RP-S11; small subunit ribosomal protein S11
+  ko:K02950 RP-S12; small subunit ribosomal protein S12
+  ko:K02952 RP-S13; small subunit ribosomal protein S13
+  ko:K02954 RP-S14; small subunit ribosomal protein S14
+  ko:K02863 RP-L1; large subunit ribosomal protein L1
+  ko:K02906 RP-L3; large subunit ribosomal protein L3
+  ko:K02933 RP-L6; large subunit ribosomal protein L6
+  ko:K02939 RP-L9; large subunit ribosomal protein L9
+  ko:K02864 RP-L10; large subunit ribosomal protein L10
+  ko:K02876 RP-L15; large subunit ribosomal protein L15
+  ko:K02878 RP-L16; large subunit ribosomal protein L16
+  ko:K02879 RP-L17; large subunit ribosomal protein L17
+  ko:K02881 RP-L18; large subunit ribosomal protein L18
+  ko:K02884 RP-L19; large subunit ribosomal protein L19
+  ko:K02887 RP-L20; large subunit ribosomal protein L20
+  ko:K02890 RP-L22; large subunit ribosomal protein L22
+  ko:K02899 RP-L27; large subunit ribosomal protein L27
+  ko:K02916 RP-L35; large subunit ribosomal protein L35
+
+ko03016 Transfer RNA biogenesis (12)
+
+  ko:K01869 LARS; leucyl-tRNA synthetase [EC:6.1.1.4]
+  ko:K01887 RARS; arginyl-tRNA synthetase [EC:6.1.1.19]
+  ko:K01876 DARS2; aspartyl-tRNA synthetase [EC:6.1.1.12]
+  ko:K01872 AARS; alanyl-tRNA synthetase [EC:6.1.1.7]
+  ko:K01868 TARS; threonyl-tRNA synthetase [EC:6.1.1.3]
+  ko:K01875 SARS; seryl-tRNA synthetase [EC:6.1.1.11]
+  ko:K01883 CARS; cysteinyl-tRNA synthetase [EC:6.1.1.16]
+  ko:K01892 HARS; histidyl-tRNA synthetase [EC:6.1.1.21]
+  ko:K01889 FARSA; phenylalanyl-tRNA synthetase alpha chain [EC:6.1.1.20]
+  ko:K01890 FARSB; phenylalanyl-tRNA synthetase beta chain [EC:6.1.1.20]
+  ko:K01866 YARS; tyrosyl-tRNA synthetase [EC:6.1.1.1]
+  ko:K01867 WARS; tryptophanyl-tRNA synthetase [EC:6.1.1.2]
+
+ko01007 Amino acid related enzymes (12)
+
+  ko:K01866 YARS; tyrosyl-tRNA synthetase [EC:6.1.1.1]
+  ko:K01867 WARS; tryptophanyl-tRNA synthetase [EC:6.1.1.2]
+  ko:K01883 CARS; cysteinyl-tRNA synthetase [EC:6.1.1.16]
+  ko:K01887 RARS; arginyl-tRNA synthetase [EC:6.1.1.19]
+  ko:K01869 LARS; leucyl-tRNA synthetase [EC:6.1.1.4]
+  ko:K01876 DARS2; aspartyl-tRNA synthetase [EC:6.1.1.12]
+  ko:K01892 HARS; histidyl-tRNA synthetase [EC:6.1.1.21]
+  ko:K01875 SARS; seryl-tRNA synthetase [EC:6.1.1.11]
+  ko:K01868 TARS; threonyl-tRNA synthetase [EC:6.1.1.3]
+  ko:K01872 AARS; alanyl-tRNA synthetase [EC:6.1.1.7]
+  ko:K01889 FARSA; phenylalanyl-tRNA synthetase alpha chain [EC:6.1.1.20]
+  ko:K01890 FARSB; phenylalanyl-tRNA synthetase beta chain [EC:6.1.1.20]
+
+ko02000 Transporters (10)
+
+  ko:K06147 ABCB-BAC; ATP-binding cassette, subfamily B, bacterial
+  ko:K10108 malE; maltose/maltodextrin transport system substrate-binding protein
+  ko:K02026 ABC.MS.P1; multiple sugar transport system permease protein
+  ko:K02030 ABC.PA.S; polar amino acid transport system substrate-binding protein
+  ko:K02035 ABC.PE.S; peptide/nickel transport system substrate-binding protein
+  ko:K02033 ABC.PE.P; peptide/nickel transport system permease protein
+  ko:K02034 ABC.PE.P1; peptide/nickel transport system permease protein
+  ko:K02032 ddpF; peptide/nickel transport system ATP-binding protein
+  ko:K09013 sufC; Fe-S cluster assembly ATP-binding protein
+  ko:K03588 ftsW; cell division protein FtsW
+
+ko03110 Chaperones and folding catalysts (7)
+
+  ko:K03696 clpC; ATP-dependent Clp protease ATP-binding subunit ClpC
+  ko:K04043 dnaK; molecular chaperone DnaK
+  ko:K04077 groEL; chaperonin GroEL [EC:5.6.1.7]
+  ko:K03686 dnaJ; molecular chaperone DnaJ
+  ko:K03687 GRPE; molecular chaperone GrpE
+  ko:K04078 groES; chaperonin GroES
+  ko:K02108 ATPF0A; F-type H+-transporting ATPase subunit a
+
+ko03400 DNA repair and recombination proteins (6)
+
+  ko:K03043 rpoB; DNA-directed RNA polymerase subunit beta [EC:2.7.7.6]
+  ko:K03046 rpoC; DNA-directed RNA polymerase subunit beta' [EC:2.7.7.6]
+  ko:K02338 dnaN; DNA polymerase III subunit beta [EC:2.7.7.7]
+  ko:K03111 ssb; single-strand DNA-binding protein
+  ko:K02470 gyrB; DNA gyrase subunit B [EC:5.6.2.2]
+  ko:K03168 topA; DNA topoisomerase I [EC:5.6.2.1]
+
+ko03021 Transcription machinery (5)
+
+  ko:K03043 rpoB; DNA-directed RNA polymerase subunit beta [EC:2.7.7.6]
+  ko:K03046 rpoC; DNA-directed RNA polymerase subunit beta' [EC:2.7.7.6]
+  ko:K03086 rpoD; RNA polymerase primary sigma factor
+  ko:K02600 nusA; transcription termination/antitermination protein NusA
+  ko:K03625 nusB; transcription antitermination protein NusB
+
+ko03012 Translation factors (5)
+
+  ko:K02519 infB; translation initiation factor IF-2
+  ko:K02357 tsf; elongation factor Ts
+  ko:K02355 fusA; elongation factor G
+  ko:K02518 infA; translation initiation factor IF-1
+  ko:K02836 prfB; peptide chain release factor 2
+
+ko01002 Peptidases and inhibitors (4)
+
+  ko:K01372 BLMH; bleomycin hydrolase [EC:3.4.22.40]
+  ko:K01262 pepP; Xaa-Pro aminopeptidase [EC:3.4.11.9]
+  ko:K01362 OVCH; ovochymase [EC:3.4.21.-]
+  ko:K01358 clpP; ATP-dependent Clp protease, protease subunit [EC:3.4.21.92]
+
+ko03032 DNA replication proteins (4)
+
+  ko:K03111 ssb; single-strand DNA-binding protein
+  ko:K02338 dnaN; DNA polymerase III subunit beta [EC:2.7.7.7]
+  ko:K02470 gyrB; DNA gyrase subunit B [EC:5.6.2.2]
+  ko:K03168 topA; DNA topoisomerase I [EC:5.6.2.1]
+
+ko03009 Ribosome biogenesis (4)
+
+  ko:K02600 nusA; transcription termination/antitermination protein NusA
+  ko:K03625 nusB; transcription antitermination protein NusB
+  ko:K05808 hpf; ribosome hibernation promoting factor
+  ko:K07040 yceD; DUF177 domain-containing protein
+
+ko01011 Peptidoglycan biosynthesis and degradation proteins (3)
+
+  ko:K01775 alr; alanine racemase [EC:5.1.1.1]
+  ko:K01000 mraY; phospho-N-acetylmuramoyl-pentapeptide-transferase [EC:2.7.8.13]
+  ko:K05366 mrcA; penicillin-binding protein 1A [EC:2.4.99.28 3.4.16.4]
+
+ko03019 Messenger RNA biogenesis (3)
+
+  ko:K12574 rnj; ribonuclease J [EC:3.1.-.-]
+  ko:K04043 dnaK; molecular chaperone DnaK
+  ko:K04077 groEL; chaperonin GroEL [EC:5.6.1.7]
+
+ko02044 Secretion system (3)
+
+  ko:K03070 secA; preprotein translocase subunit SecA [EC:7.4.2.8]
+  ko:K03106 SRP54; signal recognition particle subunit SRP54 [EC:3.6.5.4]
+  ko:K03210 yajC; preprotein translocase subunit YajC
+
+ko04147 Exosome (3)
+
+  ko:K04077 groEL; chaperonin GroEL [EC:5.6.1.7]
+  ko:K04043 dnaK; molecular chaperone DnaK
+  ko:K00088 IMPDH; IMP dehydrogenase [EC:1.1.1.205]
+
+ko00194 Photosynthesis proteins (3)
+
+  ko:K02111 ATPF1A; F-type H+/Na+-transporting ATPase subunit alpha [EC:7.1.2.2 7.2.2.1]
+  ko:K02109 ATPF0B; F-type H+-transporting ATPase subunit b
+  ko:K02108 ATPF0A; F-type H+-transporting ATPase subunit a
+
+ko03036 Chromosome and associated proteins (2)
+
+  ko:K03588 ftsW; cell division protein FtsW
+  ko:K03531 ftsZ; cell division protein FtsZ
+
+ko04812 Cytoskeleton proteins (1)
+
+  ko:K03531 ftsZ; cell division protein FtsZ
+
+ko01001 Protein kinases (1)
+
+  ko:K08884 serine/threonine protein kinase
+
+ko03000 Transcription factors (1)
+
+  ko:K02529 galR; LacI family transcriptional regulator, galactose operon repressor
+
+ko02048 Prokaryotic defense system (1)
+
+  ko:K03531 ftsZ; cell division protein FtsZ
+
+ko01003 Glycosyltransferases (1)
+
+  ko:K05366 mrcA; penicillin-binding protein 1A [EC:2.4.99.28 3.4.16.4]
