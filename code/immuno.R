@@ -5,7 +5,7 @@
 # the shuffled datasets to examine both FP and TP identification
 # TP data are added using the seqgendiff R package
 #####
-immuno<-read.table(file="data-Li2022//GSE91061_raw_counts_GRCh38.p13_NCBI.tsv", header = T, skip=35, sep='\t', row.names = 1)
+immuno<-read.table(file="data-Li2022/GSE91061_raw_counts_GRCh38.p13_NCBI.tsv", header = T, skip=35, sep='\t', row.names = 1)
 
 m <- read.table(file="data-Li2022//metadata.txt", header=F, row.names=1, sep='\t')
 

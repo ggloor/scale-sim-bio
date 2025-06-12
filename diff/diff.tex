@@ -1,7 +1,7 @@
 % Options for packages loaded elsewhere
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL submitted/go3-author-sub.tex   Fri Dec  6 15:36:55 2024
-%DIF ADD go3-author.tex                 Tue Apr 15 14:40:58 2025
+%DIF ADD go3-author.tex                 Wed Apr 16 16:04:08 2025
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 %
@@ -200,8 +200,30 @@ $^3$Department of Medicine, Pennsylvania State University
 $^4$Institute for Computational and Data Science, Pennsylvania State University
 $^5$Department of Statistics, Pennsylvania State University
 
- \DIFaddbegin \DIFadd{$^1$corresponding author: ggloor@uwo.ca
-}\DIFaddend 
+\DIFaddbegin \DIFadd{$^1$corresponding author: ggloor@uwo.ca
+}\DIFaddend \begin{abstract}
+In high-throughput sequencing (HTS) studies, sample-to-sample variation
+in sequencing depth is driven by technical factors, and not by variation
+in the scale (size) of the biological system. Typically a statistical
+normalization removes unwanted technical variation in the data or the
+parameters of the model to enable differential abundance analyses. We
+recently showed that all normalizations make implicit assumptions about
+the unmeasured system scale and that errors in these assumptions can
+dramatically increase false positive and false negative rates. We
+demonstrated that these errors can be mitigated by accounting for
+uncertainty using a \emph{scale model}, which we integrated into the
+ALDEx2 R package. This article provides new insights focusing on the
+application to transcriptomic analysis. We provide transcriptomic case
+studies demonstrating how scale models, rather than traditional
+normalizations, can reduce false positive and false negative rates in
+practice while enhancing the transparency and reproducibility of
+analyses. These scale models replace the need for dual cutoff approaches
+often used to address the disconnect between practical and statistical
+significance. We demonstrate the utility of scale models built based on
+known housekeeping genes in complex metatranscriptomic datasets. Thus
+this work provides guidance on how to incorporate scale into
+transcriptomic data sets.
+\end{abstract}
 
 \section{Introduction}\label{introduction}
 
@@ -309,7 +331,7 @@ violated, in which case all tools fail without warning.
 
  \DIFaddbegin \begin{figure}
 
-{\centering \includegraphics[width=0.6\linewidth]{./go3_files/figure-latex/scale-explained} 
+{\centering \includegraphics[width=0.6\linewidth]{../go3_files/figure-latex/scale-explained} 
 
 }
 
@@ -460,7 +482,7 @@ dataset and others.
 
 \DIFaddbegin \begin{figure}
 
-{\centering \includegraphics[width=0.8\linewidth]{go3_files/figure-latex/yst-plot-1} 
+{\centering \includegraphics[width=0.8\linewidth]{../go3_files/figure-latex/yst-plot-1} 
 
 }
 
@@ -550,7 +572,7 @@ false-positive identifications.
  \DIFaddbegin \begin{figure}
 \DIFaddendFL 
 
- \DIFaddbeginFL {\centering \includegraphics[width=0.8\linewidth]{go3_files/figure-latex/immuno-1} 
+ \DIFaddbeginFL {\centering \includegraphics[width=0.8\linewidth]{../go3_files/figure-latex/immuno-1} 
 
 }
 
@@ -702,7 +724,7 @@ normalization used and the actual scale of the environment ( \DIFaddbegin \DIFad
 
 \DIFaddbegin \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio]{go3_files/figure-latex/meta-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{../go3_files/figure-latex/meta-1.pdf}}
 \caption{\DIFaddFL{Analysis of vaginal transcriptome data aggregated at the Kegg
 Orthology (KO) functional level. Panel A shows an effect plot for the
 default analysis where the functions that are elevated in the healthy
