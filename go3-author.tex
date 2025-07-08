@@ -173,18 +173,18 @@ identify transcripts or genes of interest for follow-up analysis (9,
 volcano plot (11), but is known to not appropriately control the FDR
 (12, 13). Since there is no standard way of determining what fold-change
 cutoff should be used researchers have unlimited degrees of freedom
-which is known to lead to unreliable inference (14). In particular Li et
-al. (8) used patient or clinical-derived transcriptome datasets and
-found that many methods suffer from an extremely high false positive
-rate. The second issue is poor performance when analyzing data where the
-mean change between groups is non-zero (3). Such asymmetric data can
-arise when a gene set is expressed in one group but not the other, or
-when one group contains different gene content from the other. This type
-of data frequently arises in in-vitro selection experiments (SELEX),
-transcriptome analysis, and microbiome analysis (15). The third issue is
-that the actual scale of the environment is often a major confounding
-variable during analysis (3, 16). This has long been known in
-transcriptome analysis and was a major driver for the development of
+which is known to lead to unreliable inference (14). In a recent
+example, Li et al. (8) used patient or clinical-derived transcriptome
+datasets and found that many methods suffer from an extremely high false
+positive rate. The second issue is poor performance when analyzing data
+where the mean change between groups is non-zero (3). Such asymmetric
+data can arise when a gene set is expressed in one group but not the
+other, or when one group contains different gene content from the other.
+This type of data frequently arises in in-vitro selection experiments
+(SELEX), transcriptome analysis, and microbiome analysis (15). The third
+issue is that the actual scale of the environment is often a major
+confounding variable during analysis (3, 16). This has long been known
+in transcriptome analysis and was a major driver for the development of
 normalization factors (17) and the use of molecular spike-ins to provide
 a reference set of known counts (18--21) to estimate scale. While often
 useful, spike-in methods only provide information downstream of the step
@@ -256,17 +256,17 @@ identity between groups (15). Moreover, when the assumption of identity
 was not true the CLR used by ALDEx2 could be outperformed by other
 normalizations in simulation studies (42). As illustrated graphically in
 Figure 1, Nixon et al. (3) showed through simulation that introducing
-uncertainty in the scale assumptions, and in extreme cases altering the
-location of the scale assumption, resulted in more reproducible data
-analysis including better control of both false positive and false
-negative results. We modified ALDEx2 to explicitly model uncertainty in
-scale over a range of reasonable normalization parameters, and showed
-significant improvements in performance in microbiome and in-vitro
-selection experiments (22) and in a vaginal metatranscriptome analysis
-(43). Here, we briefly review these modifications and show how adding
-scale uncertainty can greatly improve modeling in transcriptome and
-meta-transcriptome datasets to provide substantially more robust and
-reproducible results.
+uncertainty into the scale assumption, and in more extreme cases
+altering the location of the scale assumption, resulted in more
+reproducible data analysis including better control of both false
+positive and false negative results. We modified ALDEx2 to explicitly
+model uncertainty in scale over a range of reasonable normalization
+parameters, and showed significant improvements in performance in
+microbiome and in-vitro selection experiments (22) and in a vaginal
+metatranscriptome analysis (43). Here, we briefly review these
+modifications and show how adding scale uncertainty can greatly improve
+modeling in transcriptome and meta-transcriptome datasets to provide
+substantially more robust and reproducible results.
 
 \section{Methods}\label{methods}
 
@@ -351,16 +351,18 @@ from a log-Normal distribution (3). Adding scale uncertainty with the
 \(\gamma\) paramenter (as shown in Figure 1:1) controls only the degree
 of uncertainty of the CLR assumption for the \(x_{n}\) binary condition
 indicator (e.g., \(x_{n}=1\) denotes case and \(x_{n}=0\) denotes
-control). In the advanced or `informed' configuration, \(\mu\) takes
-different values for each group and controls the location of the LFC
-assumption (as shown in Figure 1:2); combining \(\mu\) with a \(\gamma\)
-estimate allows for uncertainty in both the location and the scale. In
-the manuscript where the idea of scale was original derived, Nixon et
-al. (3) conducted extensive simulations showing that both the default
-and informed approaches exhibit increased sensitivity and specificity
-(22). In this report we show that these approaches also work well to
-control the FDR in transcriptome and metatranscriptome datasets. We also
-provide some additional insights into how this is achieved. These
+control). However, the default model does not change the location of the
+default scale estimate. In the advanced or `informed' configuration,
+\(\mu\) takes different values for each group and controls the location
+of the LFC assumption (as shown in Figure 1:2); combining \(\mu\) with a
+\(\gamma\) estimate allows for uncertainty in both the location and the
+scale. In the manuscript where the idea of scale was original derived,
+Nixon et al. (3) conducted extensive simulations showing that the
+default model had increased specificity and that the informed approach
+exhibited increased sensitivity and specificity (22). In this report we
+show that these approaches also work well to control the FDR in
+transcriptome and metatranscriptome datasets. We also provide some
+additional insights into how scale models achieve this outcome. These
 modifications are instantiated in ALDEx2 which is the first software
 package designed for SSRV-based inference.
 
@@ -383,12 +385,12 @@ with different tools identifying between between 65\% to
 Since the majority of transcripts were significantly different, the
 authors suggested that it was more appropriate to apply a dual cutoff
 composed of both a Benjamini-Hochberg (48) corrected p-value (q-value)
-plus a difference cutoff to limit the number of identified transcripts
-to a much smaller fraction of the total. In other datasets, Nixon et al,
-(22) showed that adding even a small amount of scale uncertainty with
-ALDEx2 dramatically reduced the number of significant transcripts
-identified, removing the need for the dual cutoff approach in this
-dataset and others.
+plus a fold-change, or difference, cutoff to limit the number of
+identified transcripts to a much smaller fraction of the total. In other
+datasets, Nixon et al, (22) showed that adding even a small amount of
+scale uncertainty with ALDEx2 dramatically reduced the number of
+significant transcripts identified, removing the need for the dual
+cutoff approach in this dataset and others.
 
 \begin{figure}
 
@@ -427,10 +429,11 @@ replication rather than a true biological replication design (47). Scale
 uncertainty can be incorporated using the \texttt{gamma} parameter that
 controls the amount of noise added to the CLR mean assumption when we
 call either \texttt{aldex()}, or \texttt{aldex.clr()}. Figure 2 B,D
-shows that setting \(\gamma=0.5\) now results in 205 which is far fewer
-statistically significant transcripts than in the naive analysis and we
-observe that the minimum dispersion increases from 0.12 (\(\gamma = 0\)
-) to 0.67 (\(\gamma=0.5\)).
+shows that setting \(\gamma=0.5\), i.e.~adding 0.5 SD of uncertainty,
+now results in 205 which is far fewer statistically significant
+transcripts than in the naive analysis and we observe that the minimum
+dispersion increases from 0.12 (\(\gamma = 0\) ) to 0.67
+(\(\gamma=0.5\)).
 
 It is common practice to use a dual-cutoff by choosing transcripts based
 on a thresholds for both q-values and fold-changes (9), and these were
@@ -469,8 +472,8 @@ to a cell-cycle checkpoint inhibitor. This dataset was used by Li et al.
 (8) as an example of the dangers of relying on tools with high false
 positive error rates when analyzing clinical or clinically-related
 transcriptome samples. Indeed, in the benchmarking analysis done by this
-group, they found that parameter based methods such as DESeq2 and edgeR
-that on reported p-value and fold-change cutoffs often led to
+group, they found that parameter-based methods such as DESeq2 and edgeR
+that rely on reported p-value and fold-change cutoffs often led to
 conclusions in the original dataset that were indistinguishable from
 permutations of the dataset. In other words, that the analysis of
 transcriptome datasets from patient-derived samples often exhibited many
@@ -506,27 +509,30 @@ when a fold-change cutoff is applied, and this agrees with previous work
 showing that fold-change cutoffs do not materially improve FDR control
 in high throughput datasets (12, 13). Figure 3B shows that DESeq2 has
 higher sensitivity than does ALDEx2, and not surprisingly this
-sensitivity increases as the difference between groups increases. For
-the case where the mean difference is 0 or greater, ALDEx2 exhibited a
-sensitivity of \(\gamma = 0\): 0.66, \(\gamma = 0.2\): 0.54, and
-\(\gamma = 0.5\): 0.35, while DESeq2 with no fold-change cutoff had a
-sensitivity of 0.76 and with a 0.5 fold-change cutoff a sensitivity of
-0.73. In this example, scale-naive ALDEx2 has near perfect FDR control
-and reasonable sensitivity at low modeled difference between groups.
-However, when the modeled difference between groups becomes large, then
-the scale-naive version of ALDEx2 begins to exhibit unacceptable rates
-of false positives and the false positive rate for DESeq2 also
-increases. Adding in even small amounts of scale uncertainty drops the
-true FDR rate to 0, but at the expense of sensitivity. The major
-contributor to the increase in FDR with larger modeled differences is
-that the tools are identifying as positives those transcripts that are
-modeled to have differences just below the threshold. We need to
-recognize that there is no such thing as a statistical free lunch; the
-analyst can have high sensitivity but low confidence that any individual
-transcript is truly different, or have lower sensitivity but have very
-high confidence that the difference is real. In other words, the
-sensitivity of a method is directly tied to how much error the
-investigator is willing to tolerate.
+sensitivity increases as the modelled minimum difference between groups
+increases. For the case where the mean difference was 0 or greater,
+ALDEx2 exhibited a sensitivity of \(\gamma = 0\): 0.66,
+\(\gamma = 0.2\): 0.54, and \(\gamma = 0.5\): 0.35, while DESeq2 with no
+fold-change cutoff had a sensitivity of 0.76 and with a 0.5 fold-change
+cutoff a sensitivity of 0.73. In this example, scale-naive ALDEx2 has
+near perfect FDR control and reasonable sensitivity at low modeled
+difference between groups. However, when the modeled difference between
+groups becomes large, then the scale-naive version of ALDEx2 begins to
+exhibit unacceptable rates of false positives and the false positive
+rate for DESeq2 also increases to nearly 50\%. Thus, even though
+sensitivity is nearly absolute, at a nominal FDR of 0.05, whether a
+transcript is actually differentially expressed is essentially a coin
+flip. In contrast, adding in even small amounts of scale uncertainty
+(0.2 SD) with ALDEx2 drops the true FDR rate to 0, but at the expense of
+some sensitivity. The major contributor to the increase in FDR with
+larger modeled differences is that the tools are identifying as
+positives those transcripts that are modeled to have differences just
+below the threshold. We need to recognize that there is no such thing as
+a statistical free lunch; the analyst can have high sensitivity but low
+confidence that any individual transcript is truly different, or have
+lower sensitivity but have very high confidence that the difference is
+real. In other words, the sensitivity of a method is directly tied to
+how much error the investigator is willing to tolerate.
 
 Examination of the volcano plot (11) and effect plot (50) in Figure 3C
 and D provides some insight into why adding scale uncertainty provides
@@ -534,9 +540,13 @@ better FDR control than does the approach of using a p-value and a
 fold-change cutoff. In the volcano plot, adding scale uncertainty
 differentially excludes transcripts with a combination of marginal
 p-values and low difference between groups, and that this becomes more
-pronounced with a larger scale value. This effect is also seen in Figure
-2 but is more nuanced. In contrast, the fold-change cutoff does not
-incorporate the magnitude of the p-value and so transcripts with large
+pronounced with a larger scale value. This can be most clearly seen in
+panel C, where the red (excluded by scale uncertainty of 0.2), and
+orange (excluded by scale uncertainty of 0.5) exhibit boundaries that
+are not vertical but are angled. This effect is also seen in Figure 2
+but is more nuanced because of the very low intrinsic dispersion in this
+dataset. In contrast, the fold-change cutoff only includes the magnitude
+of change, and not the size of the p-value and so transcripts with large
 differences, but marginal p-values are retained. The effect plot in
 Figure 3D shows that the transcripts with marginal p values and large
 differences that are excluded when scale uncertainty is added are those
@@ -559,7 +569,7 @@ of modeled differences between groups. Here we used another real dataset
 with over 200 biological replicates of BRCA1 tumor and control tissue
 samples from Li et al. (8). This Supplementary Figure shows that the FDR
 control of DESeq2 is somewhat better than in the PD-1 dataset, although
-still much greater than the the anticipated 5\%. Further, a fold-change
+still much greater than the the nominal 5\%. Further, a fold-change
 cutoff reduces the FDR of DESeq2 from about 30\% to just over 20\% with
 a power of over 80\%. However, we can see that scale-naive ALDEx2
 performs substantially better with a negligible FDR and comparable
@@ -677,23 +687,25 @@ organisms in BV than in H samples, and because the BV condition has
 about an order of magnitude more bacteria than does the H condition.
 
 The naive scale model appears to be reflecting the bacterial load as
-observed by calculating the mean scale value for each group. Using a
-negligible scale value; i.e., \(\gamma=1e-3\) exposes the naive scale
-estimate for samples in the \texttt{@scaleSamps} slot from the
-\texttt{aldex.clr} output. The naive scale estimate for the healthy
-group is 17.41 and for the BV group is 14.59 for a difference of 2.82.
-This is interpreted as the scale of the H group of samples being 7.06
-greater than the BV group.
+observed by calculating the mean scale value for each group. When using
+scale models with the \texttt{aldex.clr} function, the scale model is
+saved as a matrix in the \texttt{@scaleSamps} slot of the resulting
+object. Taking the mean of the rows of this matrix returns the scale
+estimates for each sample. We can thus determine the naive scale model
+by setting \(\gamma=1e-3\). The naive scale estimate for the healthy
+group is 17.41 and for the BV group is 14.59 for a difference of 2.82
+using base 2 for the logarithm. This is interpreted as the scale of the
+H group of samples being 7.06 fold greater than the BV group.
 
-Applying the default scale model of \(\gamma=0.5\) increases the
-dispersion slightly but does not move the housekeeping functions toward
-the midline. This is as expected; the mean of the default scale model is
-based on the CLR normalization so no shift in location would be expected
-over the scale-naive ALDEx2 model. Nevertheless, about 30\% of the
-housekeeping functions are no longer statistically significantly
-different. Note that this change is simple to conduct, has no additional
-computational complexity and requires only a slight modification for the
-analyst.
+Applying the default scale model by including only uncertainty in the
+scale by setting \(\gamma=0.5\) increases the dispersion slightly but
+does not move the housekeeping functions toward the midline. This is as
+expected; the mean of the default scale model is based on the CLR
+normalization so no shift in location is expected over the scale-naive
+ALDEx2 model. Nevertheless, about 30\% of the housekeeping functions are
+no longer statistically significantly different. Note that this change
+is simple to conduct, has no additional computational complexity and
+requires only a slight modification for the analyst.
 
 There are 101 functions with low dispersion that appear to be shared by
 both groups (boxed area in Figure 3A, and colored in cyan). Inspection
@@ -706,17 +718,17 @@ contribute to differences in ecosystem behaviour. Because we expect
 housekeeping functions to be nearly invariant in their expression and to
 occur in all organisms, the average location of these should be centred
 on 0 difference to represent an internal reference set. However, with
-the naive scale model, the mean of these housekeeping functions is
-approximately located at 2.3. Thus, we desire a scale model that
-approximately centres the housekeeping functions and an appropriate
-scale in this dataset for functional analysis will place these functions
-closer to 0 than does the naive estimate. One way to choose an
-appropriate value for \(\mu_n\) is to use the \texttt{aldex.clr}
-function on only the presumed invariant functions setting
-\(\gamma > 0\), and then accessing the \texttt{@scaleSamps} slot as
-before. Doing so suggests that the difference in scale should be about
-14\%. A second approach would be to identify the functions used as the
-denominator with the \texttt{denom="lvha"} option (15) for the
+the naive scale model, the mean difference of these housekeeping
+functions is approximately located at 2.3. Thus, we desire a scale model
+that approximately centres the housekeeping functions; thus an
+appropriate informed scale model in this dataset for functional analysis
+will place these functions closer to 0 than does the naive estimate. One
+way to choose an appropriate value for \(\mu_n\) is to use the
+\texttt{aldex.clr} function on only the presumed invariant functions
+setting \(\gamma > 0\), and then accessing the \texttt{@scaleSamps} slot
+as before. Doing so suggests that the difference in scale should be
+about 14\%. A second approach would be to identify the functions used as
+the denominator with the \texttt{denom="lvha"} option (15) for the
 \texttt{aldex.clr} function, and then to use these values as before.
 This approach suggests a 5\% difference in scale, and is potentially
 less subject to user interpretation.
@@ -728,9 +740,9 @@ distribution to build a scale matrix given a user-specified mean
 difference between groups and uncertainty level. Applying a per-group
 relative differential scale of 0.14 moves the housekeeping functions
 close to the midline of no difference (Figure 3C, assuming 14\% mean
-difference = -0.24, assuming a 5\% mean difference = -0.34), and
-applying a gamma of 0.5 provides the same dispersion as in panel B of
-Figure 3. Note that now a significant number of functions are
+difference = -0.24, assuming a 5\% mean difference = -0.34), and adding
+some uncertainty using a gamma of 0.5 provides the same dispersion as in
+panel B of Figure 3. Note that now a significant number of functions are
 differentially up in BV that were formerly classed as not different
 without the full scale model (orange), or when only a default scale was
 applied. Inspection of the functions shows that these are largely
@@ -738,49 +750,50 @@ missing from the \emph{Lactobacillus} species and so should actually be
 captured as differentially abundant in the BV group. Supplementary
 Figure 7 shows that the using either the 5\% or the 14\% scale
 difference give imperceptibly different results suggesting that an
-informed scale model does not have to precisely estimate the scale
-difference to be useful. Nixon et al, (22) also found that multiple
-reasonable estimates for the \(\mu_n\) part of the informed scale model
-were similarly useful in microbiome data.
+informed scale model that includes some uncertainty does not have to
+precisely estimate the scale difference to be useful. Nixon et al, (22)
+also found that multiple reasonable estimates for the \(\mu_n\) part of
+the informed scale model were similarly useful in microbiome data.
 
 Thus, applying an informed scale allows us to distinguish between both
 false positives (housekeeping functions in cyan, and others in blue) and
 false negatives (orange functions) even in a very difficult to analyze
-dataset. We used this scale model to uncover hiter-to-now unknown
-differences in microbiome functional activity between the Healthy and BV
-cohorts that were missed in previos analyses and that explain important
-clinical differences between them (55). The remarkable improvements in
-biological interpretation afforded by an informed scale model, and the
-transferrability of it between sample cohorts of the same condition is
-outlined in dos Santos et al. (55). We suggest that the default scale
-model is sufficient when the data are approximately centred but that an
-informed model is more appropriate with datasets are not well centred or
-when the investigator has prior information about the underlying
-biology.
+dataset. We used this informed scale model to uncover hither-to-now
+unknown differences in microbiome functional activity between the
+Healthy and BV cohorts that were missed in previous analyses and that
+explain important clinical differences between them (55). The remarkable
+improvements in biological interpretation afforded by an informed scale
+model, and the transferrability of it between sample cohorts of the same
+condition is outlined in dos Santos et al. (55). We suggest that the
+default scale model is sufficient when the data are approximately
+centred but that an informed model is more appropriate with datasets are
+not well centred or when the investigator has prior information about
+the underlying biology.
 
 \section{Discussion}\label{discussion}
 
 Scale estimates affect two parts of the analysis. Modeling uncertainty
 in scale prevents false certainty in the precision of estimation and
-controls false positive identification. Modeling between-group scale
-relaxes the assumption of identity between the sizes of the environments
-and allows better control of false negative identification. The scale
-estimates can be derived from the total number of molecules in the
-environment or from other estimates of input size (cell counts, initial
-concentrations, spike-ins, growth rates, etc).
+controls false positive identification(3). Modeling between-group scale
+differences relaxes the assumption of identity between the sizes of the
+environments made by many normalizations and allows better control of
+false negative identification. The scale estimates can be derived from
+the total number of molecules in the environment or from other estimates
+of input size (cell counts, initial concentrations, spike-ins, growth
+rates, etc).
 
 Biological systems are both predictably variable and stochastic (63) and
 systems biology experiments show that there are transcripts with
 approximately constant concentrations in the cell and those with large
 variability under different growth conditions (25). Current measurement
 methods that rely on high throughput sequencing fail to capture all of
-the variation, particularly variation due to scale (3, 22). In the
-absence of external information (19, 20, 64) sequencing depth
-normalisation methods cannot recapture the scale information (19, 23),
-and can only normalize for the technical variation due to sequencing
-depth. Here we demonstrated that even approximate estimates of the true
-system scale and the uncertainty of measuring it can aid in the
-interpretation of RNA-sequencing experiments.
+the variation, particularly variation due to scale and our uncertainty
+in measuring it (3, 22). In the absence of external information (19, 20,
+64) sequencing depth normalisation methods cannot recapture the scale
+information (19, 23), and can only normalize for the technical variation
+due to sequencing depth. Here we demonstrated that even approximate
+estimates of the true system scale and the uncertainty of measuring it
+can aid in the interpretation of RNA-sequencing experiments.
 
 Nixon et al. (3) introduced the idea of explicitly modeling the scale of
 a HTS dataset, and showed how to incorporate these models in the
@@ -794,40 +807,60 @@ incorporating an informed scale model incorporating both location and
 scale uncertainty estimates could both control for Type 1 and Type 2
 error rates (22, 43).
 
-The process of choosing the parameters are experiment-specific and can
-be anchored in known information such as cell counts, spike-ins,
-information from the literature or similar (3, 22, 65). In the
-metatranscriptome example used in this report {[}(43);{]} the choice of
-parameter was driven by the assumption inherent in the biology that core
-housekeeping functions would serve as an appropriate standard (37). The
-choice of parameters must be guided by the experimental question and
-other approaches in the literature which suggest normalizing the
-transcript levels to the bacterial metagenomic levels (66) could be used
-to set the scale parameters, but in this case are more granular at the
-individual organism level rather than at the systemic functional level.
+The process of choosing the parameters depends on the analysis. If the
+scale of the groups is relatively constant then using a default scale
+model choosing \(\gamma = 0.5\) will result in excellent FDR control,
+but at the loss of sensitivity when the difference between groups is
+less than 1. If the analyst is interested in smaller differences then
+setting \(\gamma = 0.2\) may be more appropriate. The parameters for
+informed scale models are experiment-specific and can be anchored in
+known information such as cell counts, spike-ins, information from the
+literature or similar (3, 22, 65), and we recommend also including scale
+uncertainty as outlined for the default model. In the yeast and in the
+shuffled clinical transcriptome datasets, we made the assumption that
+the underlying biological scale was approximately constant and so used
+only the default scale model that includes only uncertainty in the scale
+of the sampled environments. Here, we observed the even moderate amounts
+of scale uncertainty led to much better control of the FDR than did
+simple fold-change cutoffs. We also observed a loss of sensitivity with
+the default scale model, but showed that this was because of
+differential exclusion of those transcripts with marginal p-values. In
+the metatranscriptome example {[}(43);{]} the choice of parameter for
+the difference in scale between groups was driven by the assumption
+inherent in the biology that core housekeeping functions would serve as
+an appropriate standard (37). Thus, the choice of the \(\mu\) parameter
+should be guided by the experimental question and the assumptions of the
+investigator. The used of informed scale models ensures that all
+assumptions are available for the reader.
 
 Building and using a scale model thus has substantial benefits relative
 to the dual cutoff approach that is advocated for many gene expression
 experiments (9, 11). In particular, the dual cutoff approach has long
 been known to not control for Type 1 errors (12, 13), and the frequent
 lack of concordance between tools when benchmarked on transcriptomes (5,
-7--9, 17, 67) and microbiomes (4, 6, 32, 42, 68, 69) suggests poor
+7--9, 17, 66) and microbiomes (4, 6, 32, 42, 67, 68) suggests poor
 control of Type 2 errors as well (5, 8). Thus, incorporating a scale
 model during the analysis of HTS data promises the best of both worlds.
 A default scale model can control for Type 1 errors with minimal prior
 knowledge of the environment and this can be done with essentially no
-additional computational overhead. Furthermore, this work and previous
-(22, 43) show that even minimal information about the underlying
-environment can be used to build a relatively robust informed scale
-model that controls for both Type 1 and 2 error rates. It is important
-to note that the approach advocated here is distinct from that suggested
-by Zhang et al. (66, 70) where the DNA amount for a gene is a covariate
-in the model for transcriptomic differential abundance. In our analysis
-we grouped all the transcript information to functional level regardless
-of organism, instead of modeling per-organism gene abundances. In the
-future we anticipate being able to build more complex models similar to
-those used by Zhang et al.~with the additional information of
-uncertainty in the underlying gene count.
+additional computational overhead. It must be acknowledged that this
+Type 2 error control comes at some expense of sensitivity, especially
+when the difference between groups is very small. Furthermore, this work
+and previous (22, 43) show that even minimal information about the
+underlying environment can be used to build a relatively robust informed
+scale model that controls for both Type 1 and 2 error rates. However,
+modeling and theory suggests that the inclusion of any reasonable amount
+of scale uncertainty is guaranteed to result in substantially better
+controlling the FDR (3, 22).
+
+It is important to note that the approach advocated here is distinct
+from that suggested by Zhang et al. (69, 70) where the DNA amount for a
+gene is a covariate in the model for transcriptomic differential
+abundance. In our analysis we grouped all the transcript information to
+functional level regardless of organism, instead of modeling
+per-organism gene abundances. In the future we anticipate being able to
+build more complex models similar to those used by Zhang et al.~with the
+additional information of uncertainty in the underlying gene count.
 
 In the analysis of HTS data it is often observed that larger datasets
 converge on the majority of parts being significantly different (3, 8,
@@ -854,7 +887,8 @@ explained by the observation that different analytic approaches produce
 different parameter estimates for either location or scale, or for both,
 as suggested in Figure 1. Thus, more data produces worse estimates
 because the additional data simply increases the precision of a flawed
-estimate (3, 72).
+estimate while incorporating uncertainty in the scale at least
+guarantees that we are less wrong (3, 72).
 
 Scale simulation is now built into ALDEx2 (22) and in this report we
 suggest that there are two main root causes to common HTS data
@@ -917,8 +951,7 @@ uncertainty should become a standard practice in the analysis of HTS
 datasets.
 
 Acknowledgements: JDS and MPN were supported in part by NIH
-1R01GM148972-01. Some aspects of this was supported by an NSERC grant to
-GBG.
+1R01GM148972-01. GBG is supported by NSERC grant RGPIN-06519-2025.
 
 Availability of Code: All code is available at
 \url{https://github.com/ggloor/scale-sim-bio}
@@ -1074,11 +1107,11 @@ Sanabria,E., Waegeman,W., Monsieurs,P., Hammes,F. and Boon,N. (2017)
 \href{https://doi.org/10.1038/ismej.2016.117}{Absolute quantification of
 microbial taxon abundances}. \emph{ISME J}, \textbf{11}, 584--587.
 
-\bibitem[\citeproctext]{ref-Nixon2024B}
-22. Nixon,M.P., Gloor,G.B. and Silverman,J.D. (2024) Beyond
-normalization: Incorporating scale uncertainty in microbiome and gene
-expression analysis. \emph{bioRxiv},
-\href{https://doi.org/10.1101/2024.04.01.587602}{10.1101/2024.04.01.587602}.
+\bibitem[\citeproctext]{ref-Nixon:2025aa}
+22. Nixon,M.P., Gloor,G.B. and Silverman,J.D. (2025)
+\href{https://doi.org/10.1186/s13059-025-03609-3}{Incorporating scale
+uncertainty in microbiome and gene expression analysis as an extension
+of normalization}. \emph{Genome Biol}, \textbf{26}, 139.
 
 \bibitem[\citeproctext]{ref-Lovell:2015}
 23. Lovell,D., Pawlowsky-Glahn,V., Egozcue,J.J., Marguerat,S. and
@@ -1358,36 +1391,36 @@ quiescent cells}. \emph{Cell}, \textbf{151}, 671--83.
 scale assumptions in microbe and gene set enrichment analysis}.
 \emph{PLoS Comput Biol}, \textbf{19}, e1011659.
 
-\bibitem[\citeproctext]{ref-Zhang:2021ab}
-66. Zhang,Y., Thompson,K.N., Huttenhower,C. and Franzosa,E.A. (2021)
-\href{https://doi.org/10.1093/bioinformatics/btab327}{Statistical
-approaches for differential expression analysis in metatranscriptomics}.
-\emph{Bioinformatics}, \textbf{37}, i34--i41.
-
 \bibitem[\citeproctext]{ref-Soneson:2013}
-67. Soneson,C. and Delorenzi,M. (2013)
+66. Soneson,C. and Delorenzi,M. (2013)
 \href{https://doi.org/10.1186/1471-2105-14-91}{A comparison of methods
 for differential expression analysis of {RNA-seq} data}. \emph{BMC
 Bioinformatics}, \textbf{14}, 91.
 
 \bibitem[\citeproctext]{ref-McMurdie:2014a}
-68. McMurdie,P.J. and Holmes,S. (2014)
+67. McMurdie,P.J. and Holmes,S. (2014)
 \href{https://doi.org/10.1371/journal.pcbi.1003531}{Waste not, want not:
 Why rarefying microbiome data is inadmissible}. \emph{PLoS Comput Biol},
 \textbf{10}, e1003531.
 
 \bibitem[\citeproctext]{ref-hawinkel2017}
-69. Hawinkel,S., Mattiello,F., Bijnens,L. and Thas,O. (2018)
+68. Hawinkel,S., Mattiello,F., Bijnens,L. and Thas,O. (2018)
 \href{http://dx.doi.org/10.1093/bib/bbx104}{A broken promise :
 Microbiome differential abundance methods do not control the false
 discovery rate}. \emph{Briefings in Bioinformatics}.
 
 \bibitem[\citeproctext]{ref-Zhang:2021aa}
-70. Zhang,Y., Thompson,K.N., Branck,T., Yan,Y., Nguyen,L.H.,
+69. Zhang,Y., Thompson,K.N., Branck,T., Yan,Y., Nguyen,L.H.,
 Franzosa,E.A. and Huttenhower,C. (2021)
 \href{https://doi.org/10.1146/annurev-biodatasci-031121-103035}{Metatranscriptomics
 for the human microbiome and microbial community functional profiling}.
 \emph{Annu Rev Biomed Data Sci}, \textbf{4}, 279--311.
+
+\bibitem[\citeproctext]{ref-Zhang:2021ab}
+70. Zhang,Y., Thompson,K.N., Huttenhower,C. and Franzosa,E.A. (2021)
+\href{https://doi.org/10.1093/bioinformatics/btab327}{Statistical
+approaches for differential expression analysis in metatranscriptomics}.
+\emph{Bioinformatics}, \textbf{37}, i34--i41.
 
 \bibitem[\citeproctext]{ref-Brooks:2024aa}
 71. Brooks,T.G., Lahens,N.F., Mrčela,A. and Grant,G.R. (2024)

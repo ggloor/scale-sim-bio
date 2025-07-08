@@ -86,10 +86,6 @@ analysis/out.mat.raw.Rda : code/yst-reproducibility.R
 
 analysis/out.mat.scale.Rda : code/yst-reproducibility.R
 	Rscript code/yst-reproducibility.R
-	
-information-supplement.pdf : information-supplement.Rmd\
-
-	Rscript -e "rmarkdown::render('information-supplement.Rmd')"
 
 # Clean rule to remove the output files
 clean:
